@@ -1,9 +1,9 @@
 import React, { forwardRef } from 'react'
 import { List, Card, Table, Button, Row, Col } from 'antd'
-
 import DatePicker from "react-datepicker";
-
-
+import "react-datepicker/dist/react-datepicker.css";
+import { getDate, getMonth, getYear } from 'date-fns';
+import moment from 'moment';
 import { invokeApi } from '../base/axios'
 
 const columns = [
@@ -22,6 +22,32 @@ const columns = [
         dataIndex: 'Content',
         key: 'Content',
     },
+];
+
+const range = (start, end, incre = 1) => {
+    let arr = []
+
+    for (let index = start; index <= end; index++) {
+        arr.push(index)
+    }
+
+    return arr
+}
+
+const years = range(2010, getYear(new Date()) + 10);
+const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
 ];
 
 class Main extends React.Component {
@@ -53,14 +79,20 @@ class Main extends React.Component {
                     content: (() => {
                         return (
                             <video id="video" controls="controls" width="100%" height="auto" preload="auto">
-                                <source src="static/bunny.mp4" type="video/mp4" />
+                                <source src="static/testvideo.mp4" type="video/mp4" />
                             </video>
                         )
                     })()
                 },
                 {
                     title: 'Title 2',
-                    content: 'Content 2'
+                    content: (() => {
+                        return (
+                            <video id="video" controls="controls" width="100%" height="auto" preload="auto">
+                                <source src="static/testvideo.mp4" type="video/mp4" />
+                            </video>
+                        )
+                    })()
                 },
                 {
                     title: 'Title 3',
@@ -80,9 +112,20 @@ class Main extends React.Component {
                 },
             ],
             listColumnSize: 4,
-            startDate: new Date()
+            startDate: new Date(),
+            hightlightList: {
+                type1: [],
+                type2: [],
+                type3: []
+            }
         }
     }
+
+    handleChange = date => {
+        this.setState({
+            startDate: date
+        });
+    };
 
     componentDidMount() {
         if (this.isMobileDevice()) {
@@ -137,6 +180,52 @@ class Main extends React.Component {
             )
         })
 
+        const renderDayContents = (day, date) => {
+            let tooltipText = `Tooltip for date: ${date}`;
+            let highlight = {}
+            let clickEvent = null
+            let dayType = ''
+            if(day == 15){
+                dayType = 'blue'
+            } else if(day == 24) {
+                dayType = 'red'
+            }
+
+            switch (dayType) {
+                case 'blue':
+                    //set style for the day
+                    highlight.border = '1px solid #1890ff'
+                    highlight.backgroundColor = '#DEEFFF'
+                    highlight.borderRadius = '0.3rem'
+
+                    tooltipText = 'BLUE day'
+
+                    //add Event
+
+                    clickEvent = () => {
+                        alert('This is BLUE day!!!')
+                    }
+                    break
+                case 'red':
+                    //set style for the day
+                    highlight.border = '1px solid #ff9292'
+                    highlight.backgroundColor = '#FFDEDE'
+                    highlight.borderRadius = '0.3rem'
+
+                    tooltipText = 'RED day'
+
+                    //add Event
+
+                    clickEvent = () => {
+                        alert('This is RED day!!!')
+                    }
+                    break
+                default:
+                    break
+            }
+
+            return <div style={highlight} onClick={clickEvent} title={tooltipText}>{getDate(date)}</div>;
+        };
 
 
         return (
@@ -150,21 +239,76 @@ class Main extends React.Component {
                         rowKey="ID"
                     />
                 </Card> */}
-                <Row gutter={[16, 16]}>
-                    <Col span={12}>
+                <Row gutter={[16, 16]} style={{ backgroundColor: 'white', borderRadius: '5px' }}>
+                    <Col span={6}>
                         <DatePicker
+                            renderCustomHeader={({
+                                date,
+                                changeYear,
+                                changeMonth,
+                                decreaseMonth,
+                                increaseMonth,
+                                prevMonthButtonDisabled,
+                                nextMonthButtonDisabled
+                            }) => (
+                                    <div
+                                        style={{
+                                            margin: 10,
+                                            display: "flex",
+                                            justifyContent: "center"
+                                        }}
+                                    >
+                                        <button onClick={decreaseMonth} disabled={prevMonthButtonDisabled}>
+                                            {"<"}
+                                        </button>
+                                        <select
+                                            value={getYear(date)}
+                                            onChange={({ target: { value } }) => changeYear(value)}
+                                        >
+                                            {years.map(option => (
+                                                <option key={option} value={option}>
+                                                    {option}
+                                                </option>
+                                            ))}
+                                        </select>
+
+                                        <select
+                                            value={months[getMonth(date)]}
+                                            onChange={({ target: { value } }) =>
+                                                changeMonth(months.indexOf(value))
+                                            }
+                                        >
+                                            {months.map(option => (
+                                                <option key={option} value={option}>
+                                                    {option}
+                                                </option>
+                                            ))}
+                                        </select>
+
+                                        <button onClick={increaseMonth} disabled={nextMonthButtonDisabled}>
+                                            {">"}
+                                        </button>
+                                    </div>
+                                )}
                             selected={this.state.startDate}
                             onChange={this.handleChange}
                             customInput={<CustomInput />}
+                            dateFormat="yyyy/MM/dd"
+                            renderDayContents={renderDayContents}
                         />
                     </Col>
-                    <Col span={12}>
+                    <Col span={6}>
                         <Button type="danger" onClick={this.addList}>+</Button>
                     </Col>
-                </Row>
+                    <Col span={6}>
 
+                    </Col>
+                    <Col span={6}>
+
+                    </Col>
+                </Row>
                 <Row gutter={[16, 16]}>
-                    <Col>
+                    <Col span={24}>
                         <List
                             grid={{
                                 gutter: 16,

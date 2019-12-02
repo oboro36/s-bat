@@ -1,9 +1,7 @@
 import React from 'react'
 import App, { Container } from 'next/app'
-import "react-datepicker/dist/react-datepicker.css";
 import MainLayout from '../components/mainlayout'
 import Login from './login'
-
 class MyApp extends App {
 
     constructor(props) {

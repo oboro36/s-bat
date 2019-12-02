@@ -24,7 +24,24 @@ class SideBar extends React.Component {
 
     state = {
         //Modal
-        ModalText: 'Please set up your settings below.',
+        ModalText: (() => {
+            return (
+                <React.Fragment>
+                    <Row gutter={[16, 16]} style={{ backgroundColor: 'white', borderRadius: '5px' }}>
+                        <Col span={12}>
+                            <video id="video" controls="controls" width="100%" height="auto" preload="auto">
+                                <source src="static/testvideo.mp4" type="video/mp4" />
+                            </video>
+                        </Col>
+                        <Col span={12}>
+                            <video id="video" controls="controls" width="100%" height="auto" preload="auto">
+                                <source src="static/testvideo.mp4" type="video/mp4" />
+                            </video>
+                        </Col>
+                    </Row>
+                </React.Fragment>
+            )
+        })(),
         visible: false,
         confirmLoading: false,
         //Side Bar
@@ -150,8 +167,10 @@ class SideBar extends React.Component {
                         onOk={this.handleOk}
                         confirmLoading={this.state.confirmLoading}
                         onCancel={this.handleCancel}
+                        style={{ top: '10px' }}
+                        width="99%"
                     >
-                        <p>{this.state.ModalText}</p>
+                        <div>{this.state.ModalText}</div>
                     </Modal>
                 </Sider>
             </React.Fragment>
