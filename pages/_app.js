@@ -2,6 +2,10 @@ import React from 'react'
 import App, { Container } from 'next/app'
 import MainLayout from '../components/mainlayout'
 import Login from './login'
+
+import '../base/antdcustom.css'
+import '../base/fixvisual.css'
+
 class MyApp extends App {
 
     constructor(props) {

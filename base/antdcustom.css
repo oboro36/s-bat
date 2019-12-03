@@ -1,4 +1,4 @@
-/* Cancel animation on menu toggle */
+/* PERFORMANCE Cancel animation on menu toggle */
 .ant-layout-sider-trigger {
     transition: all 0s !important
 }

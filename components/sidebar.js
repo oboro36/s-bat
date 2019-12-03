@@ -1,7 +1,6 @@
 import { Layout, Menu, Icon, Avatar, Modal, Button, Tooltip, Row, Col } from 'antd';
 import Router from 'next/router'
 import Link from 'next/link'
-import '../base/antdcustom.css'
 const { Sider } = Layout;
 const { SubMenu } = Menu;
 
@@ -49,6 +48,17 @@ class SideBar extends React.Component {
         content: 'main',
         userName: 'Name'
     };
+
+    componentDidMount() {
+        if (this.isMobileDevice()) {
+            this.setState({ collapsed: true })
+            this.props.doCollapse({ collapsed: true })
+        }
+    }
+
+    isMobileDevice = () => {
+        return navigator.userAgent.toLowerCase().match(/mobile/i)
+    }
 
     showModal = () => {
         this.setState({
@@ -140,8 +150,8 @@ class SideBar extends React.Component {
                         </div>
                         <Menu theme="dark" mode="inline" onClick={this.handleMenuClick}>
                             <Menu.Item key="1" name="main">
-                                <Icon type="dashboard" theme="filled" />
-                                <span>Dashboard</span>
+                                <Icon type="video-camera" theme="filled" />
+                                <span>Video Player</span>
                             </Menu.Item>
                             <Menu.Item key="2" name="about">
                                 <Icon type="idcard" theme="filled" />

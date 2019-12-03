@@ -1,0 +1,9 @@
+/* FIX react-datepicker inherit line-height from Ant Design */
+.ant-form-item-children > .react-datepicker-popper{
+    line-height: normal !important;
+}
+
+/* FIX react-datepicker falling under Ant Design -> Collapse component */
+.ant-collapse-content-active{
+    overflow: visible !important;
+}
