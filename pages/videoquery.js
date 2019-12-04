@@ -1,5 +1,6 @@
 import { Row, Col, } from 'antd'
-
+import { Form, Select } from 'antd'
+const { Option } = Select;
 import VideoSearch from '../components/video/videosearch'
 
 const columns = [
@@ -20,10 +21,11 @@ const columns = [
     },
 ];
 
-class Main extends React.Component {
+class VideoQuery extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+            outputType: 'img',
             // loading: false,
             // tableDataSource: [
             //     {
@@ -42,6 +44,9 @@ class Main extends React.Component {
             //         Content: '-'
             //     }
             // ],
+            propFunc: () => {
+                console.log('func')
+            }
         }
     }
 
@@ -65,7 +70,14 @@ class Main extends React.Component {
     //     }, 2000);
     // }
 
+    handleOutputChange = value => {
+        this.setState({ outputType: value }, () => {
+            console.log(this.state.outputType)
+        })
+    }
+
     render() {
+        const { getFieldDecorator } = this.props.form;
         return (
             <div>
                 {/* <Card><Button type="primary" onClick={this.getPerson}>Get Data</Button></Card> */}
@@ -77,12 +89,32 @@ class Main extends React.Component {
                         rowKey="ID"
                     />
                 </Card> */}
+                <Row type="flex" justify="center" align="middle">
+                    <Col span={24}>
+                        <Form labelCol={{ span: 7 }} wrapperCol={{ span: 12 }}>
+                            <Form.Item label="Output">
+                                {getFieldDecorator('output', {
+                                    rules: [{ required: true, message: 'Please select your output!' }],
+                                    initialValue: this.state.outputType
+                                })(
+                                    <Select
+                                        placeholder="Select your output type"
+                                        onChange={this.handleOutputChange}
+                                    >
+                                        <Option value="img">Image</Option>
+                                        <Option value="gph">Graph</Option>
+                                    </Select>,
+                                )}
+                            </Form.Item>
+                        </Form>
+                    </Col>
+                </Row>
                 <Row gutter={[16, 16]}>
                     <Col span={12}>
-                        <VideoSearch customTitle="CHOICE1"/>
+                        <VideoSearch customTitle="CHOICE1" side="left" selectedOutput={this.state.outputType} />
                     </Col>
                     <Col span={12}>
-                        <VideoSearch customTitle="CHOICE2"/>
+                        <VideoSearch customTitle="CHOICE2" side="right" selectedOutput={this.state.outputType} />
                     </Col>
                 </Row>
             </div>
@@ -90,4 +122,6 @@ class Main extends React.Component {
     }
 }
 
-export default Main
+const WrappedVideoQuery = Form.create({ name: 'video_search' })(VideoQuery)
+
+export default WrappedVideoQuery

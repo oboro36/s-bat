@@ -1,8 +1,9 @@
 import React, { forwardRef } from 'react'
-import { List, Card, Button, Row, Col, Collapse, Form, Select, Checkbox, Icon } from 'antd'
+import { List, Card, Button, Row, Col, Collapse, Form, Select, Checkbox, Icon, Divider, Input } from 'antd'
 import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { getDate, getMonth, getYear } from 'date-fns';
+import { getDate, getMonth, getYear, isThisHour } from 'date-fns';
+import VideoCard from '../../components/video/videocard'
 
 import ja from 'date-fns/locale/ja';
 registerLocale('ja', ja)
@@ -38,6 +39,7 @@ class VideoSearch extends React.Component {
             listDataSource: [],
             listColumnSize: 1,
             searchCond: {
+                output: this.props.selectedOutput,
                 site: '',
                 program: '',
                 line: '',
@@ -47,22 +49,45 @@ class VideoSearch extends React.Component {
         }
     }
 
-
-    handleChange = date => {
-        this.setState(
-            {
-                searchCond: { condDate: date }
+    componentWillReceiveProps(nextProps) {
+        this.setState({
+            searchCond: {
+                ...this.state.searchCond, output: nextProps.selectedOutput
             }
-        )
+        })
+
+        
     }
 
-    addList = () => {
+    handleDateChange = async (date) => {
+        let editDate = () => {
+            return new Promise((resolve, reject) => {
+                this.setState(
+                    {
+                        searchCond: { condDate: date }
+                    }
+                )
+                this.props.form.setFieldsValue(date)
+                return resolve(true)
+            })
+        }
+
+        await editDate() && this.handleSubmit()
+
+    }
+
+    handleSubmit = async () => {
+        let temp = this.props.form.getFieldsValue()
+        console.log(temp)
+
+        // fetch
 
         let dummy = [
             {
                 title: "P1 POS1",
                 imageURL: 'static/imgoutput1.jpg',
                 videoURL: 'static/testvideo.mp4',
+                outputType: this.props.selectedOutput,
                 content: (() => {
                     return (
                         <Row>
@@ -95,22 +120,32 @@ class VideoSearch extends React.Component {
             },
         ]
 
-        this.setState(state => {
-            var joined = this.state.listDataSource.concat([
-                dummy
-            ])
-            this.setState({ listDataSource: joined })
+        let clearRes = await this.clearList()
+        if (clearRes) {
+            let addRes = await this.addList(dummy)
+        }
+
+    }
+
+    addList = (data) => {
+        console.log('ADD LIST')
+        return new Promise((resolve, reject) => {
+            this.setState(state => {
+                var joined = this.state.listDataSource.concat([
+                    data
+                ])
+                this.setState({ listDataSource: joined })
+            })
+            return resolve(true)
         })
     }
 
-    handleSubmit = () => {
-
-    }
-
-    handleActions = (action, URL) => {
-        if (action == 'zoom') {
-            console.log(URL)
-        }
+    clearList() {
+        console.log('CLEAR LIST')
+        return new Promise((resolve, reject) => {
+            this.setState({ listDataSource: [] })
+            return resolve(true)
+        })
     }
 
     render() {
@@ -253,6 +288,19 @@ class VideoSearch extends React.Component {
                         <Panel header={this.props.customTitle} key="1">
                             <Button type="danger" onClick={this.addList}>+</Button>
                             <Form labelCol={{ span: 7 }} wrapperCol={{ span: 12 }}>
+                                <Form.Item label="Output" hidden>
+                                    {getFieldDecorator('output', {
+                                        rules: [{ required: true, message: 'Please select your output type!' }],
+                                        initialValue: this.state.searchCond.output
+                                    })(
+                                        <Select
+                                            placeholder="Select your output type"
+                                        >
+                                            <Option value="img">Image</Option>
+                                            <Option value="gph">Graph</Option>
+                                        </Select>,
+                                    )}
+                                </Form.Item>
                                 <Form.Item label="Site">
                                     {getFieldDecorator('site', {
                                         rules: [{ required: true, message: 'Please select your site!' }],
@@ -305,6 +353,7 @@ class VideoSearch extends React.Component {
                                 <Form.Item label="Date">
                                     {getFieldDecorator('date-picker', {
                                         rules: [{ type: 'object', required: true, message: 'Please select date!' }],
+                                        initialValue: this.state.searchCond.condDate
                                     })(
                                         <DatePicker
                                             renderCustomHeader={customDatepickerHeader}
@@ -313,18 +362,13 @@ class VideoSearch extends React.Component {
                                             // showYearDropdown
                                             // dropdownMode="select"
                                             selected={this.state.searchCond.condDate}
-                                            onChange={this.handleChange}
+                                            onChange={this.handleDateChange}
                                             customInput={<CustomInput />}
                                             dateFormat="yyyy/MM/dd"
                                             renderDayContents={renderDayContents}
                                         />
                                     )}
                                 </Form.Item>
-                                {/* <Form.Item wrapperCol={{ span: 12, offset: 5 }}>
-                                    <Button type="primary">
-                                        Submit
-                                    </Button>
-                                </Form.Item> */}
                             </Form>
                         </Panel>
                     </Collapse>
@@ -339,26 +383,7 @@ class VideoSearch extends React.Component {
                         dataSource={this.state.listDataSource}
                         renderItem={item => (
                             <List.Item>
-                                <Row>
-                                    <Col span={12}>
-                                        <Card
-                                            title={item[0].title}
-                                            actions={[
-                                                <Icon type="play-square" key="play-square" />,
-                                                <Icon type="zoom-in" key="zoom-in" onClick={() => { this.handleActions('zoom', item[0].imageURL) }} />,
-                                            ]}
-                                        >{item[0].content}</Card>
-                                    </Col>
-                                    <Col span={12}>
-                                        <Card
-                                            title={item[1].title}
-                                            actions={[
-                                                <Icon type="play-square" key="play-square" />,
-                                                <Icon type="zoom-in" key="zoom-in" onClick={() => { this.handleActions('zoom', item[1].imageURL) }} />,
-                                            ]}
-                                        >{item[1].content}</Card>
-                                    </Col>
-                                </Row>
+                                <VideoCard side={this.props.side} item={item} />
                             </List.Item>
                         )}
                     />

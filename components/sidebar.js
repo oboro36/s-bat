@@ -45,7 +45,7 @@ class SideBar extends React.Component {
         confirmLoading: false,
         //Side Bar
         collapsed: false,
-        content: 'main',
+        content: 'videoplayer',
         userName: 'Name'
     };
 
@@ -149,7 +149,7 @@ class SideBar extends React.Component {
                             }
                         </div>
                         <Menu theme="dark" mode="inline" onClick={this.handleMenuClick}>
-                            <Menu.Item key="1" name="main">
+                            <Menu.Item key="1" name="videoquery">
                                 <Icon type="video-camera" theme="filled" />
                                 <span>Video Player</span>
                             </Menu.Item>
