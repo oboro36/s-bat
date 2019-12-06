@@ -6,7 +6,7 @@ const http = axios.create({
     withCredentials: true
 })
 
-const apiAddress = "http://localhost:1323"
+const apiAddress = "http://localhost:8000"
 
 export function invokeApi(method, url, callbackOK, callbackNG) {
     http[method](apiAddress + url)
