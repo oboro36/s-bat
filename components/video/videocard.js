@@ -73,9 +73,9 @@ class VideoCard extends React.Component {
 
     toggleWindowPortal = (URL) => {
 
-        // this.props.appStore.setContent(<VideoPlayer videoURL={URL} />)
+        // this.props.appState.setContent(<VideoPlayer videoURL={URL} />)
 
-        // this.props.appStore.setHideMenu(false)
+        // this.props.appState.setHideMenu(false)
 
         this.setState({
             ...this.state, portalContent: 'content year'

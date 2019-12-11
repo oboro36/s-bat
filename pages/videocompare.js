@@ -7,7 +7,6 @@ class VideoComparison extends React.Component {
         super(props)
         this.state = {
         }
-        console.log(this.props)
     }
 
     render() {

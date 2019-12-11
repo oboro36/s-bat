@@ -182,7 +182,7 @@ class VideoSearch extends React.Component {
                         loading={this.state.isLoading}
                         renderItem={item => (
                             <List.Item>
-                                <VideoCard item={item} appStore={this.props.appStore}/>
+                                <VideoCard item={item} />
                             </List.Item>
                         )}
                     >
