@@ -19,38 +19,92 @@ class VideoSearchForm extends React.Component {
         this.state = {
             listDataSource: [],
             listColumnSize: 1,
+            loading: {
+                site: true,
+                program: false,
+                line: false,
+                content: false
+            },
             searchCond: {
                 output: this.props.selectedOutput,
                 site: '',
                 program: '',
                 line: '',
-                contents: '',
+                content: '',
                 condDate: new Date()
             },
             dropdownList: {
-                site: [],
-                program: [],
-                line: [],
-                contents: []
+                sites: null,
+                programs: null,
+                lines: null,
+                contents: null
             }
         }
+        this._isMounted = false;
     }
 
-    componentWillMount() {
+    componentDidMount() {
 
-        invokeApi('get', '/api/getSiteDropdown',
+        this._isMounted = true;
+
+        invokeApi('post', '/api/getVideoSiteOption', null,
             (res) => {
                 console.log(res)
-                this.setState({ dropdownList: { site: res.data } })
+                if (this._isMounted) {
+                    this.setState({
+                        loading: {
+                            ...this.state.loading, site: false
+                        },
+                        dropdownList: {
+                            sites: res.data.sites,
+                        }
+                    })
+                }
             },
             (err) => {
                 console.log(err)
+                this.setState({
+                    loading: { ...this.state.loading, site: false }
+                })
             }
         )
-
     }
 
-    handleSiteChange = async (date) => {
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+
+    handleSiteChange = (value) => {
+
+        this.setState(prevState => ({
+            loading: { ...prevState.loading, program: true, line: true, content: true }
+        }))
+
+        this.props.form.resetFields(['program', 'line', 'content'])
+
+        invokeApi('post', '/api/getVideoOtherOption/', { site: value },
+            (res) => {
+                console.log(res)
+                this.setState({
+                    dropdownList: {
+                        ...this.state.dropdownList,
+                        programs: res.data.programs,
+                        lines: res.data.lines,
+                        contents: res.data.maintcontents,
+                    }
+                }, () => {
+                    this.setState(prevState => ({
+                        loading: { ...prevState.loading, program: false, line: false, content: false }
+                    }))
+                })
+            },
+            (err) => {
+                console.log(err)
+                this.setState(prevState => ({
+                    loading: { ...prevState.loading, program: false, line: false, content: false }
+                }))
+            }
+        )
 
     }
 
@@ -66,8 +120,7 @@ class VideoSearchForm extends React.Component {
                 return resolve(true)
             })
         }
-        await editDate() && console.log(this.props.form.getFieldsValue())
-        this.props.sendFormValue(this.props.form.getFieldsValue())
+        await editDate() && this.props.sendFormValue(this.props.form.getFieldsValue())
         // await editDate() && this.handleSubmit()
     }
 
@@ -228,50 +281,63 @@ class VideoSearchForm extends React.Component {
                         })(
                             <Select
                                 placeholder="Select your site"
+                                onChange={this.handleSiteChange}
+                                loading={this.state.loading.site}
                             >
-                                {this.state.dropdownList.site.map(site => (
-                                    <Option key={site.value}>{site.id}</Option>
-                                ))}
+                                {
+                                    this.state.dropdownList.sites && this.state.dropdownList.sites.map(sites => (
+                                        <Option key={sites.index}>{sites.value}</Option>
+                                    ))
+                                }
                             </Select>,
                         )}
                     </Form.Item>
                     <Form.Item label="Program">
                         {getFieldDecorator('program', {
-                            rules: [{ required: true, message: 'Please select your site!' }],
+                            rules: [{ required: true, message: 'Please select your program!' }],
                         })(
                             <Select
                                 placeholder="Select your program"
+                                loading={this.state.loading.program}
                             >
-                                {this.state.dropdownList.program.map(program => (
-                                    <Option key={program.value}>{program.id}</Option>
-                                ))}
+                                {
+                                    this.state.dropdownList.programs && this.state.dropdownList.programs.map(programs => (
+                                        <Option key={programs.index}>{programs.value}</Option>
+                                    ))
+                                }
                             </Select>,
                         )}
                     </Form.Item>
                     <Form.Item label="Line">
                         {getFieldDecorator('line', {
-                            rules: [{ required: true, message: 'Please select your site!' }],
+                            rules: [{ required: true, message: 'Please select your line!' }],
                         })(
                             <Select
                                 placeholder="Select your line"
+                                loading={this.state.loading.line}
                             >
-                                {this.state.dropdownList.line.map(line => (
-                                    <Option key={line.value}>{line.id}</Option>
-                                ))}
+                                {
+                                    this.state.dropdownList.lines && this.state.dropdownList.lines.map(lines => (
+                                        <Option key={lines.index}>{lines.value}</Option>
+                                    ))
+                                }
                             </Select>,
                         )}
                     </Form.Item>
                     <Form.Item label="Contents">
-                        {getFieldDecorator('contents', {
-                            rules: [{ required: false, message: 'Please select your site!' }],
+                        {getFieldDecorator('content', {
+                            rules: [{ required: false, message: 'Please select your content!' }],
                         })(
                             <Select
                                 placeholder="Select your content"
+                                loading={this.state.loading.content}
                                 allowClear
                             >
-                                {this.state.dropdownList.content.map(content => (
-                                    <Option key={content.value}>{content.id}</Option>
-                                ))}
+                                {
+                                    this.state.dropdownList.contents && this.state.dropdownList.contents.map(contents => (
+                                        <Option key={contents.index}>{contents.value}</Option>
+                                    ))
+                                }
                             </Select>,
                         )}
                     </Form.Item>

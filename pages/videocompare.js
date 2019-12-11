@@ -1,20 +1,22 @@
-import { Row, Col, } from 'antd'
+import { Row, Col, Button } from 'antd'
 
 import VideoSearch from '../components/video/videosearch'
 
-class VideoQuery extends React.Component {
+class VideoComparison extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
         }
+        console.log(this.props)
     }
 
     render() {
+
         return (
             <div>
                 <Row gutter={[16, 16]}>
                     <Col span={24}>
-                        <VideoSearch customTitle="Video Inquiry" />
+                        <VideoSearch customTitle="Video Inquiry" appState={this.props.appState} />
                     </Col>
                 </Row>
             </div>
@@ -22,4 +24,4 @@ class VideoQuery extends React.Component {
     }
 }
 
-export default VideoQuery
+export default VideoComparison

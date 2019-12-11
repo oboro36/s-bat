@@ -41,14 +41,18 @@ class MainLayout extends React.Component {
     }
   }
 
+  getSelectedHeader = (selectedHeader) => {
+    return selectedHeader
+  }
+
   render() {
     return (
       <React.Fragment>
         <Layout style={{ minHeight: '100vh' }}>
-          <Sidebar doCollapse={this.setCollapse} />
+          <Sidebar doCollapse={this.setCollapse} setSelectedHeader={this.getSelectedHeader} />
           <Layout style={this.state.initStyle}>
             {/* <Header /> */}
-            <Content style={{ margin: '12px 12px' }}>
+            <Content style={{ margin: '12px 12px' }} appState={this.props.appState}>
               <div style={{ padding: 24, background: '#f0f2f5', minHeight: 360 }}>
                 {this.props.children}
               </div>

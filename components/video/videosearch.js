@@ -20,20 +20,13 @@ class VideoSearch extends React.Component {
             listColumnSize: 1,
             searchCond: {
                 selectedOutput: 'img',
-                condLeft: [],
-                condRight: [],
+                choice1: [],
+                choice2: [],
             }
         }
 
     }
 
-    componentWillReceiveProps(nextProps) {
-        // this.setState({
-        //     searchCond: {
-        //         ...this.state.searchCond, output: nextProps.selectedOutput
-        //     }
-        // })
-    }
 
     handleOutputChange = value => {
         this.setState({ searchCond: { selectedOutput: value } }, () => {
@@ -42,75 +35,99 @@ class VideoSearch extends React.Component {
     }
 
     handleLeftFormChange = (formValue) => {
-        console.log(formValue)
+        this.setState({ searchCond: { ...this.state.searchCond, choice1: formValue } })
     }
 
     handleRightFormChange = (formValue) => {
-        console.log(formValue)
+        this.setState({ searchCond: { ...this.state.searchCond, choice2: formValue } })
     }
 
     handleSubmit = () => {
 
-        invokeApi('get', '/api/getSiteDropdown',
-            (res) => {
+        console.log(this.state.searchCond)
+
+        invokeApi('post', '/api/getVideoData',
+            {
+                choice1: this.state.searchCond.choice1,
+                choice2: this.state.searchCond.choice2
+            },
+            async (res) => {
                 console.log(res)
+
+                let results = res.data
+
+                let prep =
+                {
+                    title: [results.choice1[0]['POSITION'], results.choice2[0]['POSITION']],
+                    imageURL: [results.choice1[0]['IMAGE_DIRECTORY'], results.choice2[0]['IMAGE_DIRECTORY']],
+                    videoURL: [results.choice1[0]['MOVIE_DIRECTORY'], results.choice2[0]['MOVIE_DIRECTORY']],
+                    outputType: 'img',
+                    content: (url) => {
+                        return (
+                            <Row>
+                                <Col span={24}>
+                                    <img src={url} width="100%" height="auto" />
+                                </Col>
+                            </Row>
+                        )
+                    }
+                }
+
+
+                let clearRes = await this.clearList()
+                if (clearRes) {
+                    console.log(prep)
+                    this.addList(prep)
+                }
+
             },
             (err) => {
                 console.log(err)
             }
         )
 
-        // let temp = this.props.form.getFieldsValue()
-
-        // let dummy = [
-        //     {
-        //         title: ["P1 POS1", "P1 POS2"],
-        //         imageURL: ['static/imgoutput1.jpg', 'static/imgoutput2.jpg'],
-        //         videoURL: ['static/testvideo.mp4', 'static/testvideo.mp4'],
-        //         outputType: this.props.selectedOutput,
-        //         content: ((pos, url) => {
-        //             return (
-        //                 <Row>
-        //                     <Col span={24}>
-        //                         <img src={url} width="100%" height="auto" />
-        //                     </Col>
-        //                 </Row>
-        //             )
-        //         })()
-        //     }
-        // ]
-
-        // let clearRes = await this.clearList()
-        // if (clearRes) {
-        //     let addRes = await this.addList(dummy)
-        // }
-
     }
 
 
-    // addList = (data) => {
-    //     console.log('ADD LIST')
-    //     return new Promise((resolve, reject) => {
-    //         this.setState(state => {
-    //             var joined = this.state.listDataSource.concat([
-    //                 data
-    //             ])
-    //             this.setState({ listDataSource: joined })
-    //         })
-    //         return resolve(true)
-    //     })
-    // }
+    addList = (data) => {
+        console.log('ADD LIST')
+        return new Promise((resolve, reject) => {
+            this.setState(state => {
+                var joined = this.state.listDataSource.concat([
+                    data
+                ])
+                this.setState({ listDataSource: joined })
+            })
+            return resolve(true)
+        })
+    }
 
-    // clearList() {
-    //     console.log('CLEAR LIST')
-    //     return new Promise((resolve, reject) => {
-    //         this.setState({ listDataSource: [] })
-    //         return resolve(true)
-    //     })
-    // }
+    clearList() {
+        console.log('CLEAR LIST')
+        return new Promise((resolve, reject) => {
+            this.setState({ listDataSource: [] })
+            return resolve(true)
+        })
+    }
 
     render() {
         const { getFieldDecorator } = this.props.form;
+
+        const tester1 = [
+            'SHDI',
+            1,
+            '1300',
+            1,
+            new Date()
+        ]
+
+        const tester2 = [
+            'SHDI',
+            2,
+            '1400',
+            2,
+            new Date()
+        ]
 
         return (
             <React.Fragment>
@@ -140,10 +157,10 @@ class VideoSearch extends React.Component {
                             </Row>
                             <Row>
                                 <Col span={12}>
-                                    <VideoSearchForm title="CHOICE1" selectedOutput={this.state.searchCond.selectedOutput} sendFormValue={this.handleLeftFormChange} />
+                                    <VideoSearchForm title="CHOICE1" selectedOutput={this.state.searchCond.selectedOutput} sendFormValue={this.handleLeftFormChange} tester={tester1} />
                                 </Col>
                                 <Col span={12}>
-                                    <VideoSearchForm title="CHOICE2" selectedOutput={this.state.searchCond.selectedOutput} sendFormValue={this.handleLeftFormChange} />
+                                    <VideoSearchForm title="CHOICE2" selectedOutput={this.state.searchCond.selectedOutput} sendFormValue={this.handleRightFormChange} tester={tester2} />
                                 </Col>
                             </Row>
                             <Row type="flex" justify="center" align="middle">
@@ -165,10 +182,11 @@ class VideoSearch extends React.Component {
                         loading={this.state.isLoading}
                         renderItem={item => (
                             <List.Item>
-                                <VideoCard item={item} />
+                                <VideoCard item={item} appStore={this.props.appStore}/>
                             </List.Item>
                         )}
-                    />
+                    >
+                    </List>
                 </Row>
             </React.Fragment>
         );

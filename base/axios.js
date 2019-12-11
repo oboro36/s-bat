@@ -8,8 +8,9 @@ const http = axios.create({
 
 const apiAddress = "http://localhost:8000"
 
-export function invokeApi(method, url, callbackOK, callbackNG) {
-    http[method](apiAddress + url)
+export function invokeApi(method, url, data, callbackOK, callbackNG) {
+    console.log(data)
+    http[method](apiAddress + url, data)
         .then((resp) => {
             return callbackOK(resp)
         })

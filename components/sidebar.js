@@ -24,22 +24,7 @@ class SideBar extends React.Component {
     state = {
         //Modal
         ModalText: (() => {
-            return (
-                <React.Fragment>
-                    <Row gutter={[16, 16]} style={{ backgroundColor: 'white', borderRadius: '5px' }}>
-                        <Col span={12}>
-                            <video id="video" controls="controls" width="100%" height="auto" preload="auto">
-                                <source src="static/testvideo.mp4" type="video/mp4" />
-                            </video>
-                        </Col>
-                        <Col span={12}>
-                            <video id="video" controls="controls" width="100%" height="auto" preload="auto">
-                                <source src="static/testvideo.mp4" type="video/mp4" />
-                            </video>
-                        </Col>
-                    </Row>
-                </React.Fragment>
-            )
+            return 'Nothing'
         })(),
         visible: false,
         confirmLoading: false,
@@ -148,10 +133,10 @@ class SideBar extends React.Component {
                                 </React.Fragment>
                             }
                         </div>
-                        <Menu theme="dark" mode="inline" onClick={this.handleMenuClick}>
-                            <Menu.Item key="1" name="videoquery">
+                        <Menu theme="dark" mode="inline" onClick={this.handleMenuClick} selectable={false}>
+                            <Menu.Item key="1" name="videocompare" title="Video Comparison Tool">
                                 <Icon type="video-camera" theme="filled" />
-                                <span>Video Player</span>
+                                <span>Video Comparison</span>
                             </Menu.Item>
                             <Menu.Item key="2" name="about">
                                 <Icon type="idcard" theme="filled" />
@@ -178,7 +163,6 @@ class SideBar extends React.Component {
                         confirmLoading={this.state.confirmLoading}
                         onCancel={this.handleCancel}
                         style={{ top: '10px' }}
-                        width="99%"
                     >
                         <div>{this.state.ModalText}</div>
                     </Modal>
