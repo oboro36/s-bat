@@ -1,6 +1,6 @@
 import { Card, Row, Col, Form, Select, Icon, Modal } from 'antd'
 import VideoPlayer from './videoplayer'
-import WindowPortal from './windowportal'
+import Link from 'next/link'
 const { Option } = Select;
 
 class VideoCard extends React.Component {
@@ -11,8 +11,6 @@ class VideoCard extends React.Component {
             modalContent: 'Default Content',
             initOutput: this.props.item.outputType,
             selectedOutput: '',
-            showWindowPortal: false,
-            portalContent: 'Default Content',
         }
     }
 
@@ -50,7 +48,7 @@ class VideoCard extends React.Component {
         console.log('Create Video Modal with ', URL)
         this.setState({
             modalContent: (
-                <VideoPlayer videoURL={URL} />
+                <VideoPlayer id="only" videoURL={URL} />
             )
         }, () => {
             console.log('Show Video Modal with ', URL)
@@ -68,24 +66,7 @@ class VideoCard extends React.Component {
     //***************************New Window Player***************************
 
     showNewWindow = (URL) => {
-        this.toggleWindowPortal(URL)
-    }
-
-    toggleWindowPortal = (URL) => {
-
-        // this.props.appState.setContent(<VideoPlayer videoURL={URL} />)
-
-        // this.props.appState.setHideMenu(false)
-
-        this.setState({
-            ...this.state, portalContent: 'content year'
-        }, () => {
-            this.setState(state => ({
-                ...state,
-                showWindowPortal: !state.showWindowPortal,
-            }));
-        })
-
+        window.open("http://localhost:3000/extportalplayer", '_blank');
     }
 
     render() {
@@ -114,7 +95,13 @@ class VideoCard extends React.Component {
                             }
                             actions={[
                                 <Icon type="play-square" key="play-square" onClick={() => { this.handleActions('play', this.props.item.videoURL[0]) }} />,
-                                <Icon type="fullscreen" key="fullscreen" onClick={() => { this.handleActions('full-play', this.props.item.videoURL[0]) }} />,
+
+
+                                <Icon type="fullscreen" key="fullscreen" onClick={() => { this.handleActions('full-play', this.props.item.videoURL[0]) }} />
+
+
+
+                                ,
                                 // <Icon type="zoom-in" key="zoom-in" onClick={() => { this.handleActions('zoom', this.props.item.imageURL[0]) }} />,
                             ]}
                         >{this.props.item.content(this.props.item.imageURL[0])}</Card>
@@ -139,10 +126,6 @@ class VideoCard extends React.Component {
                 >
                     <div>{this.state.modalContent}</div>
                 </Modal>
-                {this.state.showWindowPortal && (
-                    <WindowPortal>
-                    </WindowPortal>
-                )}
             </div>
         )
     }

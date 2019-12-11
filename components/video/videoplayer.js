@@ -8,114 +8,24 @@ class VideoPlayer extends React.Component {
             videoURL: this.props.videoURL,
             seekRate: "0.50"
         }
+        this.id = 'video' + this.props.seq
     }
 
     componentDidMount() {
 
         console.log('Now playing ', this.state.videoURL)
 
-        let video = document.querySelector('#video')
+        let video = document.querySelector('#' + this.id)
 
         video.addEventListener('timeupdate', () => {
             this.props.form.setFieldsValue({ time: video.currentTime })
         })
 
-        // let log = document.querySelector('#log')
-        // let intervalRewind
-
-        // video.addEventListener('play', (e) => {
-        //     console.log('play!!')
-        //     video.playbackRate = 1.0
-        //     clearInterval(intervalRewind)
-        // })
-        // video.addEventListener('ended', function () {
-        //     // this only happens when t=duration (not t==0)
-        //     video.playbackRate = 1.0
-        //     video.currentTime = 0.0
-        //     clearInterval(intervalRewind)
-        // })
-        // video.addEventListener('pause', function () {
-        //     video.playbackRate = 1.0
-        //     clearInterval(intervalRewind)
-        // })
-
-        // let speed0 = document.querySelector('#speed0')
-        // let speedpoint5 = document.querySelector('#speedpoint5')
-        // let speed1 = document.querySelector('#speed1')
-        // let speed2 = document.querySelector('#speed2')
-        // let speed3 = document.querySelector('#speed3')
-        // let speed_point5 = document.querySelector('#speed-point5')
-        // let speed_1 = document.querySelector('#speed-1')
-        // let speed_2 = document.querySelector('#speed-2')
-        // let speed_3 = document.querySelector('#speed-3')
-
-        // let rewind = (rewindSpeed) => {
-        //     clearInterval(intervalRewind);
-        //     var startSystemTime = new Date().getTime();
-        //     var startVideoTime = video.currentTime;
-
-        //     intervalRewind = setInterval(function () {
-        //         video.playbackRate = 1.0;
-        //         if (video.currentTime == 0) {
-        //             clearInterval(intervalRewind);
-        //             video.pause();
-        //         } else {
-        //             var elapsed = new Date().getTime() - startSystemTime;
-        //             log.textContent = 'Rewind Elapsed: ' + elapsed.toFixed(3);
-        //             video.currentTime = Math.max(startVideoTime - elapsed * rewindSpeed / 1000.0, 0);
-        //         }
-        //     }, 30);
-        // }
-
-        // speed0.addEventListener('click', function () {
-        //     clearInterval(intervalRewind)
-        //     video.playbackRate = 1.0
-        //     video.pause()
-        // })
-        // speedpoint5.addEventListener('click', function () {
-        //     clearInterval(intervalRewind)
-        //     if (video.paused) video.play()
-        //     setTimeout(function () {
-        //         // Not sure why, but setting the playback to
-        //         // less than 1.0 only works when out of band
-        //         // or the video is already playing.
-        //         video.playbackRate = 0.5
-        //         console.log('delayed')
-        //     }, 0)
-        // })
-        // speed1.addEventListener('click', function () {
-        //     clearInterval(intervalRewind)
-        //     video.playbackRate = 1.0
-        //     if (video.paused) video.play()
-        // })
-        // speed2.addEventListener('click', function () {
-        //     clearInterval(intervalRewind)
-        //     video.playbackRate = 2.0
-        //     if (video.paused) video.play()
-        // })
-        // speed3.addEventListener('click', function () {
-        //     clearInterval(intervalRewind)
-        //     video.playbackRate = 3.0
-        //     if (video.paused) video.play()
-        // })
-        // speed_point5.addEventListener('click', function () {
-        //     rewind(0.5)
-        // })
-        // speed_1.addEventListener('click', function () {
-        //     rewind(1.0)
-        // })
-        // speed_2.addEventListener('click', function () {
-        //     rewind(2.0)
-        // })
-        // speed_3.addEventListener('click', function () {
-        //     rewind(3.0)
-        // })
-
     }
 
     forward = () => {
         const increment = Number(this.state.seekRate)
-        let video = document.querySelector('#video')
+        let video = document.querySelector('#'+ this.id)
         video.pause()
 
         let val = (video.currentTime + increment).toFixed(2)
@@ -125,7 +35,7 @@ class VideoPlayer extends React.Component {
 
     backward = () => {
         const decrement = Number(this.state.seekRate)
-        let video = document.querySelector('#video')
+        let video = document.querySelector('#'+ this.id)
         video.pause()
 
 
@@ -145,7 +55,7 @@ class VideoPlayer extends React.Component {
         return (
             <React.Fragment>
                 <Row>
-                    <video id="video" controls="controls" width="100%" preload="auto">
+                    <video id={this.id} controls="controls" width="100%" preload="auto">
                         <source src={this.state.videoURL} />
                     </video>
                 </Row>

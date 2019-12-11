@@ -2,7 +2,9 @@ import React from 'react'
 import App, { Container } from 'next/app'
 import MainLayout from '../components/mainlayout'
 import Login from './login'
-import ExtPortalPlayer from './ext_portalplayer'
+import ExtPortalPlayer from './extportalplayer'
+
+import VideoStore from '../store/video'
 
 import '../base/antdcustom.css'
 import '../base/fixvisual.css'
@@ -31,20 +33,27 @@ class MyApp extends App {
 
         if (this.isLoggedIn()) {
 
-            contents = (
-                <MainLayout>
-                    <Component {...pageProps} />
-                </MainLayout>
-            )
+            if (VideoStore.hideMenu == false) {
+                contents = (
+                    <MainLayout>
+                        <Component {...pageProps} store={VideoStore} />
+                    </MainLayout>
+                )
+            } else {
+                contents = (
+                    <ExtPortalPlayer store={VideoStore} />
+                )
+            }
 
         } else {
             contents = <Login />
         }
 
+
         return (
             <React.Fragment>
                 {contents}
-            </React.Fragment>
+            </React.Fragment >
         )
     }
 }
