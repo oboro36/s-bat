@@ -3,14 +3,14 @@ import axios from 'axios'
 
 const http = axios.create({
     mode: 'cors',
-    withCredentials: true
+    baseURL: 'http://192.168.128.35:7000'
+    // withCredentials: true
 })
 
-const apiAddress = "http://localhost:8000"
+// const apiAddress = "http://192.168.128.35:7000"
 
 export function invokeApi(method, url, data, callbackOK, callbackNG) {
-    console.log(data)
-    http[method](apiAddress + url, data)
+    http[method](url, data)
         .then((resp) => {
             return callbackOK(resp)
         })

@@ -138,7 +138,7 @@ class SideBar extends React.Component {
                                 <Icon type="video-camera" theme="filled" />
                                 <span>Video Comparison</span>
                             </Menu.Item>
-                            <Menu.Item key="2" name="about">
+                            {/* <Menu.Item key="2" name="about">
                                 <Icon type="idcard" theme="filled" />
                                 <span>About</span>
                             </Menu.Item>
@@ -153,7 +153,7 @@ class SideBar extends React.Component {
                             >
                                 <Menu.Item key="3">Site Data Compare</Menu.Item>
                                 <Menu.Item key="4">Transfer File</Menu.Item>
-                            </SubMenu>
+                            </SubMenu> */}
                         </Menu>
                     </div>
                     <Modal

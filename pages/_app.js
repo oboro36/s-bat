@@ -12,6 +12,9 @@ class MyApp extends App {
 
     constructor(props) {
         super(props)
+        this.state = {
+            isPlayer: this.props.router.pathname == '/extportalplayer' ? true : false
+        }
     }
 
     static async getInitialProps({ Component, router, ctx }) {
@@ -26,6 +29,10 @@ class MyApp extends App {
 
     isLoggedIn = () => true
 
+    // componentDidMount() {
+    //     console.log(this.props)
+    // }
+
     render() {
         const { Component, pageProps } = this.props
 
@@ -33,17 +40,11 @@ class MyApp extends App {
 
         if (this.isLoggedIn()) {
 
-            if (VideoStore.hideMenu == false) {
-                contents = (
-                    <MainLayout>
-                        <Component {...pageProps} store={VideoStore} />
-                    </MainLayout>
-                )
-            } else {
-                contents = (
-                    <ExtPortalPlayer store={VideoStore} />
-                )
-            }
+            contents = (
+                <MainLayout isPlayer={this.state.isPlayer} >
+                    <Component {...pageProps} store={VideoStore} />
+                </MainLayout>
+            )
 
         } else {
             contents = <Login />

@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react'
-import { Button, Row, Col, Form, Select, Divider } from 'antd'
+import { Badge, Button, Row, Col, Form, Select, Divider, message } from 'antd'
 import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { getDate, getMonth, getYear, isThisHour } from 'date-fns';
@@ -9,8 +9,13 @@ registerLocale('ja', ja)
 
 //custom lib
 import { invokeApi } from '../../base/axios'
+import moment from 'moment';
 
 const { Option } = Select;
+
+const openMessage = (type, desc) => {
+    message[type](desc, 4);
+};
 
 class VideoSearchForm extends React.Component {
 
@@ -31,17 +36,27 @@ class VideoSearchForm extends React.Component {
                 program: '',
                 line: '',
                 content: '',
-                condDate: new Date()
+                analysisdate: ''
+            },
+            searchDisable: {
+                site: false,
+                program: true,
+                line: true,
+                content: true,
+                analysisdate: true
             },
             dropdownList: {
                 sites: null,
                 programs: null,
                 lines: null,
                 contents: null
-            }
+            },
+            includeDates: []
         }
         this._isMounted = false;
     }
+
+
 
     componentDidMount() {
 
@@ -49,7 +64,7 @@ class VideoSearchForm extends React.Component {
 
         invokeApi('post', '/api/getVideoSiteOption', null,
             (res) => {
-                console.log(res)
+                //console.log(res.data)
                 if (this._isMounted) {
                     this.setState({
                         loading: {
@@ -62,7 +77,8 @@ class VideoSearchForm extends React.Component {
                 }
             },
             (err) => {
-                console.log(err)
+                // //console.log(err)
+                alert(err)
                 this.setState({
                     loading: { ...this.state.loading, site: false }
                 })
@@ -77,60 +93,226 @@ class VideoSearchForm extends React.Component {
     handleSiteChange = (value) => {
 
         this.setState(prevState => ({
-            loading: { ...prevState.loading, program: true, line: true, content: true }
+            loading: { ...prevState.loading, program: true }
         }))
 
-        this.props.form.resetFields(['program', 'line', 'content'])
+        this.setClear(['program', 'line', 'content', 'analysisdate'])
+        this.setDisable(true, ['program', 'line', 'content', 'analysisdate'])
 
-        invokeApi('post', '/api/getVideoOtherOption/', { site: value },
+        // this.setDisable(true,'program')
+
+        invokeApi('post', '/api/getVideoProgramOption', {
+            site: value
+        },
             (res) => {
-                console.log(res)
+
+                if (res.status == 204) {
+                    openMessage('warning', 'No data in selected Site')
+                } else if (res.status == 200) {
+                    this.setDisable(false, 'program')
+                }
+
                 this.setState({
                     dropdownList: {
                         ...this.state.dropdownList,
                         programs: res.data.programs,
-                        lines: res.data.lines,
-                        contents: res.data.maintcontents,
                     }
-                }, () => {
-                    this.setState(prevState => ({
-                        loading: { ...prevState.loading, program: false, line: false, content: false }
-                    }))
                 })
+
+                this.setState(prevState => ({
+                    loading: { ...prevState.loading, program: false },
+                }))
             },
             (err) => {
-                console.log(err)
+                // //console.log(err)
                 this.setState(prevState => ({
-                    loading: { ...prevState.loading, program: false, line: false, content: false }
+                    loading: { ...prevState.loading, program: false }
                 }))
             }
         )
+    }
 
+    handleProgramChange = value => {
+        this.setState(prevState => ({
+            loading: { ...prevState.loading, line: true }
+        }))
+
+        this.setClear(['line', 'content', 'analysisdate'])
+        this.setDisable(true, ['line', 'content', 'analysisdate'])
+
+        invokeApi('post', '/api/getVideoLineOption', {
+            site: this.props.form.getFieldValue('site'),
+            program: value
+        },
+            (res) => {
+                //console.log(res)
+                if (res.status == 204) {
+                    openMessage('warning', 'No data in selected Program')
+                } else if (res.status == 200) {
+                    this.setDisable(false, 'line')
+                }
+                this.setState({
+                    dropdownList: {
+                        ...this.state.dropdownList,
+                        lines: res.data.lines,
+                    }
+                })
+                this.setState(prevState => ({
+                    loading: { ...prevState.loading, line: false },
+                }))
+            },
+            (err) => {
+                // //console.log(err)
+                this.setState(prevState => ({
+                    loading: { ...prevState.loading, line: false }
+                }))
+            }
+        )
+    }
+
+    handleLineChange = value => {
+        this.setState(prevState => ({
+            loading: { ...prevState.loading, content: true }
+        }))
+
+        this.setClear(['content', 'analysisdate'])
+        this.setDisable(true, ['content', 'analysisdate'])
+
+        invokeApi('post', '/api/getVideoContentOption', {
+            site: this.props.form.getFieldValue('site'),
+            program: this.props.form.getFieldValue('program'),
+            line: value
+        },
+            (res) => {
+                //console.log(res)
+                if (res.status == 204) {
+                    openMessage('warning', 'No data in selected Line')
+                } else if (res.status == 200) {
+
+                    this.setDisable(false, 'content')
+                    this.setIncludeDate()
+
+                }
+
+                this.setState({
+                    dropdownList: {
+                        ...this.state.dropdownList,
+                        contents: res.data.contents,
+                    }
+                })
+
+                this.setState(prevState => ({
+                    loading: { ...prevState.loading, content: false },
+                }))
+            },
+            (err) => {
+                // //console.log(err)
+                this.setState(prevState => ({
+                    loading: { ...prevState.loading, content: false }
+                }))
+            }
+        )
+    }
+
+    handleContentChange = value => {
+
+        this.setClear(['analysisdate'])
+        this.setDisable(true, ['analysisdate'])
+
+        this.setIncludeDate(value)
+    }
+
+    setIncludeDate = (value = null) => {
+
+        //console.log(this.props.form.getFieldsValue())
+
+        invokeApi('post', '/api/getVideoAvailableDate', { cond: this.props.form.getFieldsValue(), content: value },
+            (res) => {
+                //console.log(res)
+                if (res.status == 204) {
+                    openMessage('warning', 'No data')
+                    this.setState({ includeDates: [] })
+                } else if (res.status == 200) {
+                    let formatDate = res.data.dates.map((date) => {
+                        return moment(date, 'YYYYMMDD').toDate();
+                    })
+                    this.setState({ includeDates: formatDate }, () => {
+                        this.setDisable(false, 'analysisdate')
+                    })
+                }
+
+            },
+            (err) => {
+                //console.log(err)
+            }
+        )
     }
 
     handleDateChange = async (date) => {
+
+        //console.log(date)
         let editDate = () => {
             return new Promise((resolve, reject) => {
                 this.setState(
                     {
-                        searchCond: { condDate: date }
+                        searchCond: { ...this.state.searchCond, analysisdate: date }
                     }
                 )
                 this.props.form.setFieldsValue(date)
                 return resolve(true)
             })
         }
+
         await editDate() && this.props.sendFormValue(this.props.form.getFieldsValue())
-        // await editDate() && this.handleSubmit()
+
+        this.props.validateForm(true)
+
     }
+
+    setClear = (option) => {
+
+        this.props.validateForm(false)
+
+
+        if (Array.isArray(option)) {
+            this.props.form.resetFields(option)
+        } else {
+            this.props.form.resetFields([option])
+        }
+
+        //reset date on button
+        this.setState(
+            {
+                searchCond: { ...this.state.searchCond, analysisdate: null }
+            }
+        )
+    }
+
+    setDisable = (set, option) => {
+        if (Array.isArray(option)) {
+            let newState = { ...this.state.searchDisable }
+
+            option.forEach((member) => {
+                newState[member] = true
+            })
+
+            this.setState({ searchDisable: { ...this.state.searchDisable, ...newState } })
+
+        } else {
+            this.setState({ searchDisable: { ...this.state.searchDisable, [option]: set } })
+        }
+    }
+
 
     render() {
         const { getFieldDecorator } = this.props.form;
 
         const CustomInput = forwardRef((props, ref) => {
+            let val = props.value ? props.value : "Select date"
+
             return (
-                <Button icon="calendar" onClick={props.onClick}>
-                    {props.value}
+                <Button icon="calendar" onClick={props.onClick} disabled={props.disabled}>
+                    {val}
                 </Button>
             )
         })
@@ -261,7 +443,11 @@ class VideoSearchForm extends React.Component {
 
             <React.Fragment>
                 <Form labelCol={{ span: 7 }} wrapperCol={{ span: 12 }}>
-                    <Divider>{this.props.title}</Divider>
+                    <Divider>
+                        <Badge status={this.props.validated ? 'success' : 'error'}>
+                            <div style={{ border: '1px solid #EEEEEE', padding: '4px', borderRadius: '3px' }} >{this.props.title}</div>
+                        </Badge>
+                    </Divider>
                     <Form.Item label="Output" hidden>
                         {getFieldDecorator('output', {
                             rules: [{ required: true, message: 'Please select your output type!' }],
@@ -283,6 +469,7 @@ class VideoSearchForm extends React.Component {
                                 placeholder="Select your site"
                                 onChange={this.handleSiteChange}
                                 loading={this.state.loading.site}
+                                disabled={this.state.searchDisable.site}
                             >
                                 {
                                     this.state.dropdownList.sites && this.state.dropdownList.sites.map(sites => (
@@ -299,6 +486,8 @@ class VideoSearchForm extends React.Component {
                             <Select
                                 placeholder="Select your program"
                                 loading={this.state.loading.program}
+                                disabled={this.state.searchDisable.program}
+                                onChange={this.handleProgramChange}
                             >
                                 {
                                     this.state.dropdownList.programs && this.state.dropdownList.programs.map(programs => (
@@ -315,6 +504,8 @@ class VideoSearchForm extends React.Component {
                             <Select
                                 placeholder="Select your line"
                                 loading={this.state.loading.line}
+                                disabled={this.state.searchDisable.line}
+                                onChange={this.handleLineChange}
                             >
                                 {
                                     this.state.dropdownList.lines && this.state.dropdownList.lines.map(lines => (
@@ -331,6 +522,8 @@ class VideoSearchForm extends React.Component {
                             <Select
                                 placeholder="Select your content"
                                 loading={this.state.loading.content}
+                                disabled={this.state.searchDisable.content}
+                                onChange={this.handleContentChange}
                                 allowClear
                             >
                                 {
@@ -342,21 +535,23 @@ class VideoSearchForm extends React.Component {
                         )}
                     </Form.Item>
                     <Form.Item label="Date">
-                        {getFieldDecorator('date-picker', {
+                        {getFieldDecorator('analysisdate', {
                             rules: [{ type: 'object', required: true, message: 'Please select date!' }],
-                            initialValue: this.state.searchCond.condDate
+                            initialValue: this.state.searchCond.analysisdate
                         })(
                             <DatePicker
                                 renderCustomHeader={customDatepickerHeader}
-                                locale="ja"
+                                // locale="ja"
                                 // showMonthDropdown
                                 // showYearDropdown
                                 // dropdownMode="select"
-                                selected={this.state.searchCond.condDate}
+                                selected={this.state.searchCond.analysisdate}
                                 onChange={this.handleDateChange}
                                 customInput={<CustomInput />}
                                 dateFormat="yyyy/MM/dd"
-                                renderDayContents={renderDayContents}
+                                // renderDayContents={renderDayContents}
+                                includeDates={this.state.includeDates}
+                                disabled={this.state.searchDisable.analysisdate}
                             />
                         )}
                     </Form.Item>

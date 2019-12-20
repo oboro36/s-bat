@@ -15,23 +15,14 @@ class MainLayout extends React.Component {
       initStyle: {
         // transition: "all 0.3s",
         background: "#FFFFFF",
-        marginLeft: 200
+        marginLeft:  this.props.isPlayer ? 0 : 200
       },
-      thisPath: null
+      hideMenu: this.props.isPlayer ? true : false,
     }
   }
 
   componentDidMount() {
     this.setState({ content: this.props.content })
-    if (window.location.pathname == '/extportalplayer') {
-      this.setState({ ...this.state, thisPath: window.location.pathname }, () => {
-        this.setState({
-          initStyle: {
-            ...this.state.initStyle, marginLeft: 0
-          }
-        })
-      })
-    }
   }
 
   setCollapse = (sideCollapse) => {
@@ -60,7 +51,7 @@ class MainLayout extends React.Component {
       <React.Fragment>
         <Layout style={{ minHeight: '100vh' }}>
           {
-            this.state.thisPath == '/extportalplayer' ? null : <Sidebar doCollapse={this.setCollapse} setSelectedHeader={this.getSelectedHeader} />
+            this.state.hideMenu == true ? null : <Sidebar doCollapse={this.setCollapse} setSelectedHeader={this.getSelectedHeader} />
           }
           <Layout style={this.state.initStyle}>
             {/* <Header /> */}
