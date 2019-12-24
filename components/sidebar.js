@@ -103,7 +103,8 @@ class SideBar extends React.Component {
                         height: '100vh',
                         position: 'fixed',
                         left: 0,
-                        transition: "all 0s"
+                        transition: "all 0s",
+                        // backgroundImage: "url('static/bg.png')"
                     }}
                 >
                     <div>

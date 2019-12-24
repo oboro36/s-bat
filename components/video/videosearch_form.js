@@ -51,9 +51,20 @@ class VideoSearchForm extends React.Component {
                 lines: null,
                 contents: null
             },
-            includeDates: []
+            selectedLabel: {
+                site: '',
+                program: '',
+                line: '',
+                content: '',
+                analysisdate: '',
+            },
+            includeDates: [],
+            maintDates: [],
+            middleDates: [],
+            otherDates: [],
         }
         this._isMounted = false;
+        this.maintcontens = [];
     }
 
 
@@ -90,8 +101,7 @@ class VideoSearchForm extends React.Component {
         this._isMounted = false;
     }
 
-    handleSiteChange = (value) => {
-
+    handleSiteChange = (value, option) => {
         this.setState(prevState => ({
             loading: { ...prevState.loading, program: true }
         }))
@@ -121,7 +131,9 @@ class VideoSearchForm extends React.Component {
 
                 this.setState(prevState => ({
                     loading: { ...prevState.loading, program: false },
+                    selectedLabel: { ...prevState.selectedLabel, site: option.props.children },
                 }))
+
             },
             (err) => {
                 // //console.log(err)
@@ -132,7 +144,7 @@ class VideoSearchForm extends React.Component {
         )
     }
 
-    handleProgramChange = value => {
+    handleProgramChange = (value, option) => {
         this.setState(prevState => ({
             loading: { ...prevState.loading, line: true }
         }))
@@ -159,6 +171,7 @@ class VideoSearchForm extends React.Component {
                 })
                 this.setState(prevState => ({
                     loading: { ...prevState.loading, line: false },
+                    selectedLabel: { ...prevState.selectedLabel, program: option.props.children },
                 }))
             },
             (err) => {
@@ -170,7 +183,7 @@ class VideoSearchForm extends React.Component {
         )
     }
 
-    handleLineChange = value => {
+    handleLineChange = (value, option) => {
         this.setState(prevState => ({
             loading: { ...prevState.loading, content: true }
         }))
@@ -203,6 +216,7 @@ class VideoSearchForm extends React.Component {
 
                 this.setState(prevState => ({
                     loading: { ...prevState.loading, content: false },
+                    selectedLabel: { ...prevState.selectedLabel, line: option.props.children },
                 }))
             },
             (err) => {
@@ -214,7 +228,8 @@ class VideoSearchForm extends React.Component {
         )
     }
 
-    handleContentChange = value => {
+    handleContentChange = (value, option = null) => {
+        this.setState({ selectedLabel: { ...this.state.selectedLabel, content: option == null ? null : option.props.children } })
 
         this.setClear(['analysisdate'])
         this.setDisable(true, ['analysisdate'])
@@ -228,34 +243,63 @@ class VideoSearchForm extends React.Component {
 
         invokeApi('post', '/api/getVideoAvailableDate', { cond: this.props.form.getFieldsValue(), content: value },
             (res) => {
-                //console.log(res)
+                // console.log(res)
                 if (res.status == 204) {
                     openMessage('warning', 'No data')
-                    this.setState({ includeDates: [] })
+                    this.setState({ ...this.state, includeDates: [] })
                 } else if (res.status == 200) {
-                    let formatDate = res.data.dates.map((date) => {
+
+                    let formatDate = res.data.dates.map((member) => {
+                        return member.ANALYSIS_DATE
+                    }).map((date) => {
                         return moment(date, 'YYYYMMDD').toDate();
                     })
-                    this.setState({ includeDates: formatDate }, () => {
+
+                    this.setState({ ...this.state, includeDates: formatDate }, () => {
                         this.setDisable(false, 'analysisdate')
                     })
+
+                    //manage 3 type of date
+
+                    let prep = {
+                        maint: [],
+                        middle: []
+                    }
+
+                    res.data.dates.forEach((member) => {
+                        switch (member.MAINT_CONTENTS_CODE) {
+                            case '1':
+                                prep.maint.push(member.ANALYSIS_DATE)
+                                break
+                            case '2':
+                                prep.middle.push(member.ANALYSIS_DATE)
+                                break
+                            default:
+                                break
+                        }
+                    })
+
+                    this.setState({ ...this.state, maintDates: prep.maint, middleDates: prep.middle })
+
+                    // console.log(this.state.maintDates)
+
                 }
 
             },
             (err) => {
-                //console.log(err)
+                console.log(err)
             }
         )
     }
 
-    handleDateChange = async (date) => {
-
+    handleDateChange = async (date, event) => {
         //console.log(date)
         let editDate = () => {
             return new Promise((resolve, reject) => {
                 this.setState(
                     {
-                        searchCond: { ...this.state.searchCond, analysisdate: date }
+                        searchCond: { ...this.state.searchCond, analysisdate: date },
+                        selectedLabel: { ...this.state.selectedLabel, analysisdate: moment(date, 'YYYYMMDD').format('YYYY-MM-DD'), content: event.target.title },
                     }
                 )
                 this.props.form.setFieldsValue(date)
@@ -263,9 +307,14 @@ class VideoSearchForm extends React.Component {
             })
         }
 
-        await editDate() && this.props.sendFormValue(this.props.form.getFieldsValue())
+        await editDate() && this.props.sendFormValue(this.props.form.getFieldsValue(), this.state.selectedLabel)
 
-        this.props.validateForm(true)
+        // if (this.props.form.getFieldValue('content')) {
+            this.props.validateForm(true)
+        // } else {
+        //     openMessage('error', <span>Please select <b>content</b>.</span>)
+        //     this.props.validateForm(false)
+        // }
 
     }
 
@@ -303,6 +352,78 @@ class VideoSearchForm extends React.Component {
         }
     }
 
+    maint_contents_data = (() => {
+        invokeApi('post', '/api/getMasterMaintContents', { site: 'SHDI' },
+            (res) => {
+                if (res.status == 204) {
+                    openMessage('warning', 'No master maintenance content data')
+                } else if (res.status == 200) {
+                    this.maintcontens = res.data.contents
+                }
+            },
+            (err) => {
+                console.log(err)
+            }) //based on SHDI
+    })()
+
+    renderDayContents = (day, date) => {
+        let tooltipText = `Tooltip for date: ${date} `;
+        let highlight = {}
+        let clickEvent = null
+
+        let dayType = ''
+        let contents_code = ''
+
+        let now = moment(date).format('YYYYMMDD')
+
+        if (this.state.maintDates.includes(now)) {
+            dayType = 'maint'
+            contents_code = '1'
+            tooltipText = '整備'
+        } else if (this.state.middleDates.includes(now)) {
+            dayType = 'middle'
+            contents_code = '2'
+            tooltipText = '中日対応'
+        }
+
+        switch (dayType) {
+            case 'maint':
+                //set style for the day
+                highlight.border = '1px solid #68A033'
+                highlight.backgroundColor = '#99CD68'
+                highlight.borderRadius = '0.3rem'
+
+                //add Event
+                this.setState.bind(this)
+
+                clickEvent = () => {
+                    // console.log(this.props.form.getFieldValue('content'))
+                    this.props.form.setFieldsValue({ content: contents_code })
+                    // this.setState({ selectedLabel: { ...this.state.selectedLabel, content: tooltipText } }, () => { console.log(this.state.selectedLabel.content) })
+                    this.setIncludeDate(contents_code) //reset date include list
+                }
+                break
+            case 'middle':
+                //set style for the day
+                highlight.border = '1px solid #3DAAC7'
+                highlight.backgroundColor = '#84D7F5'
+                highlight.borderRadius = '0.3rem'
+
+                //add Event
+
+                clickEvent = () => {
+                    // console.log(this.props.form.getFieldValue('content'))
+                    this.props.form.setFieldsValue({ content: contents_code })
+                    // this.setState({ selectedLabel: { ...this.state.selectedLabel, content: tooltipText } })
+                    this.setIncludeDate(contents_code)
+                }
+                break
+            default:
+                break
+        }
+
+        return <div style={highlight} onClick={clickEvent} title={tooltipText}>{getDate(date)}</div>;
+    };
 
     render() {
         const { getFieldDecorator } = this.props.form;
@@ -316,53 +437,6 @@ class VideoSearchForm extends React.Component {
                 </Button>
             )
         })
-
-        const renderDayContents = (day, date) => {
-            let tooltipText = `Tooltip for date: ${date}`;
-            let highlight = {}
-            let clickEvent = null
-            let dayType = ''
-            if (day == 15) {
-                dayType = 'blue'
-            } else if (day == 24) {
-                dayType = 'red'
-            }
-
-            switch (dayType) {
-                case 'blue':
-                    //set style for the day
-                    highlight.border = '1px solid #1890ff'
-                    highlight.backgroundColor = '#DEEFFF'
-                    highlight.borderRadius = '0.3rem'
-
-                    tooltipText = 'BLUE day'
-
-                    //add Event
-
-                    clickEvent = () => {
-                        alert('This is BLUE day!!!')
-                    }
-                    break
-                case 'red':
-                    //set style for the day
-                    highlight.border = '1px solid #ff9292'
-                    highlight.backgroundColor = '#FFDEDE'
-                    highlight.borderRadius = '0.3rem'
-
-                    tooltipText = 'RED day'
-
-                    //add Event
-
-                    clickEvent = () => {
-                        alert('This is RED day!!!')
-                    }
-                    break
-                default:
-                    break
-            }
-
-            return <div style={highlight} onClick={clickEvent} title={tooltipText}>{getDate(date)}</div>;
-        };
 
 
         const range = (start, end, incre = 1) => {
@@ -549,7 +623,7 @@ class VideoSearchForm extends React.Component {
                                 onChange={this.handleDateChange}
                                 customInput={<CustomInput />}
                                 dateFormat="yyyy/MM/dd"
-                                // renderDayContents={renderDayContents}
+                                renderDayContents={this.renderDayContents}
                                 includeDates={this.state.includeDates}
                                 disabled={this.state.searchDisable.analysisdate}
                             />

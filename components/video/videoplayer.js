@@ -1,7 +1,12 @@
-import { Input, Select, Row, Col, Icon, Button, Form, InputNumber, Typography } from 'antd'
+import { Input, Select, Row, Col, Icon, Button, Form, InputNumber, Typography, message } from 'antd'
 const ButtonGroup = Button.Group
 const { Option } = Select;
 const { Title } = Typography;
+
+const openMessage = (type, desc) => {
+    message[type](desc, 3);
+};
+
 class VideoPlayer extends React.Component {
     constructor(props) {
         super(props)
@@ -18,11 +23,11 @@ class VideoPlayer extends React.Component {
         let video = document.querySelector('#' + this.id)
             , canvas = document.querySelector("#canvas" + this.id)
             , canvas_ctx = canvas.getContext('2d')
-            // , overlay = document.querySelector('#overlay' + this.id)
-            // , info = document.querySelector('#info' + this.id)
-            // , initial = document.querySelector('#initial' + this.id)
-            // , canvasDraw = document.querySelector("#draw" + this.id)
-            // , canvasDraw_ctx = canvasDraw.getContext('2d')
+        // , overlay = document.querySelector('#overlay' + this.id)
+        // , info = document.querySelector('#info' + this.id)
+        // , initial = document.querySelector('#initial' + this.id)
+        // , canvasDraw = document.querySelector("#draw" + this.id)
+        // , canvasDraw_ctx = canvasDraw.getContext('2d')
 
         //**********************************MOUSE TRACK*********************************** */
 
@@ -53,7 +58,7 @@ class VideoPlayer extends React.Component {
         //     var h = parseInt(cs.getPropertyValue("height"), 10);
         //     return { width: w, height: h }
         // }
-        
+
         // canvasDraw.addEventListener('mousemove', (e) => {
 
         //     var size = getElementCSSSize(video);
@@ -151,6 +156,17 @@ class VideoPlayer extends React.Component {
             // canvas_ctx.strokeStyle = "#c82124";
             // canvas_ctx.stroke();
 
+            navigator.permissions.query({
+                name: 'clipboard-write'
+            }).then(permissionStatus => {
+                // Will be 'granted', 'denied' or 'prompt':
+                console.log(permissionStatus.state);
+
+                // Listen for changes to the permission state
+                permissionStatus.onchange = () => {
+                    console.log(permissionStatus.state);
+                };
+            });
 
             //********* vvvvvv IN CASE OF DONWLOADING TO PNG FILE vvvvvv ********/
             // downloadLink.setAttribute('href', canvas.toDataURL("image/png"));
@@ -161,6 +177,8 @@ class VideoPlayer extends React.Component {
                 const item = new ClipboardItem({ "image/png": blob });
                 navigator.clipboard.write([item]);
             });
+
+            openMessage('success', 'Captured image has been copied to clipboard.')
 
         })
 
@@ -212,7 +230,7 @@ class VideoPlayer extends React.Component {
                     <Title level={4}>{this.props.title}</Title>
                 </Row>
                 <Row>
-                    <video id={this.id} controls="controls" width="100%" playsInline muted autoPlay style={{ zIndex: 1 }}>
+                    <video id={this.id} controls="controls" width="100%" playsInline autoPlay={this.props.isAutoPlay} style={{ zIndex: 1, borderRadius: '6px' }}>
                         <source src={this.state.videoURL} />
                     </video>
 
@@ -223,48 +241,47 @@ class VideoPlayer extends React.Component {
 
                     <canvas style={{ display: 'none' }} id={'canvas' + this.id}></canvas>
                 </Row>
-                <Row>
-                    <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center", paddingLeft: "15px", paddingRight: "15px", margin: "15px 0px 15px 0px" }}>
+                <Row style={{ textAlign: 'center' }}>
+                    {/* <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center", paddingLeft: "15px", paddingRight: "15px", margin: "15px 0px 15px 0px" }}> */}
+                    <Form layout="inline">
+                        <Col span={12}>
+                            <Form.Item label="Time">
+                                {getFieldDecorator('time', {
+                                    initialValue: 0
+                                })(
+                                    <Input
+                                        readOnly
+                                        style={{ width: '90px' }}
+                                    />
+                                )}
+                            </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                            <Form.Item label="Seek Rate">
+                                {getFieldDecorator('seekRate', {
+                                    initialValue: this.state.seekRate
+                                })(
+                                    <InputNumber min={0} max={1} step={0.05} onChange={this.seekRateChange} />
+                                )}
+                            </Form.Item>
+                        </Col>
+                    </Form>
+                </Row><br />
+                <Row style={{ textAlign: 'center' }}>
+                    <Col span={12} hidden={this.state.isMobile}>
+                        <a id={"download" + this.id} href="#" style={{ fontSize: '17px' }}><Button type="dashed"><Icon type="camera" /> Capture to clipboard</Button></a>
+                    </Col>
 
-                        <Col span={14}>
-                            <Form layout="inline">
-                                <Form.Item label="Time">
-                                    {getFieldDecorator('time', {
-                                        initialValue: 0
-                                    })(
-                                        <Input
-                                            placeholder="Time"
-                                        />
-                                    )}
-                                </Form.Item>
-                                <Form.Item label="Seek Rate">
-                                    {getFieldDecorator('seekRate', {
-                                        initialValue: this.state.seekRate
-                                    })(
-                                        // <Select onChange={this.seekRateChange} style={{ width: '90px' }}>
-                                        //     <Option value="0.05">0.05</Option>
-                                        //     <Option value="0.10">0.10</Option>
-                                        //     <Option value="0.25">0.25</Option>
-                                        //     <Option value="0.50">0.50</Option>
-                                        //     <Option value="1">1</Option>
-                                        // </Select>
-                                        <InputNumber min={0} max={1} step={0.05} onChange={this.seekRateChange} />
-                                    )}
-                                </Form.Item>
-                            </Form>
-                        </Col>
-                        <Col span={6}>
-                            <ButtonGroup>
-                                <Button icon="backward" size="large" shape="round" onClick={this.backward} />
-                                <Button icon="forward" size="large" shape="round" onClick={this.forward} />
-                            </ButtonGroup>
-                        </Col>
-                        <div id="output"></div>
-                        <Col span={4} hidden={this.state.isMobile}>
-                            <a id={"download" + this.id} href="#" style={{ fontSize: '17px' }}><Button type="dashed"><Icon type="camera" /> Capture to clipboard</Button></a>
-                        </Col>
-                    </div>
+                    {/* <div id="output"></div> */}
+                    <Col span={12}>
+                        <ButtonGroup>
+                            <Button icon="backward" size="large" shape="round" onClick={this.backward} />
+                            <Button icon="forward" size="large" shape="round" onClick={this.forward} />
+                        </ButtonGroup>
+                    </Col>
                 </Row>
+                {/* </div> */}
+
             </React.Fragment >
         )
     }

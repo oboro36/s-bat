@@ -66,6 +66,7 @@ class VideoCard extends React.Component {
 
     }
 
+
     // isMobileDevice = () => {
     //     return navigator.userAgent.toLowerCase().match(/mobile/i)
     // }
@@ -100,7 +101,7 @@ class VideoCard extends React.Component {
         // console.log('Create Video Modal with ', URL)
         this.setState({
             modalContent: (
-                <VideoPlayer id="only" videoURL={URL} title={title} />
+                <VideoPlayer id="only" videoURL={URL} title={title} isAutoPlay={false} />
             )
         }, () => {
             // console.log('Show Video Modal with ', URL)
@@ -200,17 +201,20 @@ class VideoCard extends React.Component {
 
         }
 
-
+        let colStyle = {
+            flexBasis: "49%",
+            width: "100%"
+        }
 
         return (
             <div key={this.props.key}>
 
-                <Row>
-                    <Col span={11}>
+                <Row type="flex">
+                    <Col span={1} style={colStyle}>
                         {choice1Items}
                     </Col>
-
-                    <Col span={11} offset={2}>
+                    <Col style={{ width: '2%' }}></Col>
+                    <Col span={1} style={colStyle}>
                         {choice2Items}
                     </Col>
                 </Row>

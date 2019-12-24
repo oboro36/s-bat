@@ -15,9 +15,7 @@ class VideoStore {
     openConfirmNotification = (list) => {
         const key = `open${Date.now()}`;
         const btn = (
-            // <Button type="primary" onClick={() => { console.log(list); notification.close(key) }}>
-            //     Confirm
-            // </Button>
+
             <Link href={{ pathname: '/extportalplayer', query: { url1: list[0].URL, title1: list[0].title, url2: list[1].URL, title2: list[1].title } }} >
                 <a target="_blank">
                     <Button type="primary" onClick={() => { notification.close(key) }}>
@@ -25,14 +23,20 @@ class VideoStore {
                     </Button>
                 </a>
             </Link>
+
         );
-        notification.open({
+        notification.info({
             message: 'Comfirm Notification',
-            description: 'Press confirm button to export selected video to new tab.',
+            description: <span>Do you want to open new tab and play below video title? <br /> <b>Title 1:</b> {list[0].title} <br /> <b>Title 2:</b> {list[1].title}</span>,
             btn,
             key,
+            duration: 0,
             onClose: () => {
-                console.log('closed by X')
+
+            },
+            style: {
+                width: 500,
+                marginLeft: 390 - 500,
             }
         });
     };
@@ -50,6 +54,7 @@ class VideoStore {
 
         if (this.checkCount == 2) {
             let list = toJS(this.videoList)
+            notification.destroy()
             this.openConfirmNotification(list)
         }
 
@@ -64,12 +69,12 @@ class VideoStore {
     }
 
     @action
-    decreaseCheck = (URL) => {
+    decreaseCheck = (URL, title) => {
         // if (this.checkCount > 0) {
         --this.checkCount
 
         let sameCheck = this.videoList.filter((member) => {
-            return member.URL == URL
+            return member.title == title
         })
 
         if (sameCheck.length > 1) {
@@ -77,7 +82,7 @@ class VideoStore {
             this.videoList.pop()
         } else {
             this.videoList = this.videoList.filter((member) => {
-                return member.URL != URL
+                return member.title != title
             })
         }
 

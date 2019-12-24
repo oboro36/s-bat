@@ -1,8 +1,10 @@
-import { List, Button, Row, Col, Collapse, Form, Select, Divider, message, BackTop, Icon } from 'antd'
+import { List, Button, Row, Col, Collapse, Form, Select, Divider, message, BackTop, Spin } from 'antd'
 import moment from 'moment'
 import VideoCard from '../../components/video/videocard'
 
 import VideoSearchForm from '../../components/video/videosearch_form'
+
+// import '../../base/spinner.css'
 
 const { Panel } = Collapse;
 const { Option } = Select;
@@ -11,7 +13,7 @@ const { Option } = Select;
 import { invokeApi } from '../../base/axios'
 
 let uniqueId = 0
-const notfoundImage = 'static/notfound.jpg'
+const notfoundImage = 'static/cross.svg'
 const openMessage = (type, desc) => {
     message[type](desc, 4);
 };
@@ -31,10 +33,15 @@ class VideoSearch extends React.Component {
                 choice1: [],
                 choice2: [],
             },
+            selectedLabel: {
+                choice1: {},
+                choice2: {}
+            },
             validated: {
                 choice1: false,
                 choice2: false
             },
+            pageLoading: true
             // disabled: {
             //     submit: true
             // }
@@ -57,6 +64,7 @@ class VideoSearch extends React.Component {
         } else {
             // alert('pc')
         }
+        this.setState({ ...this.state, pageLoading: false })
     }
 
     checkOrientation() {
@@ -93,7 +101,7 @@ class VideoSearch extends React.Component {
         })
     }
 
-    handleLeftFormChange = (formValue) => {
+    handleLeftFormChange = (formValue, label) => {
 
         // console.log(formValue)
 
@@ -101,7 +109,10 @@ class VideoSearch extends React.Component {
         formValue.analysisdate = moment(formValue.analysisdate).format('YYYYMMDD')
         // console.log(formValue.datepicker)
 
-        this.setState({ searchCond: { ...this.state.searchCond, choice1: formValue } })
+        this.setState({
+            searchCond: { ...this.state.searchCond, choice1: formValue },
+            selectedLabel: { ...this.state.selectedLabel, choice1: label }
+        })
 
     }
 
@@ -109,12 +120,15 @@ class VideoSearch extends React.Component {
         this.setState({ validated: { ...this.state.validated, choice1: result } })
     }
 
-    handleRightFormChange = (formValue) => {
+    handleRightFormChange = (formValue, label) => {
         // console.log(formValue)
 
         formValue.analysisdate = moment(formValue.analysisdate).format('YYYYMMDD')
         // console.log(formValue.datepicker)
-        this.setState({ searchCond: { ...this.state.searchCond, choice2: formValue } })
+        this.setState({
+            searchCond: { ...this.state.searchCond, choice2: formValue },
+            selectedLabel: { ...this.state.selectedLabel, choice2: label }
+        })
     }
 
     validateRightForm = (result) => {
@@ -137,7 +151,7 @@ class VideoSearch extends React.Component {
                     choice2: choice2
                 },
                 async (res) => {
-                    console.log(res)
+                    // console.log(res)
 
                     let chambers = await this.getChamberList()
 
@@ -146,9 +160,9 @@ class VideoSearch extends React.Component {
 
                         let results = res.data
 
-                        let searchCond = this.state.searchCond
-                        let choice1_title = searchCond.choice1.site + ',' + searchCond.choice1.program + ',' + searchCond.choice1.line + ',' + searchCond.choice1.content + ',' + searchCond.choice1.analysisdate
-                        let choice2_title = searchCond.choice2.site + ',' + searchCond.choice2.program + ',' + searchCond.choice2.line + ',' + searchCond.choice2.content + ',' + searchCond.choice2.analysisdate
+                        let label = this.state.selectedLabel
+                        let choice1_title = label.choice1.site + ',' + label.choice1.program + ',' + label.choice1.line + ',' + label.choice1.content + ',' + label.choice1.analysisdate
+                        let choice2_title = label.choice2.site + ',' + label.choice2.program + ',' + label.choice2.line + ',' + label.choice2.content + ',' + label.choice2.analysisdate
 
                         let dataSource = []
 
@@ -168,7 +182,7 @@ class VideoSearch extends React.Component {
                                 })
 
                                 if (find) {
-                                    console.log('found CHOICE1 ', chamber, ' ', position)
+                                    // console.log('found CHOICE1 ', chamber, ' ', position)
 
                                     let choice1 = {
                                         title: choice1_title,
@@ -193,7 +207,7 @@ class VideoSearch extends React.Component {
                                     prep.push(choice1)
 
                                 } else {
-                                    console.log('not found CHOICE1 ', chamber, ' ', position)
+                                    // console.log('not found CHOICE1 ', chamber, ' ', position)
 
                                     let dummy = {
                                         title: choice1_title,
@@ -229,7 +243,7 @@ class VideoSearch extends React.Component {
                                 })
 
                                 if (find) {
-                                    console.log('found CHOICE2 ', chamber, ' ', position)
+                                    // console.log('found CHOICE2 ', chamber, ' ', position)
 
                                     let choice2 = {
                                         title: choice2_title,
@@ -254,7 +268,7 @@ class VideoSearch extends React.Component {
                                     prep.push(choice2)
 
                                 } else {
-                                    console.log('not found CHOICE2 ', chamber, ' ', position)
+                                    // console.log('not found CHOICE2 ', chamber, ' ', position)
 
                                     let dummy = {
                                         title: choice2_title,
@@ -281,7 +295,6 @@ class VideoSearch extends React.Component {
                             }
 
                             //process prep
-
                             // console.log(prep)
                             dataSource.push(prep)
 
@@ -311,7 +324,7 @@ class VideoSearch extends React.Component {
                     site: this.state.searchCond.choice1.site
                 },
                 (res) => {
-                    console.log(res)
+                    // console.log(res)
 
                     return resolve(res.data.chambers)
 
@@ -371,7 +384,7 @@ class VideoSearch extends React.Component {
                     choice: '1',
                     chamber: 'P1',
                     position: 'POS1',
-                    imageURL: 'static/notfound.jpg',
+                    imageURL: 'static/cross.svg',
                     videoURL: '-',
                     outputType: 'img',
                     valid: false,
@@ -541,76 +554,79 @@ class VideoSearch extends React.Component {
 
         return (
             <React.Fragment>
-                <BackTop />
-                <Row>
-                    <Collapse defaultActiveKey={['1']}>
-                        <Panel header={this.props.customTitle} key="1">
-                            <Row>
-                                <Col>
-                                    <Form labelCol={{ span: 7 }} wrapperCol={{ span: 12 }}>
-                                        <Divider>Output Type</Divider>
-                                        <Form.Item label="Output">
-                                            {getFieldDecorator('output', {
-                                                rules: [{ required: true, message: 'Please select your output!' }],
-                                                initialValue: this.state.searchCond.selectedOutput
-                                            })(
-                                                <Select
-                                                    placeholder="Select your output type"
-                                                    onChange={this.handleOutputChange}
-                                                >
-                                                    <Option value="img">Image</Option>
-                                                </Select>,
-                                            )}
-                                        </Form.Item>
-                                    </Form>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col span={12}>
-                                    <VideoSearchForm validated={this.state.validated.choice1} validateForm={this.validateLeftForm} title="CHOICE1" selectedOutput={this.state.searchCond.selectedOutput} sendFormValue={this.handleLeftFormChange} />
-                                </Col>
-                                <Col span={12}>
-                                    <VideoSearchForm validated={this.state.validated.choice2} validateForm={this.validateRightForm} title="CHOICE2" selectedOutput={this.state.searchCond.selectedOutput} sendFormValue={this.handleRightFormChange} />
-                                </Col>
-                            </Row>
-                            <Row type="flex" justify="center" align="middle">
-                                <Col>
-                                    <Button type="primary" icon="search" disabled={this.state.validated.choice1 && this.state.validated.choice2 ? false : true} onClick={this.handleSubmit}>Search</Button>
-                                </Col>
-                                <Col>
-                                    <Button type="danger" onClick={this.clear}>Clear</Button>
-                                </Col>
-                                <Col>
-                                    <Button type="dashed" onClick={this.test}>Test</Button>
-                                </Col>
-                            </Row>
-                        </Panel>
-                    </Collapse>
-                </Row>
-                &nbsp;
+                <Spin spinning={this.state.pageLoading} size="large">
+                    <BackTop />
+                    {/* <div className={this.state.loaded ? '' : 'loading'}></div> */}
+                    <Row>
+                        <Collapse defaultActiveKey={['1']}>
+                            <Panel header={this.props.customTitle} key="1">
+                                <Row>
+                                    <Col>
+                                        <Form labelCol={{ span: 7 }} wrapperCol={{ span: 12 }}>
+                                            <Divider>Output Type</Divider>
+                                            <Form.Item label="Output">
+                                                {getFieldDecorator('output', {
+                                                    rules: [{ required: true, message: 'Please select your output!' }],
+                                                    initialValue: this.state.searchCond.selectedOutput
+                                                })(
+                                                    <Select
+                                                        placeholder="Select your output type"
+                                                        onChange={this.handleOutputChange}
+                                                    >
+                                                        <Option value="img">Image</Option>
+                                                    </Select>,
+                                                )}
+                                            </Form.Item>
+                                        </Form>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col span={12}>
+                                        <VideoSearchForm validated={this.state.validated.choice1} validateForm={this.validateLeftForm} title="CHOICE1" selectedOutput={this.state.searchCond.selectedOutput} sendFormValue={this.handleLeftFormChange} />
+                                    </Col>
+                                    <Col span={12}>
+                                        <VideoSearchForm validated={this.state.validated.choice2} validateForm={this.validateRightForm} title="CHOICE2" selectedOutput={this.state.searchCond.selectedOutput} sendFormValue={this.handleRightFormChange} />
+                                    </Col>
+                                </Row>
+                                <Row type="flex" justify="center" align="middle">
+                                    <Col>
+                                        <Button type="primary" icon="search" disabled={this.state.validated.choice1 && this.state.validated.choice2 ? false : true} onClick={this.handleSubmit}>Search</Button>
+                                    </Col>
+                                    {/* <Col>
+                                        <Button type="danger" onClick={this.clear}>Clear</Button>
+                                    </Col>
+                                    <Col>
+                                        <Button type="dashed" onClick={this.test}>Test</Button>
+                                    </Col> */}
+                                </Row>
+                            </Panel>
+                        </Collapse>
+                    </Row>
+                    &nbsp;
                 <Row style={{ backgroundColor: "white", borderRadius: "5px", padding: "15px" }}>
-                    <List
-                        header={<div>Result</div>}
-                        grid={{
-                            gutter: 16,
-                            column: this.state.listColumnSize
-                        }}
-                        dataSource={this.state.listDataSource}
-                        loading={this.state.isLoading}
-                        rowKey={(record) => {
-                            if (!record.__uniqueId)
-                                record.__uniqueId = ++uniqueId;
-                            // console.log(record.__uniqueId)
-                            return record.__uniqueId;
-                        }}
-                        renderItem={item => (
-                            <List.Item style={{ marginTop: '10px', marginBottom: '10px' }}>
-                                <VideoCard key={uniqueId} item={item} orientation={this.state.orientation} store={this.props.store} />
-                            </List.Item>
-                        )}
-                    >
-                    </List>
-                </Row>
+                        <List
+                            header={<div>Result</div>}
+                            grid={{
+                                gutter: 16,
+                                column: this.state.listColumnSize
+                            }}
+                            dataSource={this.state.listDataSource}
+                            loading={this.state.isLoading}
+                            rowKey={(record) => {
+                                if (!record.__uniqueId)
+                                    record.__uniqueId = ++uniqueId;
+                                // console.log(record.__uniqueId)
+                                return record.__uniqueId;
+                            }}
+                            renderItem={item => (
+                                <List.Item style={{ marginTop: '15px', marginBottom: '5px' }}>
+                                    <VideoCard key={uniqueId} item={item} orientation={this.state.orientation} store={this.props.store} />
+                                </List.Item>
+                            )}
+                        >
+                        </List>
+                    </Row>
+                </Spin>
             </React.Fragment>
         );
     }

@@ -56,7 +56,7 @@ class MainLayout extends React.Component {
           <Layout style={this.state.initStyle}>
             {/* <Header /> */}
             <Content style={{ margin: '12px 12px' }} store={this.props.store}>
-              <div style={{ padding: 24, background: '#f0f2f5', minHeight: 360 }}>
+              <div style={{ padding: 15, background: '#f0f2f5', borderRadius: '7px' , minHeight: 360 }}>
                 {this.props.children}
               </div>
             </Content>
