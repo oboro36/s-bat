@@ -1,0 +1,15 @@
+"RESULT_NO","CHAMBER_CODE","POSITION","IMAGE_DIRECTORY","MOVIE_DIRECTORY","REGISTER_ID","REGISTER_DATE","UPDATE_ID","UPDATE_DATE"
+1,P1,Pos1,static/imgoutput-1-p1-pos1.jpg,static/testvideo.mp4,SYSTEM,2019-12-02 16:00:00,SYSTEM,2019-12-02 16:00:00
+1,P1,Pos2,static/imgoutput-1-p1-pos2.jpg,static/testvideo.mp4,SYSTEM,2019-12-02 16:00:00,SYSTEM,2019-12-02 16:00:00
+1,P2,Pos1,static/imgoutput-1-p2-pos1.jpg,static/testvideo.mp4,SYSTEM,2019-12-02 16:00:00,SYSTEM,2019-12-02 16:00:00
+1,P2,Pos2,static/imgoutput-1-p2-pos2.jpg,static/testvideo.mp4,SYSTEM,2019-12-02 16:00:00,SYSTEM,2019-12-02 16:00:00
+1,P4,Pos2,static/imgoutput-1-p2-pos2.jpg,static/bunny.mp4,SYSTEM,2019-12-02 16:00:00,SYSTEM,2019-12-02 16:00:00
+2,P1,Pos1,static/imgoutput-2-p1-pos1.jpg,static/testvideo.mp4,SYSTEM,2019-12-02 16:00:00,SYSTEM,2019-12-02 16:00:00
+2,P1,Pos2,static/imgoutput-2-p1-pos2.jpg,static/testvideo.mp4,SYSTEM,2019-12-02 16:00:00,SYSTEM,2019-12-02 16:00:00
+2,P2,Pos1,static/imgoutput-2-p2-pos1.jpg,static/testvideo.mp4,SYSTEM,2019-12-02 16:00:00,SYSTEM,2019-12-02 16:00:00
+2,P2,Pos2,static/imgoutput-2-p2-pos2.jpg,static/testvideo.mp4,SYSTEM,2019-12-02 16:00:00,SYSTEM,2019-12-02 16:00:00
+2,P5,Pos1,static/imgoutput-2-p2-pos2.jpg,static/testvideo.mp4,SYSTEM,2019-12-02 16:00:00,SYSTEM,2019-12-02 16:00:00
+3,P6,Pos1,\\WE-SBATSERVER\sbat\image\20191213\img_output_0.12.jpg,\\WE-SBATSERVER\sbat\movie\20191213\20190828_#17_整備_Pos1_7_P6.mp4,SYSTEM,2019-12-13 15:21:01,SYSTEM,2019-12-13 15:21:01
+3,P7,Pos1,\\WE-SBATSERVER\sbat\image\20191213\img_output_0.12.jpg,\\WE-SBATSERVER\sbat\movie\20191213\20190828_#17_整備_Pos1_8_P7.mp4,SYSTEM,2019-12-13 15:21:01,SYSTEM,2019-12-13 15:21:01
+6,P6,Pos1,\\WE-SBATSERVER\sbat\image\20191225\20190828_#17_整備_Pos1_7_P6_img_output_0.12.jpg,\\WE-SBATSERVER\sbat\movie\20191225\20190828_#17_整備_Pos1_7_P6.mp4,SYSTEM,2019-12-24 16:40:16,SYSTEM,2019-12-24 16:40:16
+6,P7,Pos1,\\WE-SBATSERVER\sbat\image\20191225\20190828_#17_整備_Pos1_8_P7_img_output_0.12.jpg,\\WE-SBATSERVER\sbat\movie\20191225\20190828_#17_整備_Pos1_8_P7.mp4,SYSTEM,2019-12-24 16:40:16,SYSTEM,2019-12-24 16:40:16

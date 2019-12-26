@@ -3,7 +3,7 @@ import axios from 'axios'
 
 const http = axios.create({
     mode: 'cors',
-    baseURL: 'http://192.168.128.35:7000'
+    baseURL: 'http://192.168.128.69:7000'
     // withCredentials: true
 })
 

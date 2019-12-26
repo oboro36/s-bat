@@ -18,7 +18,7 @@ class VideoStore {
 
             <Link href={{ pathname: '/extportalplayer', query: { url1: list[0].URL, title1: list[0].title, url2: list[1].URL, title2: list[1].title } }} >
                 <a target="_blank">
-                    <Button type="primary" onClick={() => { notification.close(key) }}>
+                    <Button type="primary" >
                         Confirm
                     </Button>
                 </a>
