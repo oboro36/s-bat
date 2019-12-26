@@ -35,10 +35,10 @@ class SideBar extends React.Component {
     };
 
     componentDidMount() {
-        if (this.isMobileDevice()) {
+        // if (this.isMobileDevice()) {
             this.setState({ collapsed: true })
             this.props.doCollapse({ collapsed: true })
-        }
+        // }
     }
 
     isMobileDevice = () => {
