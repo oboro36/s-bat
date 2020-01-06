@@ -101,13 +101,25 @@ class VideoCard extends React.Component {
         // console.log('Create Video Modal with ', URL)
         this.setState({
             modalContent: (
-                <VideoPlayer id="only" videoURL={URL} title={title} isAutoPlay={false} />
+                <VideoPlayer id="only" videoURL={URL} title={title} isAutoPlay={true} doClose={this.handlePlayerCancel} />
             )
         }, () => {
             // console.log('Show Video Modal with ', URL)
             this.setState({ ...this.state, playerVisible: true })
         });
     };
+
+    // startPlay = () => {
+    //     this.setState({ playing: true }, () => {
+    //         console.log(this.state.playing)
+    //     })
+    // }
+
+    // alreadyPaused = () => {
+    //     this.setState({ playing: false }, () => {
+    //         console.log(this.state.playing)
+    //     })
+    // }
 
     handlePlayerCancel = () => {
         this.setState({
@@ -219,17 +231,16 @@ class VideoCard extends React.Component {
                     </Col>
                 </Row>
                 <Modal
-                    title="Video Player"
+                    // title="Video Player"
+                    maskClosable={false}
+                    keyboard={false}
                     visible={this.state.playerVisible}
                     style={{ top: '10px' }}
                     width="60%"
                     destroyOnClose={true}
                     onCancel={this.handlePlayerCancel}
-                    footer={[
-                        <Button key="back" onClick={this.handlePlayerCancel}>
-                            Return
-                        </Button>,
-                    ]}
+                    footer={null}
+                    closable={false}
                 >
                     <div>{this.state.modalContent}</div>
                 </Modal>

@@ -4,13 +4,13 @@ const { readFileSync } = require('fs');
 const next = require('next');
 
 const port = 3000;
-const dev = process.env.NODE_ENV !== 'production';
+const dev = false
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
 const httpsOptions = {
-    key: readFileSync('./certificates/server.key'),
-    cert: readFileSync('./certificates/server.cert')
+    key: readFileSync('./certificates/hostKey.pvk'),
+    cert: readFileSync('./certificates/hostCer.cer')
 };
 
 app.prepare()
@@ -20,6 +20,6 @@ app.prepare()
             handle(req, res, parsedUrl);
         }).listen(port, err => {
             if (err) throw err;
-            console.log(`> Ready on https://localhost:${port}`);
+            console.log(`> ` + process.env.NODE_ENV + ` Ready on https://localhost:${port}`);
         })
     });

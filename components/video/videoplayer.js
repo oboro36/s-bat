@@ -1,7 +1,6 @@
-import { Input, Select, Row, Col, Icon, Button, Form, InputNumber, Typography, message } from 'antd'
+import { Input, Row, Col, Icon, Button, Form, InputNumber, Typography, message, Divider } from 'antd'
 const ButtonGroup = Button.Group
-const { Option } = Select;
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 const openMessage = (type, desc) => {
     message[type](desc, 3);
@@ -13,12 +12,23 @@ class VideoPlayer extends React.Component {
         this.state = {
             videoURL: this.props.videoURL,
             seekRate: "0.50",
-            isMobile: false
+            isMobile: false,
         }
         this.id = 'video' + this.props.seq
     }
 
     componentDidMount() {
+        //Set mobile state
+
+        if (this.isMobileDevice()) {
+            this.setState({ ...this.state, isMobile: true })
+        }
+
+        this.setCanvasManipulation()
+
+    }
+
+    setCanvasManipulation = () => {
 
         let video = document.querySelector('#' + this.id)
             , canvas = document.querySelector("#canvas" + this.id)
@@ -129,7 +139,7 @@ class VideoPlayer extends React.Component {
         video.addEventListener('loadedmetadata', function () {
             // Set canvas dimensions same as video dimensions
             canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
+            canvas.height = video.videoHeight + 65;
             // canvasDraw.width = video.offsetWidth;
             // canvasDraw.height = video.offsetHeight;
         });
@@ -139,16 +149,19 @@ class VideoPlayer extends React.Component {
         let downloadLink = document.querySelector("#download" + this.id)
 
         downloadLink.addEventListener('click', function () {
+            //clear canvas
+            canvas_ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            canvas_ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+            //get image from video position
+            canvas_ctx.drawImage(video, 0, 70, video.videoWidth, video.videoHeight); // +5 y axis from height to delete green line on the bottom of image
             // canvas_ctx.drawImage(canvasDraw, 0, 0, video.videoWidth, video.videoHeight);
 
             let textWidth = canvas_ctx.measureText(title).width
 
-            canvas_ctx.font = 'normal ' + (textWidth > 200 ? '17px' : '20px') + ' Arial';
+            canvas_ctx.font = 'normal ' + (textWidth > 200 ? '37px' : '40px') + ' Arial';
 
             canvas_ctx.fillStyle = 'yellow'
-            canvas_ctx.fillText(title, 20, 32);
+            canvas_ctx.fillText(title, 20, 45);
 
             // canvas_ctx.fillStyle = "#c82124"; //red
             // canvas_ctx.beginPath();
@@ -181,12 +194,6 @@ class VideoPlayer extends React.Component {
             openMessage('success', 'Captured image has been copied to clipboard.')
 
         })
-
-        //Set mobile state
-
-        if (this.isMobileDevice()) {
-            this.setState({ ...this.state, isMobile: true })
-        }
 
     }
 
@@ -222,12 +229,27 @@ class VideoPlayer extends React.Component {
         this.setState({ seekRate: value })
     }
 
+    setModalClose = async () => {
+        let video = document.querySelector('#' + this.id)
+        let doPause = () => {
+            return new Promise((resolve, reject) => {
+
+                video.pause()
+
+                return resolve(true)
+            })
+        }
+
+        await doPause() && this.props.doClose()
+    }
+
     render() {
         const { getFieldDecorator } = this.props.form;
         return (
             <React.Fragment>
                 <Row>
                     <Title level={4}>{this.props.title}</Title>
+                    <Divider style={{ marginTop: "5px", marginBottom: "15px" }} />
                 </Row>
                 <Row>
                     <video id={this.id} controls="controls" width="100%" playsInline autoPlay={this.props.isAutoPlay} style={{ zIndex: 1, borderRadius: '6px' }}>
@@ -241,46 +263,55 @@ class VideoPlayer extends React.Component {
 
                     <canvas style={{ display: 'none' }} id={'canvas' + this.id}></canvas>
                 </Row>
-                <Row style={{ textAlign: 'center' }}>
-                    {/* <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center", paddingLeft: "15px", paddingRight: "15px", margin: "15px 0px 15px 0px" }}> */}
-                    <Form layout="inline">
-                        <Col span={12}>
-                            <Form.Item label="Time">
-                                {getFieldDecorator('time', {
-                                    initialValue: 0
-                                })(
-                                    <Input
-                                        readOnly
-                                        style={{ width: '90px' }}
-                                    />
-                                )}
-                            </Form.Item>
-                        </Col>
-                        <Col span={12}>
-                            <Form.Item label="Seek Rate">
-                                {getFieldDecorator('seekRate', {
-                                    initialValue: this.state.seekRate
-                                })(
-                                    <InputNumber min={0} max={1} step={0.05} onChange={this.seekRateChange} />
-                                )}
-                            </Form.Item>
-                        </Col>
-                    </Form>
-                </Row><br />
-                <Row style={{ textAlign: 'center' }}>
-                    <Col span={12} hidden={this.state.isMobile}>
-                        <a id={"download" + this.id} href="#" style={{ fontSize: '17px' }}><Button type="dashed"><Icon type="camera" /> Capture to clipboard</Button></a>
-                    </Col>
 
-                    {/* <div id="output"></div> */}
-                    <Col span={12}>
-                        <ButtonGroup>
-                            <Button icon="backward" size="large" shape="round" onClick={this.backward} />
-                            <Button icon="forward" size="large" shape="round" onClick={this.forward} />
-                        </ButtonGroup>
-                    </Col>
-                </Row>
-                {/* </div> */}
+                <div style={{ backgroundColor: '#EEEEEE', padding: '8px', borderRadius: '6px' }}>
+                    <Row style={{ textAlign: 'center' }}>
+                        <Form layout="inline">
+                            <Col span={12}>
+                                <Form.Item label="Time">
+                                    {getFieldDecorator('time', {
+                                        initialValue: 0
+                                    })(
+                                        <Input
+                                            readOnly
+                                            style={{ width: '90px' }}
+                                        />
+                                    )}
+                                </Form.Item>
+                            </Col>
+                            <Col span={12}>
+                                <Form.Item label="Seek Rate">
+                                    {getFieldDecorator('seekRate', {
+                                        // initialValue: this.state.seekRate
+                                    })(
+                                        <div>
+                                            <InputNumber defaultValue={this.state.seekRate} min={0} max={1} step={0.05} onChange={this.seekRateChange} />
+                                            <Text> sec.</Text>
+                                        </div>
+                                    )}
+                                </Form.Item>
+                            </Col>
+                        </Form>
+                    </Row><br />
+                    <Row style={{ textAlign: 'center' }}>
+                        <Col span={12} hidden={this.state.isMobile}>
+                            <a id={"download" + this.id} href="#" style={{ fontSize: '17px' }}><Button type="dashed"><Icon type="camera" /> Capture to clipboard</Button></a>
+                        </Col>
+                        {/* <div id="output"></div> */}
+                        <Col span={12}>
+                            <ButtonGroup>
+                                <Button icon="backward" size="large" shape="round" onClick={this.backward} />
+                                <Button icon="forward" size="large" shape="round" onClick={this.forward} />
+                            </ButtonGroup>
+                            {this.props.hasOwnProperty('doClose') ?
+                                <ButtonGroup style={{ marginLeft: "10px" }}>
+                                    <Button icon="close" type="danger" size="large" onClick={this.setModalClose} >Close</Button>
+                                </ButtonGroup>
+                                : null
+                            }
+                        </Col>
+                    </Row>
+                </div>
 
             </React.Fragment >
         )

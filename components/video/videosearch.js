@@ -13,7 +13,7 @@ const { Option } = Select;
 import { invokeApi } from '../../base/axios'
 
 let uniqueId = 0
-const notfoundImage = 'static/cross.svg'
+const notfoundImage = 'static/nodata.svg'
 const openMessage = (type, desc) => {
     message[type](desc, 4);
 };
@@ -384,7 +384,7 @@ class VideoSearch extends React.Component {
                     choice: '1',
                     chamber: 'P1',
                     position: 'POS1',
-                    imageURL: 'static/cross.svg',
+                    imageURL: notfoundImage,
                     videoURL: '-',
                     outputType: 'img',
                     valid: false,

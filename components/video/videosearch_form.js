@@ -111,7 +111,7 @@ class VideoSearchForm extends React.Component {
 
         // this.setDisable(true,'program')
 
-        invokeApi('post', '/api/getVideoProgramOption', {
+        invokeApi('post', '/api/getVideoProgramLineOption', {
             site: value
         },
             (res) => {
@@ -119,13 +119,14 @@ class VideoSearchForm extends React.Component {
                 if (res.status == 204) {
                     openMessage('warning', 'No data in selected Site')
                 } else if (res.status == 200) {
-                    this.setDisable(false, 'program')
+                    this.setDisable(false, ['program', 'line'])
                 }
 
                 this.setState({
                     dropdownList: {
                         ...this.state.dropdownList,
                         programs: res.data.programs,
+                        lines: res.data.lines,
                     }
                 })
 
@@ -145,87 +146,94 @@ class VideoSearchForm extends React.Component {
     }
 
     handleProgramChange = (value, option) => {
-        this.setState(prevState => ({
-            loading: { ...prevState.loading, line: true }
-        }))
+        let mode
+        if (this.props.form.getFieldsValue(['line'])) {
+            mode = 'content'
+        } else {
+            mode = 'line'
+        }
 
-        this.setClear(['line', 'content', 'analysisdate'])
-        this.setDisable(true, ['line', 'content', 'analysisdate'])
+        // this.setState(prevState => ({
+        //     loading: { ...prevState.loading, line: true }
+        // }))
 
-        invokeApi('post', '/api/getVideoLineOption', {
-            site: this.props.form.getFieldValue('site'),
-            program: value
-        },
-            (res) => {
-                //console.log(res)
-                if (res.status == 204) {
-                    openMessage('warning', 'No data in selected Program')
-                } else if (res.status == 200) {
-                    this.setDisable(false, 'line')
-                }
-                this.setState({
-                    dropdownList: {
-                        ...this.state.dropdownList,
-                        lines: res.data.lines,
-                    }
-                })
-                this.setState(prevState => ({
-                    loading: { ...prevState.loading, line: false },
-                    selectedLabel: { ...prevState.selectedLabel, program: option.props.children },
-                }))
-            },
-            (err) => {
-                // //console.log(err)
-                this.setState(prevState => ({
-                    loading: { ...prevState.loading, line: false }
-                }))
-            }
-        )
+        // this.setClear(['line', 'content', 'analysisdate'])
+        // this.setDisable(true, ['line', 'content', 'analysisdate'])
+
+        // invokeApi('post', '/api/getVideoLineOption', {
+        //     site: this.props.form.getFieldValue('site'),
+        //     program: value
+        // },
+        //     (res) => {
+        //         //console.log(res)
+        //         if (res.status == 204) {
+        //             openMessage('warning', 'No data in selected Program')
+        //         } else if (res.status == 200) {
+        //             this.setDisable(false, 'line')
+        //         }
+        //         this.setState({
+        //             dropdownList: {
+        //                 ...this.state.dropdownList,
+        //                 lines: res.data.lines,
+        //             }
+        //         })
+        //         this.setState(prevState => ({
+        //             loading: { ...prevState.loading, line: false },
+        //             selectedLabel: { ...prevState.selectedLabel, program: option.props.children },
+        //         }))
+        //     },
+        //     (err) => {
+        //         // //console.log(err)
+        //         this.setState(prevState => ({
+        //             loading: { ...prevState.loading, line: false }
+        //         }))
+        //     }
+        // )
     }
 
     handleLineChange = (value, option) => {
-        this.setState(prevState => ({
-            loading: { ...prevState.loading, content: true }
-        }))
+        // this.setState(prevState => ({
+        //     loading: { ...prevState.loading, content: true }
+        // }))
 
-        this.setClear(['content', 'analysisdate'])
-        this.setDisable(true, ['content', 'analysisdate'])
+        // this.setClear(['content', 'analysisdate'])
+        // this.setDisable(true, ['content', 'analysisdate'])
 
-        invokeApi('post', '/api/getVideoContentOption', {
-            site: this.props.form.getFieldValue('site'),
-            program: this.props.form.getFieldValue('program'),
-            line: value
-        },
-            (res) => {
-                //console.log(res)
-                if (res.status == 204) {
-                    openMessage('warning', 'No data in selected Line')
-                } else if (res.status == 200) {
+        // invokeApi('post', '/api/getVideoContentOption', {
+        //     site: this.props.form.getFieldValue('site'),
+        //     program: this.props.form.getFieldValue('program'),
+        //     line: value
+        // },
+        //     (res) => {
+        //         //console.log(res)
+        //         if (res.status == 204) {
+        //             openMessage('warning', 'No data in selected Line')
+        //         } else if (res.status == 200) {
 
-                    this.setDisable(false, 'content')
-                    this.setIncludeDate()
+        //             this.setDisable(false, 'content')
+        //             this.setIncludeDate()
 
-                }
+        //         }
 
-                this.setState({
-                    dropdownList: {
-                        ...this.state.dropdownList,
-                        contents: res.data.contents,
-                    }
-                })
+        //         this.setState({
+        //             dropdownList: {
+        //                 ...this.state.dropdownList,
+        //                 contents: res.data.contents,
+        //             }
+        //         })
 
-                this.setState(prevState => ({
-                    loading: { ...prevState.loading, content: false },
-                    selectedLabel: { ...prevState.selectedLabel, line: option.props.children },
-                }))
-            },
-            (err) => {
-                // //console.log(err)
-                this.setState(prevState => ({
-                    loading: { ...prevState.loading, content: false }
-                }))
-            }
-        )
+        //         this.setState(prevState => ({
+        //             loading: { ...prevState.loading, content: false },
+        //             selectedLabel: { ...prevState.selectedLabel, line: option.props.children },
+        //         }))
+        //     },
+        //     (err) => {
+        //         // //console.log(err)
+        //         this.setState(prevState => ({
+        //             loading: { ...prevState.loading, content: false }
+        //         }))
+        //     }
+        // )
     }
 
     handleContentChange = (value, option = null) => {
@@ -310,7 +318,7 @@ class VideoSearchForm extends React.Component {
         await editDate() && this.props.sendFormValue(this.props.form.getFieldsValue(), this.state.selectedLabel)
 
         // if (this.props.form.getFieldValue('content')) {
-            this.props.validateForm(true)
+        this.props.validateForm(true)
         // } else {
         //     openMessage('error', <span>Please select <b>content</b>.</span>)
         //     this.props.validateForm(false)
@@ -342,8 +350,10 @@ class VideoSearchForm extends React.Component {
             let newState = { ...this.state.searchDisable }
 
             option.forEach((member) => {
-                newState[member] = true
+                newState[member] = set
             })
+
+            console.log(newState)
 
             this.setState({ searchDisable: { ...this.state.searchDisable, ...newState } })
 
