@@ -4,6 +4,7 @@ import { notification, Button, Icon } from 'antd'
 import Link from 'next/link';
 
 class VideoStore {
+
     @observable hideMenu = false
 
     @observable disabledCheck = false
@@ -27,7 +28,7 @@ class VideoStore {
         );
         notification.info({
             message: 'Comfirm Notification',
-            description: <span>Do you want to open new tab and play below video title? <br /> <b>Title 1:</b> {list[0].title} <br /> <b>Title 2:</b> {list[1].title}</span>,
+            description: <span>Do you want to open new tab and play below titles? <br /> <b>Title 1:</b> {list[0].title} <br /> <b>Title 2:</b> {list[1].title}</span>,
             btn,
             key,
             duration: 0,
@@ -70,6 +71,7 @@ class VideoStore {
 
     @action
     decreaseCheck = (URL, title) => {
+        notification.destroy()
         // if (this.checkCount > 0) {
         --this.checkCount
 

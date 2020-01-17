@@ -1,5 +1,5 @@
 import { Form, Icon, Input, Button, notification } from 'antd'
-import { invokeApi } from '../base/axios'
+import { invokeApi } from '../utils/axios'
 
 import Router from 'next/router'
 

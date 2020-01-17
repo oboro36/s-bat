@@ -1,6 +1,7 @@
-import { Card, Row, Col, Form, Select, Icon, Modal, Button, Checkbox } from 'antd'
+import { Card, Row, Col, Form, Select, Icon, Modal, Button, Checkbox, Tabs } from 'antd'
 import VideoPlayer from './videoplayer'
 import Link from 'next/link'
+const { TabPane } = Tabs;
 const { Option } = Select;
 
 import { observer } from "mobx-react"
@@ -21,8 +22,8 @@ class VideoCard extends React.Component {
             playerVisible: false,
             modalContent: 'Default Content',
             initOutput: this.props.item.outputType,
-            selectedOutput: '',
             checkStatus: {},
+            selectedOutput: 'img'
         }
     }
 
@@ -38,6 +39,8 @@ class VideoCard extends React.Component {
     }
 
     componentDidMount() {
+        // console.log(this.props.selectedOutput)
+
         // console.log(this.props)
 
         // let doOnOrientationChange = () => {
@@ -66,23 +69,18 @@ class VideoCard extends React.Component {
 
     }
 
-
     // isMobileDevice = () => {
     //     return navigator.userAgent.toLowerCase().match(/mobile/i)
     // }
 
-    handleOutputChange = e => {
-        // console.log(e)
-    }
-
-    handleActions = async (action, URL, title) => {
+    handleActions = async (action, URL, title, id) => {
         switch (action) {
             case "zoom":
 
                 break
             case "play":
 
-                this.showModal(URL, title)
+                this.showModal(URL, title, id)
 
                 break
             case "full-play":
@@ -97,11 +95,18 @@ class VideoCard extends React.Component {
 
     //***************************Modal Player***************************
 
-    showModal = (URL, title) => {
+    showModal = (URL, title, id) => {
         // console.log('Create Video Modal with ', URL)
         this.setState({
             modalContent: (
-                <VideoPlayer id="only" videoURL={URL} title={title} isAutoPlay={true} doClose={this.handlePlayerCancel} />
+                <VideoPlayer
+                    id="only"
+                    seq="only"
+                    videoURL={URL}
+                    title={title}
+                    isAutoPlay={true}
+                    doClose={this.handlePlayerCancel}
+                />
             )
         }, () => {
             // console.log('Show Video Modal with ', URL)
@@ -157,6 +162,10 @@ class VideoCard extends React.Component {
         this.props.store.resetCheck()
     }
 
+    setActiveOutput = value => {
+        this.setState({ ...this.state, selectedOutput: value })
+    }
+
     render() {
         const { getFieldDecorator } = this.props.form;
 
@@ -179,18 +188,19 @@ class VideoCard extends React.Component {
                                 <Select
                                     size="small"
                                     placeholder="Select your output type"
-                                    defaultValue={this.props.item[i].outputType}
+                                    defaultValue={this.props.selectedOutput}
                                     style={this.props.item[i].choice == '1' && this.props.item[i].position == 'Pos1' ? { visibility: 'visible' } : { visibility: 'hidden' }}
+                                    onChange={this.setActiveOutput}
                                 >
                                     <Option value="img">Image</Option>
+                                    <Option value="area">Area</Option>
                                 </Select>
-
                             </div>
                         }
                         actions={[
-                            <Button size="small" disabled={!this.props.item[i].valid} type="default" icon="caret-right" onClick={() => { this.handleActions('play', this.props.item[i].videoURL, thisTitle) }}>{(this.props.orientation == 'landscape' || this.props.orientation == 'pc') ? 'Play' : ''}</Button>,
+                            <Button size="small" disabled={!this.props.item[i].valid} type="default" icon="caret-right" onClick={() => { this.handleActions('play', this.props.item[i].videoURL, thisTitle, thisID) }}>{(this.props.orientation == 'landscape' || this.props.orientation == 'pc') ? 'Play' : ''}</Button>,
                             // <div><Icon type="play-square" key="play-square" /> Play</div>,
-                            <Checkbox checked={this.state.checkStatus[thisID]} onChange={e => this.onCheck(e, thisID, this.props.item[i].videoURL, thisTitle)} disabled={!this.props.item[i].valid}>{(this.props.orientation == 'landscape' || this.props.orientation == 'pc') ? 'To Tab' : ''}</Checkbox>
+                            <Checkbox checked={this.state.checkStatus[thisID]} onChange={e => this.onCheck(e, thisID, this.props.item[i].videoURL, thisTitle)} disabled={!this.props.item[i].valid}>{(this.props.orientation == 'landscape' || this.props.orientation == 'pc') ? 'Compare' : ''}</Checkbox>
                             // <Icon type="fullscreen" key="fullscreen" onClick={() => { this.handleActions('full-play', this.props.item[i].videoURL) }} />,
                             // <Link href={{ pathname: '/extportalplayer', query: { url1: 'static/testvideo.mp4', title1: 'title1', url2: 'static/testvideo.mp4', title2: 'title2' } }} >
                             //     <a target="_blank" onClick="window.open('/extportalplayer','name','width=600,height=400')">
@@ -200,7 +210,15 @@ class VideoCard extends React.Component {
                             // ,
                             // <Icon type="zoom-in" key="zoom-in" onClick={() => { this.handleActions('zoom', this.props.item.imageURL[0]) }} />,
                         ]}
-                    >{this.props.item[i].content(this.props.item[i].imageURL)}
+                    >
+                        <Tabs defaultActiveKey={this.props.selectedOutput} activeKey={this.state.selectedOutput} tabPosition='top' size='small'>
+                            <TabPane tab="Image" key='img'>
+                                {this.props.item[i].content(this.props.item[i].imageURL)}
+                            </TabPane>
+                            <TabPane tab="Area" key='area'>
+                                {this.props.item[i].content(this.props.item[i].imageURL)}
+                            </TabPane>
+                        </Tabs>
                     </Card>
                 </Col>
             )
@@ -220,8 +238,7 @@ class VideoCard extends React.Component {
 
         return (
             <div key={this.props.key}>
-
-                <Row type="flex">
+                <Row className="customTabHidden" type="flex">
                     <Col span={1} style={colStyle}>
                         {choice1Items}
                     </Col>

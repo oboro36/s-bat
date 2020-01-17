@@ -29,7 +29,7 @@ class SideBar extends React.Component {
         visible: false,
         confirmLoading: false,
         //Side Bar
-        collapsed: false,
+        collapsed: true,
         content: 'videoplayer',
         userName: 'Name'
     };

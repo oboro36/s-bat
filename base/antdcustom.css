@@ -1,4 +1,9 @@
 /* PERFORMANCE Cancel animation on menu toggle */
+
 .ant-layout-sider-trigger {
     transition: all 0s !important
+}
+
+.customTabHidden .ant-tabs-bar {
+    display: none !important;
 }

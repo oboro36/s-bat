@@ -10,10 +10,10 @@ const { Panel } = Collapse;
 const { Option } = Select;
 
 //custom lib
-import { invokeApi } from '../../base/axios'
+import { invokeApi } from '../../utils/axios'
 
 let uniqueId = 0
-const notfoundImage = 'static/nodata.svg'
+const notfoundImage = 'static/nodata-compressed.svg'
 const openMessage = (type, desc) => {
     message[type](desc, 4);
 };
@@ -94,6 +94,19 @@ class VideoSearch extends React.Component {
         return navigator.userAgent.toLowerCase().match(/mobile/i)
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+
+        if (this.props !== nextProps) {
+            return true;
+        }
+
+        if (this.state !== nextState) {
+            return true;
+        }
+
+        return false
+    }
+
 
     handleOutputChange = value => {
         this.setState({ searchCond: { selectedOutput: value } }, () => {
@@ -108,7 +121,7 @@ class VideoSearch extends React.Component {
         //change date format
         formValue.analysisdate = moment(formValue.analysisdate).format('YYYYMMDD')
         // console.log(formValue.datepicker)
-
+        console.log(this.state.selectedLabel)
         this.setState({
             searchCond: { ...this.state.searchCond, choice1: formValue },
             selectedLabel: { ...this.state.selectedLabel, choice1: label }
@@ -125,6 +138,7 @@ class VideoSearch extends React.Component {
 
         formValue.analysisdate = moment(formValue.analysisdate).format('YYYYMMDD')
         // console.log(formValue.datepicker)
+        console.log(this.state.selectedLabel)
         this.setState({
             searchCond: { ...this.state.searchCond, choice2: formValue },
             selectedLabel: { ...this.state.selectedLabel, choice2: label }
@@ -383,7 +397,7 @@ class VideoSearch extends React.Component {
                     title: choice1_title,
                     choice: '1',
                     chamber: 'P1',
-                    position: 'POS1',
+                    position: 'Pos1',
                     imageURL: notfoundImage,
                     videoURL: '-',
                     outputType: 'img',
@@ -402,27 +416,8 @@ class VideoSearch extends React.Component {
                     title: choice1_title,
                     choice: '1',
                     chamber: 'P1',
-                    position: 'POS2',
-                    imageURL: 'static/imgoutput-1-p1-pos2.jpg',
-                    videoURL: 'static/bunny.mp4',
-                    outputType: 'img',
-                    valid: true,
-                    content: (url) => {
-                        return (
-                            <Row>
-                                <Col span={24}>
-                                    <img src={url} width="100%" height="auto" />
-                                </Col>
-                            </Row>
-                        )
-                    }
-                },
-                {
-                    title: choice2_title,
-                    choice: '2',
-                    chamber: 'P1',
-                    position: 'POS1',
-                    imageURL: 'static/imgoutput-1-p1-pos1.jpg',
+                    position: 'Pos2',
+                    imageURL: 'static/imgoutput-1-p1-Pos2.jpg',
                     videoURL: 'static/testvideo.mp4',
                     outputType: 'img',
                     valid: true,
@@ -440,8 +435,27 @@ class VideoSearch extends React.Component {
                     title: choice2_title,
                     choice: '2',
                     chamber: 'P1',
-                    position: 'POS2',
-                    imageURL: 'static/imgoutput-1-p1-pos2.jpg',
+                    position: 'Pos1',
+                    imageURL: 'static/imgoutput-1-p1-Pos1.jpg',
+                    videoURL: 'static/testvideo.mp4',
+                    outputType: 'img',
+                    valid: true,
+                    content: (url) => {
+                        return (
+                            <Row>
+                                <Col span={24}>
+                                    <img src={url} width="100%" height="auto" />
+                                </Col>
+                            </Row>
+                        )
+                    }
+                },
+                {
+                    title: choice2_title,
+                    choice: '2',
+                    chamber: 'P1',
+                    position: 'Pos2',
+                    imageURL: 'static/imgoutput-1-p1-Pos2.jpg',
                     videoURL: 'static/testvideo.mp4',
                     outputType: 'img',
                     valid: true,
@@ -461,8 +475,8 @@ class VideoSearch extends React.Component {
                     title: choice1_title,
                     choice: '1',
                     chamber: 'P2',
-                    position: 'POS1',
-                    imageURL: 'static/imgoutput-1-p1-pos1.jpg',
+                    position: 'Pos1',
+                    imageURL: 'static/imgoutput-1-p1-Pos1.jpg',
                     videoURL: 'static/testvideo.mp4',
                     outputType: 'img',
                     valid: true,
@@ -480,8 +494,8 @@ class VideoSearch extends React.Component {
                     title: choice1_title,
                     choice: '1',
                     chamber: 'P2',
-                    position: 'POS2',
-                    imageURL: 'static/imgoutput-1-p1-pos2.jpg',
+                    position: 'Pos2',
+                    imageURL: 'static/imgoutput-1-p1-Pos2.jpg',
                     videoURL: 'static/testvideo.mp4',
                     outputType: 'img',
                     valid: true,
@@ -499,8 +513,8 @@ class VideoSearch extends React.Component {
                     title: choice2_title,
                     choice: '2',
                     chamber: 'P2',
-                    position: 'POS1',
-                    imageURL: 'static/imgoutput-1-p1-pos1.jpg',
+                    position: 'Pos1',
+                    imageURL: 'static/imgoutput-1-p1-Pos1.jpg',
                     videoURL: 'static/testvideo.mp4',
                     outputType: 'img',
                     valid: true,
@@ -518,8 +532,8 @@ class VideoSearch extends React.Component {
                     title: choice2_title,
                     choice: '2',
                     chamber: 'P2',
-                    position: 'POS2',
-                    imageURL: 'static/imgoutput-1-p1-pos2.jpg',
+                    position: 'Pos2',
+                    imageURL: 'static/imgoutput-1-p1-Pos2.jpg',
                     videoURL: 'static/testvideo.mp4',
                     outputType: 'img',
                     valid: true,
@@ -563,7 +577,6 @@ class VideoSearch extends React.Component {
                                 <Row>
                                     <Col>
                                         <Form labelCol={{ span: 7 }} wrapperCol={{ span: 12 }}>
-                                            <Divider>Output Type</Divider>
                                             <Form.Item label="Output">
                                                 {getFieldDecorator('output', {
                                                     rules: [{ required: true, message: 'Please select your output!' }],
@@ -574,6 +587,7 @@ class VideoSearch extends React.Component {
                                                         onChange={this.handleOutputChange}
                                                     >
                                                         <Option value="img">Image</Option>
+                                                        <Option value="area">Area</Option>
                                                     </Select>,
                                                 )}
                                             </Form.Item>
@@ -603,7 +617,7 @@ class VideoSearch extends React.Component {
                         </Collapse>
                     </Row>
                     &nbsp;
-                <Row style={{ backgroundColor: "white", borderRadius: "5px", padding: "15px" }}>
+                <Row style={{ backgroundColor: "white", border: 'solid 1px #D9D9D9', borderRadius: "5px", padding: "15px" }}>
                         <List
                             header={<div>Result</div>}
                             grid={{
@@ -618,9 +632,21 @@ class VideoSearch extends React.Component {
                                 // console.log(record.__uniqueId)
                                 return record.__uniqueId;
                             }}
+                            // pagination={{
+                            //     onChange: page => {
+                            //         // console.log(page);
+                            //     },
+                            //     pageSize: 5,
+                            // }}
                             renderItem={item => (
                                 <List.Item style={{ marginTop: '15px', marginBottom: '5px' }}>
-                                    <VideoCard key={uniqueId} item={item} orientation={this.state.orientation} store={this.props.store} />
+                                    <VideoCard
+                                        key={uniqueId}
+                                        item={item}
+                                        selectedOutput={this.state.searchCond.selectedOutput}
+                                        orientation={this.state.orientation}
+                                        store={this.props.store}
+                                    />
                                 </List.Item>
                             )}
                         >
