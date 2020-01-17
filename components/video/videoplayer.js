@@ -539,13 +539,14 @@ class VideoPlayer extends React.Component {
                                 </ButtonGroup>
                             </Col>
                             <Col span={8}>
-                                {this.props.hasOwnProperty('doClose') ?
-                                    <ButtonGroup style={{ marginLeft: "10px" }}>
-                                        <Button icon="fullscreen" disabled={this.state.disableButton.fullscreen} type="default" size="large" onClick={this.setFullscreen} >Full</Button>
+
+                                <ButtonGroup style={{ marginLeft: "10px" }}>
+                                    <Button icon="fullscreen" disabled={this.state.disableButton.fullscreen} type="default" size="large" onClick={this.setFullscreen} >Fullscreen</Button>
+                                    {this.props.hasOwnProperty('doClose') ?
                                         <Button icon="close" type="danger" size="large" onClick={this.setModalClose} >Close</Button>
-                                    </ButtonGroup>
-                                    : null
-                                }
+                                        : null}
+                                </ButtonGroup>
+
                             </Col>
                         </Row>
                     </div>

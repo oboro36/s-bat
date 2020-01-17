@@ -7,7 +7,7 @@ const Index = () => {
 
   // const [feedback, setFeedback] = useState(0);
   // const [unmerged, setUnmerged] = useState(0);
-  const [toggle, setToggle] = useState('YES');
+  // const [toggle, setToggle] = useState('YES');
 
   return (
     <div>
@@ -37,9 +37,9 @@ const Index = () => {
           </Col>
         </Row> */}
 
-        Result: {toggle} <br />
+        {/* Result: {toggle} <br />
 
-        <Button onClick={() => setToggle(toggle == 'YES' ? 'NO' : 'YES')}>Test</Button>
+        <Button onClick={() => setToggle(toggle == 'YES' ? 'NO' : 'YES')}>Test</Button> */}
 
       </Card>
     </div>
