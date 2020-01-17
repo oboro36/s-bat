@@ -606,12 +606,12 @@ class VideoSearch extends React.Component {
                                     <Col>
                                         <Button type="primary" icon="search" disabled={this.state.validated.choice1 && this.state.validated.choice2 ? false : true} onClick={this.handleSubmit}>Search</Button>
                                     </Col>
-                                    <Col>
+                                    {/* <Col>
                                         <Button type="danger" onClick={this.clear}>Clear</Button>
                                     </Col>
                                     <Col>
                                         <Button type="dashed" onClick={this.test}>Test</Button>
-                                    </Col>
+                                    </Col> */}
                                 </Row>
                             </Panel>
                         </Collapse>
