@@ -1,7 +1,7 @@
-import { List, Button, Row, Col, Collapse, Form, Select, Divider, message, BackTop, Spin } from 'antd'
+import { Button, Row, Col, Collapse, Form, Select, message, BackTop, Spin } from 'antd'
 import moment from 'moment'
-import VideoCard from '../../components/video/videocard'
 
+import VideoResult from '../../components/video/videoresult'
 import VideoSearchForm from '../../components/video/videosearch_form'
 
 // import '../../base/spinner.css'
@@ -27,7 +27,6 @@ class VideoSearch extends React.Component {
             orientation: 'pc',
             isLoading: false,
             listDataSource: [],
-            listColumnSize: 1,
             searchCond: {
                 selectedOutput: 'img',
                 choice1: [],
@@ -46,6 +45,46 @@ class VideoSearch extends React.Component {
             //     submit: true
             // }
         }
+
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+
+        if (this.state.isLoading != nextState.isLoading) {
+            return true
+        }
+
+        if (this.state.searchCond.selectedOutput != nextState.searchCond.selectedOutput) {
+            return true
+        }
+
+        if (this.state.searchCond.choice1 != nextState.searchCond.choice1) {
+            return true
+        }
+
+        if (this.state.searchCond.choice2 != nextState.searchCond.choice2) {
+            return true
+        }
+
+        if (this.state.validated.choice1 != nextState.validated.choice1) {
+            return true
+        }
+
+        if (this.state.validated.choice2 != nextState.validated.choice2) {
+            return true
+        }
+
+        if (this.state.listDataSource != nextState.listDataSource) {
+            return true
+        }
+
+        if (this.state.orientation != nextState.orientation) {
+            return true
+        }
+
+        // console.log(this.state)
+
+        return false
     }
 
     componentDidMount() {
@@ -94,22 +133,8 @@ class VideoSearch extends React.Component {
         return navigator.userAgent.toLowerCase().match(/mobile/i)
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-
-        if (this.props !== nextProps) {
-            return true;
-        }
-
-        if (this.state !== nextState) {
-            return true;
-        }
-
-        return false
-    }
-
-
     handleOutputChange = value => {
-        this.setState({ searchCond: { selectedOutput: value } }, () => {
+        this.setState({ searchCond: { ...this.state.searchCond, selectedOutput: value } }, () => {
             // console.log(this.state.searchCond.selectedOutput)
         })
     }
@@ -121,7 +146,7 @@ class VideoSearch extends React.Component {
         //change date format
         formValue.analysisdate = moment(formValue.analysisdate).format('YYYYMMDD')
         // console.log(formValue.datepicker)
-        console.log(this.state.selectedLabel)
+        // console.log(this.state.selectedLabel)
         this.setState({
             searchCond: { ...this.state.searchCond, choice1: formValue },
             selectedLabel: { ...this.state.selectedLabel, choice1: label }
@@ -138,7 +163,7 @@ class VideoSearch extends React.Component {
 
         formValue.analysisdate = moment(formValue.analysisdate).format('YYYYMMDD')
         // console.log(formValue.datepicker)
-        console.log(this.state.selectedLabel)
+        // console.log(this.state.selectedLabel)
         this.setState({
             searchCond: { ...this.state.searchCond, choice2: formValue },
             selectedLabel: { ...this.state.selectedLabel, choice2: label }
@@ -155,7 +180,7 @@ class VideoSearch extends React.Component {
         if (clearRes) {
 
             let choice1 = this.state.searchCond.choice1
-            let choice2 = this.state.searchCond.choice2
+            let choice2 = this.state.validated.choice2 == true ? this.state.searchCond.choice2 : { site: null, program: null, line: null, content: null, analysisdate: null }
 
             this.setState({ ...this.state, isLoading: true })
 
@@ -205,17 +230,11 @@ class VideoSearch extends React.Component {
                                         position: position,
                                         imageURL: find.IMAGE_DIRECTORY,
                                         videoURL: find.MOVIE_DIRECTORY,
+                                        areaCountURL: find.AREA_COUNT_DIRECTORY,
+                                        areaInfoURL: find.AREA_INFOR_DIRECTORY,
+                                        bigAreaInfoURL: find.BIG_AREA_INFOR_DIRECTORY,
                                         outputType: 'img',
                                         valid: true,
-                                        content: (url) => {
-                                            return (
-                                                <Row>
-                                                    <Col span={24}>
-                                                        <img src={find.IMAGE_DIRECTORY} width="100%" height="auto" />
-                                                    </Col>
-                                                </Row>
-                                            )
-                                        }
                                     }
 
                                     prep.push(choice1)
@@ -230,17 +249,11 @@ class VideoSearch extends React.Component {
                                         position: position,
                                         imageURL: notfoundImage,
                                         videoURL: '-',
+                                        areaCountURL: false,
+                                        areaInfoURL: false,
+                                        bigAreaInfoURL: false,
                                         outputType: 'img',
                                         valid: false,
-                                        content: (url) => {
-                                            return (
-                                                <Row>
-                                                    <Col span={24}>
-                                                        <img src={notfoundImage} width="100%" height="auto" />
-                                                    </Col>
-                                                </Row>
-                                            )
-                                        }
                                     }
 
                                     prep.push(dummy)
@@ -266,17 +279,11 @@ class VideoSearch extends React.Component {
                                         position: position,
                                         imageURL: find.IMAGE_DIRECTORY,
                                         videoURL: find.MOVIE_DIRECTORY,
+                                        areaCountURL: find.AREA_COUNT_DIRECTORY,
+                                        areaInfoURL: find.AREA_INFOR_DIRECTORY,
+                                        bigAreaInfoURL: find.BIG_AREA_INFOR_DIRECTORY,
                                         outputType: 'img',
                                         valid: true,
-                                        content: (url) => {
-                                            return (
-                                                <Row>
-                                                    <Col span={24}>
-                                                        <img src={find.IMAGE_DIRECTORY} width="100%" height="auto" />
-                                                    </Col>
-                                                </Row>
-                                            )
-                                        }
                                     }
 
                                     prep.push(choice2)
@@ -291,17 +298,11 @@ class VideoSearch extends React.Component {
                                         position: position,
                                         imageURL: notfoundImage,
                                         videoURL: '-',
+                                        areaCountURL: false,
+                                        areaInfoURL: false,
+                                        bigAreaInfoURL: false,
                                         outputType: 'img',
                                         valid: false,
-                                        content: (url) => {
-                                            return (
-                                                <Row>
-                                                    <Col span={24}>
-                                                        <img src={notfoundImage} width="100%" height="auto" />
-                                                    </Col>
-                                                </Row>
-                                            )
-                                        }
                                     }
 
                                     prep.push(dummy)
@@ -355,7 +356,9 @@ class VideoSearch extends React.Component {
 
     addList = (data) => {
 
-        this.setState({ ...this.state, listDataSource: data, isLoading: false })
+        this.setState({ ...this.state, listDataSource: data, isLoading: false }, () => {
+            // document.getElementById('anchorResult').scrollIntoView({ behavior: 'smooth' })
+        })
 
         // // console.log('ADD LIST')
         // return new Promise((resolve, reject) => {
@@ -400,17 +403,11 @@ class VideoSearch extends React.Component {
                     position: 'Pos1',
                     imageURL: notfoundImage,
                     videoURL: '-',
+                    areaCountURL: 'static/csv/area_count_30_15.csv',
+                    areaInfoURL: false,
+                    bigAreaInfoURL: false,
                     outputType: 'img',
-                    valid: false,
-                    content: (url) => {
-                        return (
-                            <Row>
-                                <Col span={24}>
-                                    <img src={url} width="100%" height="auto" />
-                                </Col>
-                            </Row>
-                        )
-                    }
+                    valid: false
                 },
                 {
                     title: choice1_title,
@@ -419,17 +416,11 @@ class VideoSearch extends React.Component {
                     position: 'Pos2',
                     imageURL: 'static/imgoutput-1-p1-Pos2.jpg',
                     videoURL: 'static/testvideo.mp4',
+                    areaCountURL: 'static/csv/area_count_30_15.csv',
+                    areaInfoURL: 'static/csv/area_infor.csv',
+                    bigAreaInfoURL: 'static/csv/big_area_infor.csv',
                     outputType: 'img',
-                    valid: true,
-                    content: (url) => {
-                        return (
-                            <Row>
-                                <Col span={24}>
-                                    <img src={url} width="100%" height="auto" />
-                                </Col>
-                            </Row>
-                        )
-                    }
+                    valid: true
                 },
                 {
                     title: choice2_title,
@@ -438,17 +429,11 @@ class VideoSearch extends React.Component {
                     position: 'Pos1',
                     imageURL: 'static/imgoutput-1-p1-Pos1.jpg',
                     videoURL: 'static/testvideo.mp4',
+                    areaCountURL: 'static/csv/area_count_30_15.csv',
+                    areaInfoURL: 'static/csv/area_infor.csv',
+                    bigAreaInfoURL: 'static/csv/big_area_infor.csv',
                     outputType: 'img',
-                    valid: true,
-                    content: (url) => {
-                        return (
-                            <Row>
-                                <Col span={24}>
-                                    <img src={url} width="100%" height="auto" />
-                                </Col>
-                            </Row>
-                        )
-                    }
+                    valid: true
                 },
                 {
                     title: choice2_title,
@@ -457,95 +442,11 @@ class VideoSearch extends React.Component {
                     position: 'Pos2',
                     imageURL: 'static/imgoutput-1-p1-Pos2.jpg',
                     videoURL: 'static/testvideo.mp4',
+                    areaCountURL: 'static/csv/area_count_30_15.csv',
+                    areaInfoURL: 'static/csv/area_infor.csv',
+                    bigAreaInfoURL: 'static/csv/big_area_infor.csv',
                     outputType: 'img',
-                    valid: true,
-                    content: (url) => {
-                        return (
-                            <Row>
-                                <Col span={24}>
-                                    <img src={url} width="100%" height="auto" />
-                                </Col>
-                            </Row>
-                        )
-                    }
-                }
-            ],
-            [
-                {
-                    title: choice1_title,
-                    choice: '1',
-                    chamber: 'P2',
-                    position: 'Pos1',
-                    imageURL: 'static/imgoutput-1-p1-Pos1.jpg',
-                    videoURL: 'static/testvideo.mp4',
-                    outputType: 'img',
-                    valid: true,
-                    content: (url) => {
-                        return (
-                            <Row>
-                                <Col span={24}>
-                                    <img src={url} width="100%" height="auto" />
-                                </Col>
-                            </Row>
-                        )
-                    }
-                },
-                {
-                    title: choice1_title,
-                    choice: '1',
-                    chamber: 'P2',
-                    position: 'Pos2',
-                    imageURL: 'static/imgoutput-1-p1-Pos2.jpg',
-                    videoURL: 'static/testvideo.mp4',
-                    outputType: 'img',
-                    valid: true,
-                    content: (url) => {
-                        return (
-                            <Row>
-                                <Col span={24}>
-                                    <img src={url} width="100%" height="auto" />
-                                </Col>
-                            </Row>
-                        )
-                    }
-                },
-                {
-                    title: choice2_title,
-                    choice: '2',
-                    chamber: 'P2',
-                    position: 'Pos1',
-                    imageURL: 'static/imgoutput-1-p1-Pos1.jpg',
-                    videoURL: 'static/testvideo.mp4',
-                    outputType: 'img',
-                    valid: true,
-                    content: (url) => {
-                        return (
-                            <Row>
-                                <Col span={24}>
-                                    <img src={url} width="100%" height="auto" />
-                                </Col>
-                            </Row>
-                        )
-                    }
-                },
-                {
-                    title: choice2_title,
-                    choice: '2',
-                    chamber: 'P2',
-                    position: 'Pos2',
-                    imageURL: 'static/imgoutput-1-p1-Pos2.jpg',
-                    videoURL: 'static/testvideo.mp4',
-                    outputType: 'img',
-                    valid: true,
-                    content: (url) => {
-                        return (
-                            <Row>
-                                <Col span={24}>
-                                    <img src={url} width="100%" height="auto" />
-                                </Col>
-                            </Row>
-                        )
-                    }
+                    valid: true
                 }
             ],
         ]
@@ -568,91 +469,68 @@ class VideoSearch extends React.Component {
 
         return (
             <React.Fragment>
-                <Spin spinning={this.state.pageLoading} size="large">
-                    <BackTop />
-                    {/* <div className={this.state.loaded ? '' : 'loading'}></div> */}
-                    <Row>
-                        <Collapse defaultActiveKey={['1']}>
-                            <Panel header={this.props.customTitle} key="1">
-                                <Row>
-                                    <Col>
-                                        <Form labelCol={{ span: 7 }} wrapperCol={{ span: 12 }}>
-                                            <Form.Item label="Output">
-                                                {getFieldDecorator('output', {
-                                                    rules: [{ required: true, message: 'Please select your output!' }],
-                                                    initialValue: this.state.searchCond.selectedOutput
-                                                })(
-                                                    <Select
-                                                        placeholder="Select your output type"
-                                                        onChange={this.handleOutputChange}
-                                                    >
-                                                        <Option value="img">Image</Option>
-                                                        <Option value="area">Area</Option>
-                                                    </Select>,
-                                                )}
-                                            </Form.Item>
-                                        </Form>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col span={12}>
-                                        <VideoSearchForm validated={this.state.validated.choice1} validateForm={this.validateLeftForm} title="CHOICE1" selectedOutput={this.state.searchCond.selectedOutput} sendFormValue={this.handleLeftFormChange} />
-                                    </Col>
-                                    <Col span={12}>
-                                        <VideoSearchForm validated={this.state.validated.choice2} validateForm={this.validateRightForm} title="CHOICE2" selectedOutput={this.state.searchCond.selectedOutput} sendFormValue={this.handleRightFormChange} />
-                                    </Col>
-                                </Row>
-                                <Row type="flex" justify="center" align="middle">
-                                    <Col>
-                                        <Button type="primary" icon="search" disabled={this.state.validated.choice1 && this.state.validated.choice2 ? false : true} onClick={this.handleSubmit}>Search</Button>
-                                    </Col>
-                                    {/* <Col>
-                                        <Button type="danger" onClick={this.clear}>Clear</Button>
-                                    </Col>
-                                    <Col>
-                                        <Button type="dashed" onClick={this.test}>Test</Button>
-                                    </Col> */}
-                                </Row>
-                            </Panel>
-                        </Collapse>
-                    </Row>
-                    &nbsp;
+                {/* <Spin spinning={this.state.pageLoading} size="large"> */}
+                <BackTop />
+                {/* <div className={this.state.loaded ? '' : 'loading'}></div> */}
+                <Row>
+                    <Collapse defaultActiveKey={['1']}>
+                        <Panel header={this.props.customTitle} key="1">
+                            <Row>
+                                <Col>
+                                    <Form labelCol={{ span: 7 }} wrapperCol={{ span: 12 }}>
+                                        <Form.Item label="Output">
+                                            {getFieldDecorator('output', {
+                                                rules: [{ required: true, message: 'Please select your output!' }],
+                                                initialValue: this.state.searchCond.selectedOutput
+                                            })(
+                                                <Select
+                                                    placeholder="Select your output type"
+                                                    onChange={this.handleOutputChange}
+                                                >
+                                                    <Option value="img">Image</Option>
+                                                    <Option value="areaCount">Area Count</Option>
+                                                    <Option value="areaInfo">Area Info</Option>
+                                                    <Option value="bigAreaInfo">Big Area Info</Option>
+                                                </Select>,
+                                            )}
+                                        </Form.Item>
+                                    </Form>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col span={12}>
+                                    <VideoSearchForm validateForm={this.validateLeftForm} title="CHOICE1" selectedOutput={this.state.searchCond.selectedOutput} sendFormValue={this.handleLeftFormChange} />
+                                </Col>
+                                <Col span={12}>
+                                    <VideoSearchForm validateForm={this.validateRightForm} title="CHOICE2" selectedOutput={this.state.searchCond.selectedOutput} sendFormValue={this.handleRightFormChange} />
+                                </Col>
+                            </Row>
+                            <Row type="flex" justify="center" align="middle">
+                                <Col>
+                                    <Button type="primary" icon="search" disabled={this.state.validated.choice1 ? false : true} onClick={this.handleSubmit}>Search</Button>
+                                </Col>
+                                <Col>
+                                    <Button type="danger" onClick={this.clear}>Clear</Button>
+                                </Col>
+                                <Col>
+                                    <Button type="dashed" onClick={this.test}>Test</Button>
+                                </Col>
+                            </Row>
+                        </Panel>
+                    </Collapse>
+                </Row>
+                &nbsp;
                 <Row style={{ backgroundColor: "white", border: 'solid 1px #D9D9D9', borderRadius: "5px", padding: "15px" }}>
-                        <List
-                            header={<div>Result</div>}
-                            grid={{
-                                gutter: 16,
-                                column: this.state.listColumnSize
-                            }}
-                            dataSource={this.state.listDataSource}
-                            loading={this.state.isLoading}
-                            rowKey={(record) => {
-                                if (!record.__uniqueId)
-                                    record.__uniqueId = ++uniqueId;
-                                // console.log(record.__uniqueId)
-                                return record.__uniqueId;
-                            }}
-                            // pagination={{
-                            //     onChange: page => {
-                            //         // console.log(page);
-                            //     },
-                            //     pageSize: 5,
-                            // }}
-                            renderItem={item => (
-                                <List.Item style={{ marginTop: '15px', marginBottom: '5px' }}>
-                                    <VideoCard
-                                        key={uniqueId}
-                                        item={item}
-                                        selectedOutput={this.state.searchCond.selectedOutput}
-                                        orientation={this.state.orientation}
-                                        store={this.props.store}
-                                    />
-                                </List.Item>
-                            )}
-                        >
-                        </List>
-                    </Row>
-                </Spin>
+                    <div id='anchorResult' />
+                    <VideoResult
+                        listDataSource={this.state.listDataSource}
+                        isLoading={this.state.isLoading}
+                        selectedOutput={this.state.searchCond.selectedOutput}
+                        orientation={this.state.orientation}
+                        store={this.props.store}
+                    />
+                </Row>
+                {/* </Spin> */}
             </React.Fragment>
         );
     }

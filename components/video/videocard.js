@@ -1,10 +1,15 @@
-import { Card, Row, Col, Form, Select, Icon, Modal, Button, Checkbox, Tabs } from 'antd'
+import { Card, Row, Col, Form, Select, Icon, Modal, Button, Checkbox, Tabs, Spin, Skeleton, Descriptions } from 'antd'
 import VideoPlayer from './videoplayer'
 import Link from 'next/link'
+import { observer } from "mobx-react"
+import axios from 'axios'
+import Papa from "papaparse"
+
 const { TabPane } = Tabs;
 const { Option } = Select;
 
-import { observer } from "mobx-react"
+const notfoundImage = 'static/nodata-compressed.svg'
+
 
 // const openNotificationWithIcon = (type, desc) => {
 //     notification[type]({
@@ -21,27 +26,201 @@ class VideoCard extends React.Component {
         this.state = {
             playerVisible: false,
             modalContent: 'Default Content',
-            initOutput: this.props.item.outputType,
             checkStatus: {},
-            selectedOutput: 'img'
+            selectedOutput: this.props.selectedOutput,
+            csvContent: {}
         }
     }
 
     componentWillMount() {
-        let newState = []
+        let checkboxState = []
+
+        const setContent = (id, type, content) => {
+            this.setState({
+                csvContent: {
+                    ...this.state.csvContent,
+                    [id]: {
+                        ...this.state.csvContent[id],
+                        [type]: content
+                    }
+                }
+            })
+        }
+
+        const wrapperStyle = { height: '250px', overflowY: 'auto' }
+
+        const headerStyle = { position: 'sticky', top: '0px', color: 'white', backgroundColor: '#1890FF', textAlign: 'center', border: '1px solid #ddd' }
+
+        const columnStyle = { border: '1px solid #ddd' }
 
         for (let i = 0; i < this.props.item.length; i++) {
             let thisID = this.props.item[i].choice + this.props.item[i].chamber + this.props.item[i].position
-            newState[thisID] = false
+            checkboxState[thisID] = false
+            if (this.props.item[i].areaCountURL) {
+                this.getCsvData(this.props.item[i].areaCountURL).then((res) => {
+
+                    let csvData = Papa.parse(res)
+
+                    const tableData = csvData.data.filter((member, index) => (index > 0 && member[0])).map((member) => {
+                        return [member[0], member[1]]
+                    })
+
+                    const table = (
+                        <div style={wrapperStyle}>
+                            {/* <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                <thead>
+                                    <tr>
+                                        {tableData.map((member, index) => {
+                                            return (
+                                                <th style={headerStyle} key={index}>{member[0]}</th>
+                                            );
+                                        })}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        {tableData.map((member, index) => {
+                                            return (
+                                                <td style={columnStyle} key={index}>{member[1]}</td>
+                                            );
+                                        })}
+                                    </tr>
+                                </tbody>
+
+                            </table> */}
+                            <Descriptions bordered column={1} size='small'>
+                                {tableData.map((member, index) => {
+                                    return (
+                                        <Descriptions.Item key={index} label={member[0]} >{member[1]}</Descriptions.Item>
+                                    );
+                                })}
+                            </Descriptions>
+                        </div>
+                    )
+
+                    setContent(thisID, 'areaCount', table)
+                })
+            }
+            if (this.props.item[i].areaInfoURL) {
+                this.getCsvData(this.props.item[i].areaInfoURL).then((res) => {
+
+                    let csvData = Papa.parse(res)
+
+                    // console.log(csvData)
+
+                    const header = csvData.data[0].filter(member => member)
+
+                    // console.log('header', header)
+
+                    const tableData = csvData.data.filter((member, index) => (index > 0 && member[0])).map((member) => {
+                        const prep = member.filter((value, id) => id > 0)
+                        return prep
+                    })
+
+                    // console.log('content', tableData)
+
+                    const table = (
+                        <div style={wrapperStyle}>
+                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                <thead>
+                                    <tr>
+                                        {header.map((member, index) => {
+                                            return (
+                                                <th style={headerStyle} key={index} > {member}</th>
+                                            );
+                                        })}
+                                    </tr>
+                                </thead>
+                                <tbody >
+                                    {tableData.map((member, index) => {
+                                        return (
+                                            <tr key={index}>
+                                                {member.map((value, id) => {
+                                                    return (
+                                                        <td style={columnStyle} key={id}>{value}</td>
+                                                    )
+                                                })}
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+
+                            </table>
+                        </div >
+                    )
+
+                    setContent(thisID, 'areaInfo', table)
+                })
+            }
+
+            if (this.props.item[i].areaInfoURL) {
+                this.getCsvData(this.props.item[i].bigAreaInfoURL).then((res) => {
+
+                    let csvData = Papa.parse(res)
+
+                    // console.log(csvData)
+
+                    const header = csvData.data[0].filter(member => member)
+
+                    // console.log('header', header)
+
+                    const tableData = csvData.data.filter((member, index) => (index > 0 && member[0])).map((member) => {
+                        const prep = member.filter((value, id) => id > 0)
+                        return prep
+                    })
+
+                    // console.log('content', tableData)
+
+                    const table = (
+                        <div style={wrapperStyle}>
+                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                <thead>
+                                    <tr>
+                                        {header.map((member, index) => {
+                                            return (
+                                                <th style={headerStyle} key={index} > {member}</th>
+                                            );
+                                        })}
+                                    </tr>
+                                </thead>
+                                <tbody >
+                                    {tableData.map((member, index) => {
+                                        return (
+                                            <tr key={index}>
+                                                {member.map((value, id) => {
+                                                    return (
+                                                        <td style={columnStyle} key={id}>{value}</td>
+                                                    )
+                                                })}
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+
+                            </table>
+                        </div >
+                    )
+
+                    setContent(thisID, 'bigAreaInfo', table)
+                })
+            }
+
         }
 
-        this.setState({ checkStatus: newState })
+        this.setState({ checkStatus: checkboxState })
+    }
+
+    getCsvData = (url) => {
+        return axios.get(url)
+            .then((resp) => {
+                return resp.data
+            })
+            .catch((err) => {
+                return false
+            })
     }
 
     componentDidMount() {
-        // console.log(this.props.selectedOutput)
-
-        // console.log(this.props)
 
         // let doOnOrientationChange = () => {
         //     switch (window.orientation) {
@@ -66,6 +245,7 @@ class VideoCard extends React.Component {
         // doOnOrientationChange()
 
 
+        // }
 
     }
 
@@ -174,6 +354,10 @@ class VideoCard extends React.Component {
         const choice1Items = []
         const choice2Items = []
 
+        const CsvSkeleton = props => (
+            <div style={{ textAlign: 'center' }}><Skeleton active /></div>
+        )
+
         for (let i = 0; i < this.props.item.length; i++) {
 
             let thisID = this.props.item[i].choice + this.props.item[i].chamber + this.props.item[i].position
@@ -186,6 +370,7 @@ class VideoCard extends React.Component {
                         extra={
                             <div>
                                 <Select
+                                    id={thisID}
                                     size="small"
                                     placeholder="Select your output type"
                                     defaultValue={this.props.selectedOutput}
@@ -193,7 +378,9 @@ class VideoCard extends React.Component {
                                     onChange={this.setActiveOutput}
                                 >
                                     <Option value="img">Image</Option>
-                                    <Option value="area">Area</Option>
+                                    <Option value="areaCount">Area Count</Option>
+                                    <Option value="areaInfo">Area Info</Option>
+                                    <Option value="bigAreaInfo">Big Area Info</Option>
                                 </Select>
                             </div>
                         }
@@ -211,12 +398,59 @@ class VideoCard extends React.Component {
                             // <Icon type="zoom-in" key="zoom-in" onClick={() => { this.handleActions('zoom', this.props.item.imageURL[0]) }} />,
                         ]}
                     >
-                        <Tabs defaultActiveKey={this.props.selectedOutput} activeKey={this.state.selectedOutput} tabPosition='top' size='small'>
+                        <Tabs activeKey={this.state.selectedOutput} tabPosition='top' type="card">
                             <TabPane tab="Image" key='img'>
-                                {this.props.item[i].content(this.props.item[i].imageURL)}
+                                <Row>
+                                    <Col span={24}>
+                                        <div style={{ height: '250px', display: 'table-cell', verticalAlign: 'middle' }}>
+                                            <img loading="auto" src={this.props.item[i].imageURL} width="100%" height="auto" />
+                                        </div>
+                                    </Col>
+                                </Row>
                             </TabPane>
-                            <TabPane tab="Area" key='area'>
-                                {this.props.item[i].content(this.props.item[i].imageURL)}
+                            <TabPane tab="Area Count" key='areaCount'>
+                                <Row>
+                                    <Col span={24}>
+                                        {this.props.item[i].areaCountURL ?
+
+                                            this.state.csvContent[thisID] ? this.state.csvContent[thisID].areaCount : <CsvSkeleton />
+
+                                            : <div style={{ height: '250px', display: 'table-cell', verticalAlign: 'middle' }}>
+                                                <img loading="auto" src={this.props.item[i].imageURL} width="100%" height="auto" />
+                                            </div>
+                                        }
+                                    </Col>
+                                </Row>
+                            </TabPane>
+                            <TabPane tab="Area Info" key='areaInfo'>
+                                <Row>
+                                    <Col span={24}>
+                                        {this.props.item[i].areaInfoURL ?
+
+                                            this.state.csvContent[thisID] ? this.state.csvContent[thisID].areaInfo : <CsvSkeleton />
+
+
+                                            : <div style={{ height: '250px', display: 'table-cell', verticalAlign: 'middle' }}>
+                                                <img loading="auto" src={this.props.item[i].imageURL} width="100%" height="auto" />
+                                            </div>
+                                        }
+                                    </Col>
+                                </Row>
+                            </TabPane>
+                            <TabPane tab="Big Area Info" key='bigAreaInfo'>
+                                <Row>
+                                    <Col span={24}>
+                                        {this.props.item[i].bigAreaInfoURL ?
+
+                                            this.state.csvContent[thisID] ? this.state.csvContent[thisID].bigAreaInfo : <CsvSkeleton />
+
+
+                                            : <div style={{ height: '250px', display: 'table-cell', verticalAlign: 'middle' }}>
+                                                <img loading="auto" src={this.props.item[i].imageURL} width="100%" height="auto" />
+                                            </div>
+                                        }
+                                    </Col>
+                                </Row>
                             </TabPane>
                         </Tabs>
                     </Card>
@@ -238,7 +472,10 @@ class VideoCard extends React.Component {
 
         return (
             <div key={this.props.key}>
-                <Row className="customTabHidden" type="flex">
+                <Row
+                    className="customTabHidden"
+                    type="flex"
+                >
                     <Col span={1} style={colStyle}>
                         {choice1Items}
                     </Col>

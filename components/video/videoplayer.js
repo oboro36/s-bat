@@ -125,7 +125,7 @@ class VideoPlayer extends React.Component {
         })
 
         video.addEventListener('timeupdate', () => {
-            this.props.form.setFieldsValue({ time: video.currentTime.toFixed(2) })
+            this.props.form.setFieldsValue({ ['time' + this.id]: video.currentTime.toFixed(2) })
         })
 
         let setSizeForCanvas = () => {
@@ -362,7 +362,7 @@ class VideoPlayer extends React.Component {
         video.pause()
 
         let val = (video.currentTime + increment).toFixed(2)
-        this.props.form.setFieldsValue({ time: val })
+        this.props.form.setFieldsValue({ ['time' + this.id]: val })
         video.currentTime = val
     }
 
@@ -375,7 +375,7 @@ class VideoPlayer extends React.Component {
         let val = (video.currentTime - decrement).toFixed(2)
         val = val < 0 ? 0 : val
 
-        this.props.form.setFieldsValue({ time: val })
+        this.props.form.setFieldsValue({ ['time' + this.id]: val })
         video.currentTime = val
     }
 
@@ -513,7 +513,7 @@ class VideoPlayer extends React.Component {
                                 <Col span={8}>
                                     <div>
                                         <Form.Item label="Current Time">
-                                            {getFieldDecorator('time', {
+                                            {getFieldDecorator('time' + this.id, {
                                                 initialValue: 0
                                             })(
                                                 <Input

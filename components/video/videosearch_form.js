@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react'
-import { Badge, Button, Row, Col, Form, Select, Divider, message } from 'antd'
+import { Button, Form, Select, Divider, message, Badge } from 'antd'
 import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { getDate, getMonth, getYear, isThisHour } from 'date-fns';
@@ -31,7 +31,7 @@ class VideoSearchForm extends React.Component {
                 content: false
             },
             searchCond: {
-                output: this.props.selectedOutput,
+                output: '',
                 site: '',
                 program: '',
                 line: '',
@@ -62,10 +62,10 @@ class VideoSearchForm extends React.Component {
             maintDates: [],
             middleDates: [],
             otherDates: [],
-            searchBy: 'none'
+            searchBy: 'none',
+            contentInfo: []
         }
         this._isMounted = false;
-        this.maintcontens = [];
     }
 
 
@@ -96,6 +96,43 @@ class VideoSearchForm extends React.Component {
                 })
             }
         )
+
+        // invokeApi('post', '/api/getMasterMaintContents', { site: 'SHDI' },
+        //     (res) => {
+        //         if (res.status == 204) {
+        //             openMessage('warning', 'No master maintenance content data')
+        //         } else if (res.status == 200) {
+
+        //             let contents = res.data.contents.map((member) => {
+        //                 return {
+        //                     ...member, color: () => {
+
+        //                         let color
+
+        //                         switch (member.code) {
+        //                             case 1:
+        //                                 break
+        //                             case 2:
+        //                                 break
+        //                             default:
+        //                                 break
+        //                         }
+
+        //                         return color
+
+        //                     }
+        //                 }
+        //             })
+
+        //             console.log(contents)
+
+        //             // this.setState()
+        //         }
+        //     },
+        //     (err) => {
+        //         console.log(err)
+        //     }) //based on SHDI
+
     }
 
     componentWillUnmount() {
@@ -427,20 +464,6 @@ class VideoSearchForm extends React.Component {
         }
     }
 
-    maint_contents_data = (() => {
-        invokeApi('post', '/api/getMasterMaintContents', { site: 'SHDI' },
-            (res) => {
-                if (res.status == 204) {
-                    openMessage('warning', 'No master maintenance content data')
-                } else if (res.status == 200) {
-                    this.maintcontens = res.data.contents
-                }
-            },
-            (err) => {
-                console.log(err)
-            }) //based on SHDI
-    })()
-
     renderDayContents = (day, date) => {
         let tooltipText = `Tooltip for date: ${date} `;
         let highlight = {}
@@ -593,9 +616,7 @@ class VideoSearchForm extends React.Component {
             <React.Fragment>
                 <Form labelCol={{ span: 7 }} wrapperCol={{ span: 12 }}>
                     <Divider>
-                        <Badge status={this.props.validated ? 'success' : 'error'}>
-                            <div style={{ border: '1px solid #EEEEEE', padding: '4px', borderRadius: '3px' }} >{this.props.title}</div>
-                        </Badge>
+                        <div style={{ border: '1px solid #EEEEEE', padding: '4px', borderRadius: '3px' }} >{this.props.title}</div>
                     </Divider>
                     <Form.Item label="Output" hidden>
                         {getFieldDecorator('output', {
@@ -701,7 +722,12 @@ class VideoSearchForm extends React.Component {
                                 renderDayContents={this.renderDayContents}
                                 includeDates={this.state.includeDates}
                                 disabled={this.state.searchDisable.analysisdate}
-                            />
+                            >
+                                <div style={{ width: '100%', textAlign: 'center', margin: '5px', padding: '5px' }}>
+                                    {this.state.maintDates.length != 0 ? <Badge style={{ marginRight: '10px' }} color="#99CD68" text="整備" /> : null}
+                                    {this.state.middleDates.length != 0 ? <Badge style={{ marginRight: '10px' }}  color="#84D7F5" text="中日対応" /> : null}
+                                </div>
+                            </DatePicker>
                         )}
                     </Form.Item>
                 </Form>

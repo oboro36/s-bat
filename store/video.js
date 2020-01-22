@@ -63,10 +63,10 @@ class VideoStore {
         // this.toggleDisabledCheck()
         // }
 
-        console.log('count----> ', this.checkCount)
-        console.log('max----> ', this.checkMax)
+        // console.log('count----> ', this.checkCount)
+        // console.log('max----> ', this.checkMax)
 
-        console.log(this.videoList)
+        // console.log(this.videoList)
     }
 
     @action
@@ -88,13 +88,13 @@ class VideoStore {
             })
         }
 
-        console.log('count----> ', this.checkCount)
-        console.log('max----> ', this.checkMax)
+        // console.log('count----> ', this.checkCount)
+        // console.log('max----> ', this.checkMax)
 
         // } else {
         // this.toggleDisabledCheck()
         // }
-        console.log(this.videoList)
+        // console.log(this.videoList)
     }
 
     @action
