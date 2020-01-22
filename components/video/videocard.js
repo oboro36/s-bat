@@ -153,7 +153,7 @@ class VideoCard extends React.Component {
                 })
             }
 
-            if (this.props.item[i].areaInfoURL) {
+            if (this.props.item[i].bigAreaInfoURL) {
                 this.getCsvData(this.props.item[i].bigAreaInfoURL).then((res) => {
 
                     let csvData = Papa.parse(res)
@@ -416,7 +416,7 @@ class VideoCard extends React.Component {
                                             this.state.csvContent[thisID] ? this.state.csvContent[thisID].areaCount : <CsvSkeleton />
 
                                             : <div style={{ height: '250px', display: 'table-cell', verticalAlign: 'middle' }}>
-                                                <img loading="auto" src={this.props.item[i].imageURL} width="100%" height="auto" />
+                                                <img loading="auto" src={notfoundImage} width="100%" height="auto" />
                                             </div>
                                         }
                                     </Col>
@@ -431,7 +431,7 @@ class VideoCard extends React.Component {
 
 
                                             : <div style={{ height: '250px', display: 'table-cell', verticalAlign: 'middle' }}>
-                                                <img loading="auto" src={this.props.item[i].imageURL} width="100%" height="auto" />
+                                                <img loading="auto" src={notfoundImage} width="100%" height="auto" />
                                             </div>
                                         }
                                     </Col>
@@ -446,7 +446,7 @@ class VideoCard extends React.Component {
 
 
                                             : <div style={{ height: '250px', display: 'table-cell', verticalAlign: 'middle' }}>
-                                                <img loading="auto" src={this.props.item[i].imageURL} width="100%" height="auto" />
+                                                <img loading="auto" src={notfoundImage} width="100%" height="auto" />
                                             </div>
                                         }
                                     </Col>

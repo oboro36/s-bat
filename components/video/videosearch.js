@@ -190,7 +190,7 @@ class VideoSearch extends React.Component {
                     choice2: choice2
                 },
                 async (res) => {
-                    // console.log(res)
+                    console.log(res)
 
                     let chambers = await this.getChamberList()
 
@@ -230,9 +230,9 @@ class VideoSearch extends React.Component {
                                         position: position,
                                         imageURL: find.IMAGE_DIRECTORY,
                                         videoURL: find.MOVIE_DIRECTORY,
-                                        areaCountURL: find.AREA_COUNT_DIRECTORY,
-                                        areaInfoURL: find.AREA_INFOR_DIRECTORY,
-                                        bigAreaInfoURL: find.BIG_AREA_INFOR_DIRECTORY,
+                                        areaCountURL: find.AREA_COUNT_DIRECTORY || false,
+                                        areaInfoURL: find.AREA_INFOR_DIRECTORY || false,
+                                        bigAreaInfoURL: find.BIG_AREA_INFOR_DIRECTORY || false,
                                         outputType: 'img',
                                         valid: true,
                                     }
@@ -279,9 +279,9 @@ class VideoSearch extends React.Component {
                                         position: position,
                                         imageURL: find.IMAGE_DIRECTORY,
                                         videoURL: find.MOVIE_DIRECTORY,
-                                        areaCountURL: find.AREA_COUNT_DIRECTORY,
-                                        areaInfoURL: find.AREA_INFOR_DIRECTORY,
-                                        bigAreaInfoURL: find.BIG_AREA_INFOR_DIRECTORY,
+                                        areaCountURL: find.AREA_COUNT_DIRECTORY || false,
+                                        areaInfoURL: find.AREA_INFOR_DIRECTORY || false,
+                                        bigAreaInfoURL: find.BIG_AREA_INFOR_DIRECTORY || false,
                                         outputType: 'img',
                                         valid: true,
                                     }
