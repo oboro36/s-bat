@@ -34,6 +34,7 @@ class VideoPlayer extends React.Component {
             videoURL: this.props.videoURL,
             seekRate: '0.50',
             isMobile: false,
+            isImageHidden: false,
             showTitle: false,
             editMode: false,
             videoLoading: true,
@@ -140,25 +141,42 @@ class VideoPlayer extends React.Component {
             this.setState({ ...this.state, videoLoading: false })
         }
 
-        video.addEventListener('loadedmetadata', function () {
+        // video.addEventListener('loadedmetadata', function () {
+        //     // console.log('data loaded')
+        //     if (this.props.seq == 'only') {
+        //         setTimeout(() => {
+        //             setSizeForCanvas()
+        //         }, 500);
+        //     } else {
+        //         setTimeout(() => {
+        //             setSizeForCanvas()
+        //         }, 500);
+        //     }
+        // }.bind(this));
+
+        video.addEventListener('canplay', function () {
             // console.log('data loaded')
             if (this.props.seq == 'only') {
                 setTimeout(() => {
                     setSizeForCanvas()
                 }, 500);
             } else {
-                setSizeForCanvas()
+                // setTimeout(() => {
+                    setSizeForCanvas()
+                // }, 500);
             }
         }.bind(this));
 
         if (video.readyState >= 2) {
-            // console.log('data loaded but weird')
+            console.log('data loaded but weird')
             if (this.props.seq == 'only') {
                 setTimeout(() => {
                     setSizeForCanvas()
                 }, 500);
             } else {
-                setSizeForCanvas()
+                setTimeout(() => {
+                    setSizeForCanvas()
+                }, 500);
             }
         }
 
@@ -352,6 +370,14 @@ class VideoPlayer extends React.Component {
 
     }
 
+    hideImage = () => {
+        this.setState({ isImageHidden: true })
+    }
+
+    showImage = () => {
+        this.setState({ isImageHidden: false })
+    }
+
     isMobileDevice = () => {
         return navigator.userAgent.toLowerCase().match(/mobile/i)
     }
@@ -438,7 +464,23 @@ class VideoPlayer extends React.Component {
 
                     <div id={'vidcontainer' + this.id}>
                         {this.state.showTitle ? <Title style={{ color: 'white', marginTop: '10px', textAlign: 'center' }}>{this.props.title}</Title> : null}
-                        <video id={this.id} controls={!this.state.editMode} width="100%" playsInline autoPlay={this.props.isAutoPlay} style={{ zIndex: 1, borderRadius: '6px' }}>
+                        <img
+                            hidden={this.state.isImageHidden}
+                            src={this.props.imageURL}
+                            width='100%'
+                            height='auto'
+                            style={{ position: 'absolute', zIndex: 5, borderRadius: '6px', marginBottom: '5px' }}
+                            onClick={this.hideImage}
+                        />
+                        <video
+                            id={this.id}
+                            controls={!this.state.editMode}
+                            width="100%"
+                            playsInline
+                            // autoPlay={this.props.isAutoPlay}
+                            autoPlay={false}
+                            style={{ zIndex: 1, borderRadius: '6px' }}
+                        >
                             <source src={this.state.videoURL} />
                         </video>
                     </div>
@@ -453,7 +495,7 @@ class VideoPlayer extends React.Component {
                 </Row>
 
                 <Spin spinning={this.state.videoLoading} size="large">
-                    <div style={{ backgroundColor: '#EEEEEE', padding: '7px', borderRadius: '6px' }}>
+                    <div style={{ backgroundColor: '#EEEEEE', padding: '7px', border: '1px solid #D9D9D9', borderRadius: '6px' }}>
                         <Row style={{ textAlign: 'center' }}>
                             <Form layout="inline">
                                 <Col span={8}>
@@ -494,7 +536,7 @@ class VideoPlayer extends React.Component {
                                     <Button hidden={!this.state.editMode} id={"clear" + this.id} type="danger" shape="round" size="small" ><Icon type="delete" />Clear</Button>
                                     </div>
                                     &nbsp;
-                                    <Switch checkedChildren="Capture" unCheckedChildren="Player" onChange={this.onModeChange} />
+                                    <Switch disabled={!this.state.isImageHidden} checkedChildren="Capture" unCheckedChildren="Player" onChange={this.onModeChange} />
                                     {/* )}
                                 </Form.Item> */}
                                 </Col>
@@ -504,7 +546,7 @@ class VideoPlayer extends React.Component {
                                             // initialValue: this.state.seekRate
                                         })(
                                             <div>
-                                                <InputNumber value={this.state.seekRate} min={0} max={1} step={0.05} onChange={this.seekRateChange} />
+                                                <InputNumber disabled={!this.state.isImageHidden} value={this.state.seekRate} min={0} max={1} step={0.05} onChange={this.seekRateChange} />
                                                 <Text> sec./click</Text>
                                             </div>
                                         )}
@@ -517,6 +559,7 @@ class VideoPlayer extends React.Component {
                                                 initialValue: 0
                                             })(
                                                 <Input
+                                                    disabled={!this.state.isImageHidden}
                                                     readOnly
                                                     style={{ width: '90px' }}
                                                     suffix="sec."
@@ -529,19 +572,19 @@ class VideoPlayer extends React.Component {
                         </Row>
                         <Row style={{ textAlign: 'center' }}>
                             <Col span={8} hidden={this.state.isMobile}>
-                                <a id={"download" + this.id} href="#" style={{ fontSize: '17px' }}><Button type="dashed"><Icon type="camera" /> Capture to clipboard</Button></a>
+                                <a disabled={!this.state.isImageHidden} id={"download" + this.id} href="#" style={{ fontSize: '17px' }}><Button type="dashed"><Icon type="camera" /> Capture to clipboard</Button></a>
                             </Col>
                             {/* <div id="output"></div> */}
                             <Col span={8}>
                                 <ButtonGroup>
-                                    <Button icon="backward" disabled={this.state.disableButton.backward} size="large" shape="round" onClick={this.backward} />
-                                    <Button icon="forward" disabled={this.state.disableButton.forward} size="large" shape="round" onClick={this.forward} />
+                                    <Button icon="backward" disabled={this.state.disableButton.backward || !this.state.isImageHidden} size="large" shape="round" onClick={this.backward} />
+                                    <Button icon="forward" disabled={this.state.disableButton.forward || !this.state.isImageHidden} size="large" shape="round" onClick={this.forward} />
                                 </ButtonGroup>
                             </Col>
                             <Col span={8}>
-
                                 <ButtonGroup style={{ marginLeft: "10px" }}>
-                                    <Button icon="fullscreen" disabled={this.state.disableButton.fullscreen} type="default" size="large" onClick={this.setFullscreen} >Fullscreen</Button>
+                                    <Button hidden={!this.state.isImageHidden} disabled={this.state.editMode} size="large" onClick={this.showImage}>Show Image</Button>
+                                    <Button icon="fullscreen" disabled={this.state.disableButton.fullscreen || !this.state.isImageHidden} type="default" size="large" onClick={this.setFullscreen} >Fullscreen</Button>
                                     {this.props.hasOwnProperty('doClose') ?
                                         <Button icon="close" type="danger" size="large" onClick={this.setModalClose} >Close</Button>
                                         : null}

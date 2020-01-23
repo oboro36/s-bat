@@ -410,6 +410,7 @@ class VideoSearch extends React.Component {
                     areaCountURL: 'static/csv/area_count_30_15.csv',
                     areaInfoURL: false,
                     bigAreaInfoURL: false,
+                    histogramURL: false,
                     outputType: 'img',
                     valid: false
                 },
@@ -423,6 +424,7 @@ class VideoSearch extends React.Component {
                     areaCountURL: 'static/csv/area_count_30_15.csv',
                     areaInfoURL: 'static/csv/area_infor.csv',
                     bigAreaInfoURL: 'static/csv/big_area_infor.csv',
+                    histogramURL: 'static/area_bar_0.12_1_.png',
                     outputType: 'img',
                     valid: true
                 },
@@ -436,6 +438,7 @@ class VideoSearch extends React.Component {
                     areaCountURL: 'static/csv/area_count_30_15.csv',
                     areaInfoURL: 'static/csv/area_infor.csv',
                     bigAreaInfoURL: 'static/csv/big_area_infor.csv',
+                    histogramURL: 'static/area_bar_0.12_1_.png',
                     outputType: 'img',
                     valid: true
                 },
@@ -449,6 +452,7 @@ class VideoSearch extends React.Component {
                     areaCountURL: 'static/csv/area_count_30_15.csv',
                     areaInfoURL: 'static/csv/area_infor.csv',
                     bigAreaInfoURL: 'static/csv/big_area_infor.csv',
+                    histogramURL: 'static/area_bar_0.12_1_.png',
                     outputType: 'img',
                     valid: true
                 }
@@ -514,12 +518,12 @@ class VideoSearch extends React.Component {
                                 <Col>
                                     <Button type="primary" icon="search" disabled={this.state.validated.choice1 ? false : true} onClick={this.handleSubmit}>Search</Button>
                                 </Col>
-                                {/* <Col>
+                                <Col>
                                     <Button type="danger" onClick={this.clear}>Clear</Button>
                                 </Col>
                                 <Col>
                                     <Button type="dashed" onClick={this.test}>Test</Button>
-                                </Col> */}
+                                </Col>
                             </Row>
                         </Panel>
                     </Collapse>

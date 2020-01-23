@@ -17,7 +17,16 @@ class VideoStore {
         const key = `open${Date.now()}`;
         const btn = (
 
-            <Link href={{ pathname: '/extportalplayer', query: { url1: list[0].URL, title1: list[0].title, url2: list[1].URL, title2: list[1].title } }} >
+            <Link href={{
+                pathname: '/extportalplayer', query: {
+                    videoURL1: list[0].URL,
+                    imageURL1: list[0].imageURL,
+                    title1: list[0].title,
+                    videoURL2: list[1].URL,
+                    imageURL2: list[1].imageURL,
+                    title2: list[1].title
+                }
+            }} >
                 <a target="_blank">
                     <Button type="primary" >
                         Confirm
@@ -48,10 +57,10 @@ class VideoStore {
     }
 
     @action
-    increaseCheck = (URL, title) => {
+    increaseCheck = (URL, title, imageURL) => {
         // if (this.checkCount < (this.checkMax)) {
         ++this.checkCount
-        this.videoList.push({ URL: URL, title: title })
+        this.videoList.push({ URL: URL, title: title, imageURL: imageURL })
 
         if (this.checkCount == 2) {
             let list = toJS(this.videoList)
@@ -70,7 +79,7 @@ class VideoStore {
     }
 
     @action
-    decreaseCheck = (URL, title) => {
+    decreaseCheck = (URL, title, imageURL) => {
         notification.destroy()
         // if (this.checkCount > 0) {
         --this.checkCount

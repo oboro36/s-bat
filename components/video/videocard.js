@@ -9,6 +9,11 @@ const { TabPane } = Tabs;
 const { Option } = Select;
 
 const notfoundImage = 'static/nodata-compressed.svg'
+const notfoundImageComponent = (
+    <div style={{ height: '300px', display: 'table-cell', verticalAlign: 'middle' }}>
+        <img loading="auto" src={notfoundImage} width="100%" height="auto" />
+    </div>
+)
 
 
 // const openNotificationWithIcon = (type, desc) => {
@@ -59,149 +64,158 @@ class VideoCard extends React.Component {
             if (this.props.item[i].areaCountURL) {
                 this.getCsvData(this.props.item[i].areaCountURL).then((res) => {
 
-                    let csvData = Papa.parse(res)
+                    if (res != false) {
+                        let csvData = Papa.parse(res)
 
-                    const tableData = csvData.data.filter((member, index) => (index > 0 && member[0])).map((member) => {
-                        return [member[0], member[1]]
-                    })
+                        const tableData = csvData.data.filter((member, index) => (index > 0 && member[0])).map((member) => {
+                            return [member[0], member[1]]
+                        })
 
-                    const table = (
-                        <div style={wrapperStyle}>
-                            {/* <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                <thead>
-                                    <tr>
-                                        {tableData.map((member, index) => {
-                                            return (
-                                                <th style={headerStyle} key={index}>{member[0]}</th>
-                                            );
-                                        })}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        {tableData.map((member, index) => {
-                                            return (
-                                                <td style={columnStyle} key={index}>{member[1]}</td>
-                                            );
-                                        })}
-                                    </tr>
-                                </tbody>
-
-                            </table> */}
-                            <Descriptions bordered column={1} size='small'>
-                                {tableData.map((member, index) => {
-                                    return (
-                                        <Descriptions.Item key={index} label={member[0]} >{member[1]}</Descriptions.Item>
-                                    );
-                                })}
-                            </Descriptions>
-                        </div>
-                    )
-
-                    setContent(thisID, 'areaCount', table)
+                        const table = (
+                            <div style={wrapperStyle}>
+                                {/* <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                    <thead>
+                                        <tr>
+                                            {tableData.map((member, index) => {
+                                                return (
+                                                    <th style={headerStyle} key={index}>{member[0]}</th>
+                                                );
+                                            })}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            {tableData.map((member, index) => {
+                                                return (
+                                                    <td style={columnStyle} key={index}>{member[1]}</td>
+                                                );
+                                            })}
+                                        </tr>
+                                    </tbody>
+    
+                                </table> */}
+                                <Descriptions bordered column={1} size='small'>
+                                    {tableData.map((member, index) => {
+                                        return (
+                                            <Descriptions.Item key={index} label={member[0]} >{member[1]}</Descriptions.Item>
+                                        );
+                                    })}
+                                </Descriptions>
+                            </div>
+                        )
+                        setContent(thisID, 'areaCount', table)
+                    } else {
+                        setContent(thisID, 'areaCount', notfoundImageComponent)
+                    }
                 })
             }
             if (this.props.item[i].areaInfoURL) {
                 this.getCsvData(this.props.item[i].areaInfoURL).then((res) => {
+                    if (res != false) {
+                        let csvData = Papa.parse(res)
 
-                    let csvData = Papa.parse(res)
+                        // console.log(csvData)
 
-                    // console.log(csvData)
+                        const header = csvData.data[0].filter(member => member)
 
-                    const header = csvData.data[0].filter(member => member)
+                        // console.log('header', header)
 
-                    // console.log('header', header)
+                        const tableData = csvData.data.filter((member, index) => (index > 0 && member[0])).map((member) => {
+                            const prep = member.filter((value, id) => id > 0)
+                            return prep
+                        })
 
-                    const tableData = csvData.data.filter((member, index) => (index > 0 && member[0])).map((member) => {
-                        const prep = member.filter((value, id) => id > 0)
-                        return prep
-                    })
+                        // console.log('content', tableData)
 
-                    // console.log('content', tableData)
-
-                    const table = (
-                        <div style={wrapperStyle}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                <thead>
-                                    <tr>
-                                        {header.map((member, index) => {
+                        const table = (
+                            <div style={wrapperStyle}>
+                                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                    <thead>
+                                        <tr>
+                                            {header.map((member, index) => {
+                                                return (
+                                                    <th style={headerStyle} key={index} > {member}</th>
+                                                );
+                                            })}
+                                        </tr>
+                                    </thead>
+                                    <tbody >
+                                        {tableData.map((member, index) => {
                                             return (
-                                                <th style={headerStyle} key={index} > {member}</th>
+                                                <tr key={index}>
+                                                    {member.map((value, id) => {
+                                                        return (
+                                                            <td style={columnStyle} key={id}>{value}</td>
+                                                        )
+                                                    })}
+                                                </tr>
                                             );
                                         })}
-                                    </tr>
-                                </thead>
-                                <tbody >
-                                    {tableData.map((member, index) => {
-                                        return (
-                                            <tr key={index}>
-                                                {member.map((value, id) => {
-                                                    return (
-                                                        <td style={columnStyle} key={id}>{value}</td>
-                                                    )
-                                                })}
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
+                                    </tbody>
 
-                            </table>
-                        </div >
-                    )
+                                </table>
+                            </div >
+                        )
 
-                    setContent(thisID, 'areaInfo', table)
+                        setContent(thisID, 'areaInfo', table)
+                    } else {
+                        setContent(thisID, 'areaCount', notfoundImageComponent)
+                    }
                 })
             }
 
             if (this.props.item[i].bigAreaInfoURL) {
                 this.getCsvData(this.props.item[i].bigAreaInfoURL).then((res) => {
+                    if (res != false) {
+                        let csvData = Papa.parse(res)
 
-                    let csvData = Papa.parse(res)
+                        // console.log(csvData)
 
-                    // console.log(csvData)
+                        const header = csvData.data[0].filter(member => member)
 
-                    const header = csvData.data[0].filter(member => member)
+                        // console.log('header', header)
 
-                    // console.log('header', header)
+                        const tableData = csvData.data.filter((member, index) => (index > 0 && member[0])).map((member) => {
+                            const prep = member.filter((value, id) => id > 0)
+                            return prep
+                        })
 
-                    const tableData = csvData.data.filter((member, index) => (index > 0 && member[0])).map((member) => {
-                        const prep = member.filter((value, id) => id > 0)
-                        return prep
-                    })
+                        // console.log('content', tableData)
 
-                    // console.log('content', tableData)
-
-                    const table = (
-                        <div style={wrapperStyle}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                <thead>
-                                    <tr>
-                                        {header.map((member, index) => {
+                        const table = (
+                            <div style={wrapperStyle}>
+                                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                    <thead>
+                                        <tr>
+                                            {header.map((member, index) => {
+                                                return (
+                                                    <th style={headerStyle} key={index} > {member}</th>
+                                                );
+                                            })}
+                                        </tr>
+                                    </thead>
+                                    <tbody >
+                                        {tableData.map((member, index) => {
                                             return (
-                                                <th style={headerStyle} key={index} > {member}</th>
+                                                <tr key={index}>
+                                                    {member.map((value, id) => {
+                                                        return (
+                                                            <td style={columnStyle} key={id}>{value}</td>
+                                                        )
+                                                    })}
+                                                </tr>
                                             );
                                         })}
-                                    </tr>
-                                </thead>
-                                <tbody >
-                                    {tableData.map((member, index) => {
-                                        return (
-                                            <tr key={index}>
-                                                {member.map((value, id) => {
-                                                    return (
-                                                        <td style={columnStyle} key={id}>{value}</td>
-                                                    )
-                                                })}
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
+                                    </tbody>
 
-                            </table>
-                        </div >
-                    )
+                                </table>
+                            </div >
+                        )
 
-                    setContent(thisID, 'bigAreaInfo', table)
+                        setContent(thisID, 'bigAreaInfo', table)
+                    } else {
+                        setContent(thisID, 'areaCount', notfoundImageComponent)
+                    }
                 })
             }
 
@@ -260,7 +274,7 @@ class VideoCard extends React.Component {
                 break
             case "play":
 
-                this.showModal(URL, title, id)
+                this.showModal(URL.imageURL, URL.videoURL, title, id)
 
                 break
             case "full-play":
@@ -275,14 +289,15 @@ class VideoCard extends React.Component {
 
     //***************************Modal Player***************************
 
-    showModal = (URL, title, id) => {
+    showModal = (imageURL, videoURL, title, id) => {
         // console.log('Create Video Modal with ', URL)
         this.setState({
             modalContent: (
                 <VideoPlayer
                     id="only"
                     seq="only"
-                    videoURL={URL}
+                    imageURL={imageURL}
+                    videoURL={videoURL}
                     title={title}
                     isAutoPlay={true}
                     doClose={this.handlePlayerCancel}
@@ -322,18 +337,18 @@ class VideoCard extends React.Component {
 
     //***************************Checkbox***************************
 
-    onCheck = async (e, ID, URL, title) => {
+    onCheck = async (e, ID, URL, title, imageURL) => {
 
         if (e.target.checked) {
             if (this.props.store.checkCount < (this.props.store.checkMax)) {
                 this.setState({ checkStatus: { ...this.state.checkStatus, [ID]: true } })
-                this.props.store.increaseCheck(URL, title)
+                this.props.store.increaseCheck(URL, title, imageURL)
             } else {
                 this.setState({ checkStatus: { ...this.state.checkStatus, [ID]: !e.target.checked } })
             }
         } else {
             this.setState({ checkStatus: { ...this.state.checkStatus, [ID]: false } })
-            this.props.store.decreaseCheck(URL, title)
+            this.props.store.decreaseCheck(URL, title, imageURL)
         }
 
     }
@@ -387,9 +402,15 @@ class VideoCard extends React.Component {
                             </div>
                         }
                         actions={[
-                            <Button size="small" disabled={!this.props.item[i].valid} type="default" icon="caret-right" onClick={() => { this.handleActions('play', this.props.item[i].videoURL, thisTitle, thisID) }}>{(this.props.orientation == 'landscape' || this.props.orientation == 'pc') ? 'Play' : ''}</Button>,
+                            <Button
+                                size="small"
+                                disabled={!this.props.item[i].valid}
+                                type="default"
+                                icon="caret-right"
+                                onClick={() => { this.handleActions('play', { imageURL: this.props.item[i].imageURL, videoURL: this.props.item[i].videoURL }, thisTitle, thisID) }}>{(this.props.orientation == 'landscape' || this.props.orientation == 'pc') ? 'Play' : ''}
+                            </Button>,
                             // <div><Icon type="play-square" key="play-square" /> Play</div>,
-                            <Checkbox checked={this.state.checkStatus[thisID]} onChange={e => this.onCheck(e, thisID, this.props.item[i].videoURL, thisTitle)} disabled={!this.props.item[i].valid}>{(this.props.orientation == 'landscape' || this.props.orientation == 'pc') ? 'Compare' : ''}</Checkbox>
+                            <Checkbox checked={this.state.checkStatus[thisID]} onChange={e => this.onCheck(e, thisID, this.props.item[i].videoURL, thisTitle, this.props.item[i].imageURL)} disabled={!this.props.item[i].valid}>{(this.props.orientation == 'landscape' || this.props.orientation == 'pc') ? 'Compare' : ''}</Checkbox>
                             // <Icon type="fullscreen" key="fullscreen" onClick={() => { this.handleActions('full-play', this.props.item[i].videoURL) }} />,
                             // <Link href={{ pathname: '/extportalplayer', query: { url1: 'static/testvideo.mp4', title1: 'title1', url2: 'static/testvideo.mp4', title2: 'title2' } }} >
                             //     <a target="_blank" onClick="window.open('/extportalplayer','name','width=600,height=400')">
@@ -417,9 +438,7 @@ class VideoCard extends React.Component {
 
                                             this.state.csvContent[thisID] ? this.state.csvContent[thisID].areaCount : <CsvSkeleton />
 
-                                            : <div style={{ height: '300px', display: 'table-cell', verticalAlign: 'middle' }}>
-                                                <img loading="auto" src={notfoundImage} width="100%" height="auto" />
-                                            </div>
+                                            : notfoundImageComponent
                                         }
                                     </Col>
                                 </Row>
@@ -432,9 +451,7 @@ class VideoCard extends React.Component {
                                             this.state.csvContent[thisID] ? this.state.csvContent[thisID].areaInfo : <CsvSkeleton />
 
 
-                                            : <div style={{ height: '300px', display: 'table-cell', verticalAlign: 'middle' }}>
-                                                <img loading="auto" src={notfoundImage} width="100%" height="auto" />
-                                            </div>
+                                            : notfoundImageComponent
                                         }
                                     </Col>
                                 </Row>
@@ -447,9 +464,7 @@ class VideoCard extends React.Component {
                                             this.state.csvContent[thisID] ? this.state.csvContent[thisID].bigAreaInfo : <CsvSkeleton />
 
 
-                                            : <div style={{ height: '300px', display: 'table-cell', verticalAlign: 'middle' }}>
-                                                <img loading="auto" src={notfoundImage} width="100%" height="auto" />
-                                            </div>
+                                            : notfoundImageComponent
                                         }
                                     </Col>
                                 </Row>
@@ -461,9 +476,7 @@ class VideoCard extends React.Component {
                                             <div style={{ height: '300px', display: 'table-cell', verticalAlign: 'middle' }}>
                                                 <img loading="auto" src={this.props.item[i].histogramURL} width="100%" height="auto" />
                                             </div>
-                                            : <div style={{ height: '300px', display: 'table-cell', verticalAlign: 'middle' }}>
-                                                <img loading="auto" src={notfoundImage} width="100%" height="auto" />
-                                            </div>
+                                            : notfoundImageComponent
                                         }
                                     </Col>
                                 </Row>
