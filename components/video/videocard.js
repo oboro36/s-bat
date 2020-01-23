@@ -47,7 +47,7 @@ class VideoCard extends React.Component {
             })
         }
 
-        const wrapperStyle = { height: '250px', overflowY: 'auto' }
+        const wrapperStyle = { height: '300px', overflowY: 'auto' }
 
         const headerStyle = { position: 'sticky', top: '0px', color: 'white', backgroundColor: '#1890FF', textAlign: 'center', border: '1px solid #ddd' }
 
@@ -376,11 +376,13 @@ class VideoCard extends React.Component {
                                     defaultValue={this.props.selectedOutput}
                                     style={this.props.item[i].choice == '1' && this.props.item[i].position == 'Pos1' ? { visibility: 'visible' } : { visibility: 'hidden' }}
                                     onChange={this.setActiveOutput}
+                                    dropdownMatchSelectWidth={false}
                                 >
                                     <Option value="img">Image</Option>
                                     <Option value="areaCount">Area Count</Option>
                                     <Option value="areaInfo">Area Info</Option>
                                     <Option value="bigAreaInfo">Big Area Info</Option>
+                                    <Option value="histogram">Histogram</Option>
                                 </Select>
                             </div>
                         }
@@ -402,7 +404,7 @@ class VideoCard extends React.Component {
                             <TabPane tab="Image" key='img'>
                                 <Row>
                                     <Col span={24}>
-                                        <div style={{ height: '250px', display: 'table-cell', verticalAlign: 'middle' }}>
+                                        <div style={{ height: '300px', display: 'table-cell', verticalAlign: 'middle' }}>
                                             <img loading="auto" src={this.props.item[i].imageURL} width="100%" height="auto" />
                                         </div>
                                     </Col>
@@ -415,7 +417,7 @@ class VideoCard extends React.Component {
 
                                             this.state.csvContent[thisID] ? this.state.csvContent[thisID].areaCount : <CsvSkeleton />
 
-                                            : <div style={{ height: '250px', display: 'table-cell', verticalAlign: 'middle' }}>
+                                            : <div style={{ height: '300px', display: 'table-cell', verticalAlign: 'middle' }}>
                                                 <img loading="auto" src={notfoundImage} width="100%" height="auto" />
                                             </div>
                                         }
@@ -430,7 +432,7 @@ class VideoCard extends React.Component {
                                             this.state.csvContent[thisID] ? this.state.csvContent[thisID].areaInfo : <CsvSkeleton />
 
 
-                                            : <div style={{ height: '250px', display: 'table-cell', verticalAlign: 'middle' }}>
+                                            : <div style={{ height: '300px', display: 'table-cell', verticalAlign: 'middle' }}>
                                                 <img loading="auto" src={notfoundImage} width="100%" height="auto" />
                                             </div>
                                         }
@@ -445,7 +447,21 @@ class VideoCard extends React.Component {
                                             this.state.csvContent[thisID] ? this.state.csvContent[thisID].bigAreaInfo : <CsvSkeleton />
 
 
-                                            : <div style={{ height: '250px', display: 'table-cell', verticalAlign: 'middle' }}>
+                                            : <div style={{ height: '300px', display: 'table-cell', verticalAlign: 'middle' }}>
+                                                <img loading="auto" src={notfoundImage} width="100%" height="auto" />
+                                            </div>
+                                        }
+                                    </Col>
+                                </Row>
+                            </TabPane>
+                            <TabPane tab="Histogram" key='histogram'>
+                                <Row>
+                                    <Col span={24}>
+                                        {this.props.item[i].histogramURL ?
+                                            <div style={{ height: '300px', display: 'table-cell', verticalAlign: 'middle' }}>
+                                                <img loading="auto" src={this.props.item[i].histogramURL} width="100%" height="auto" />
+                                            </div>
+                                            : <div style={{ height: '300px', display: 'table-cell', verticalAlign: 'middle' }}>
                                                 <img loading="auto" src={notfoundImage} width="100%" height="auto" />
                                             </div>
                                         }

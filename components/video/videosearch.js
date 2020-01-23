@@ -233,6 +233,7 @@ class VideoSearch extends React.Component {
                                         areaCountURL: find.AREA_COUNT_DIRECTORY || false,
                                         areaInfoURL: find.AREA_INFOR_DIRECTORY || false,
                                         bigAreaInfoURL: find.BIG_AREA_INFOR_DIRECTORY || false,
+                                        histogramURL: find.GRAPH_DIRECTORY || false,
                                         outputType: 'img',
                                         valid: true,
                                     }
@@ -252,6 +253,7 @@ class VideoSearch extends React.Component {
                                         areaCountURL: false,
                                         areaInfoURL: false,
                                         bigAreaInfoURL: false,
+                                        histogramURL: false,
                                         outputType: 'img',
                                         valid: false,
                                     }
@@ -282,6 +284,7 @@ class VideoSearch extends React.Component {
                                         areaCountURL: find.AREA_COUNT_DIRECTORY || false,
                                         areaInfoURL: find.AREA_INFOR_DIRECTORY || false,
                                         bigAreaInfoURL: find.BIG_AREA_INFOR_DIRECTORY || false,
+                                        histogramURL: find.GRAPH_DIRECTORY || false,
                                         outputType: 'img',
                                         valid: true,
                                     }
@@ -301,6 +304,7 @@ class VideoSearch extends React.Component {
                                         areaCountURL: false,
                                         areaInfoURL: false,
                                         bigAreaInfoURL: false,
+                                        histogramURL: false,
                                         outputType: 'img',
                                         valid: false,
                                     }
@@ -491,6 +495,7 @@ class VideoSearch extends React.Component {
                                                     <Option value="areaCount">Area Count</Option>
                                                     <Option value="areaInfo">Area Info</Option>
                                                     <Option value="bigAreaInfo">Big Area Info</Option>
+                                                    <Option value="histogram">Histogram</Option>
                                                 </Select>,
                                             )}
                                         </Form.Item>
@@ -509,12 +514,12 @@ class VideoSearch extends React.Component {
                                 <Col>
                                     <Button type="primary" icon="search" disabled={this.state.validated.choice1 ? false : true} onClick={this.handleSubmit}>Search</Button>
                                 </Col>
-                                <Col>
+                                {/* <Col>
                                     <Button type="danger" onClick={this.clear}>Clear</Button>
                                 </Col>
                                 <Col>
                                     <Button type="dashed" onClick={this.test}>Test</Button>
-                                </Col>
+                                </Col> */}
                             </Row>
                         </Panel>
                     </Collapse>
