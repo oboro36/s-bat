@@ -370,7 +370,7 @@ class VideoCard extends React.Component {
         const choice2Items = []
 
         const CsvSkeleton = props => (
-            <div style={{ textAlign: 'center' }}><Skeleton active /></div>
+            <div style={{ textAlign: 'center' }}><Skeleton paragraph={{ rows: 8 }} active /></div>
         )
 
         for (let i = 0; i < this.props.item.length; i++) {
