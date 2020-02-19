@@ -465,7 +465,7 @@ class VideoSearchForm extends React.Component {
     }
 
     renderDayContents = (day, date) => {
-        let tooltipText = `Tooltip for date: ${date} `;
+        let tooltipText = ` ${date} `;
         let highlight = {}
         let clickEvent = null
 
@@ -722,6 +722,7 @@ class VideoSearchForm extends React.Component {
                                 renderDayContents={this.renderDayContents}
                                 includeDates={this.state.includeDates}
                                 disabled={this.state.searchDisable.analysisdate}
+                                disabledKeyboardNavigation //入れないと現在日は変な色が出てくる
                             >
                                 <div style={{ width: '100%', textAlign: 'center', margin: '5px', padding: '5px' }}>
                                     {this.state.maintDates.length != 0 ? <Badge style={{ marginRight: '10px' }} color="#99CD68" text="整備" /> : null}

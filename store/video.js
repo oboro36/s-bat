@@ -57,6 +57,12 @@ class VideoStore {
     }
 
     @action
+    getVideoList = () => {
+        let list = toJS(this.videoList)
+        return  list
+    }
+
+    @action
     increaseCheck = (URL, title, imageURL) => {
         // if (this.checkCount < (this.checkMax)) {
         ++this.checkCount
@@ -75,7 +81,7 @@ class VideoStore {
         // console.log('count----> ', this.checkCount)
         // console.log('max----> ', this.checkMax)
 
-        // console.log(this.videoList)
+        console.log(this.videoList)
     }
 
     @action
@@ -103,7 +109,7 @@ class VideoStore {
         // } else {
         // this.toggleDisabledCheck()
         // }
-        // console.log(this.videoList)
+        console.log(this.videoList)
     }
 
     @action

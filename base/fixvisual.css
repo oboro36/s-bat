@@ -12,16 +12,23 @@
 
 /* change color of the selected date */
 
-.react-datepicker__day--selected {
+.react-datepicker__day--selected div {
     color: white !important;
     font-weight: 900 !important;
     text-decoration: underline !important;
+    border: 2px solid rgba(0, 0, 0, 0.25) !important;
 }
 
 /* change color of the selected date _initial */
 
-.react-datepicker__day--keyboard-selected {
+.react-datepicker__day--keyboard-selected div {
     color: white !important;
     font-weight: 900 !important;
     text-decoration: underline !important;
+    border: 2px solid rgba(0, 0, 0, 0.25) !important;
+}
+
+.swiper-container {
+    width: 600px;
+    height: 300px;
 }

@@ -40,7 +40,6 @@ class VideoSearch extends React.Component {
                 choice1: false,
                 choice2: false
             },
-            pageLoading: true
             // disabled: {
             //     submit: true
             // }
@@ -78,9 +77,9 @@ class VideoSearch extends React.Component {
             return true
         }
 
-        if (this.state.orientation != nextState.orientation) {
-            return true
-        }
+        // if (this.state.orientation != nextState.orientation) {
+        //     return true
+        // }
 
         // console.log(this.state)
 
@@ -88,46 +87,45 @@ class VideoSearch extends React.Component {
     }
 
     componentDidMount() {
-        if (this.isMobileDevice()) {
+        // if (this.isMobileDevice()) {
 
-            //first time 
+        //     //first time 
 
-            let mode = this.checkOrientation()
-            this.setState({ ...this.state, orientation: mode })
+        //     // let mode = this.checkOrientation()
+        //     // this.setState({ ...this.state, orientation: mode })
 
-            window.addEventListener('orientationchange', () => {
-                let mode = this.checkOrientation()
-                this.setState({ ...this.state, orientation: mode })
-            })
+        //     // window.addEventListener('orientationchange', () => {
+        //     //     let mode = this.checkOrientation()
+        //     //     this.setState({ ...this.state, orientation: mode })
+        //     // })
 
-        } else {
-            // alert('pc')
-        }
-        this.setState({ ...this.state, pageLoading: false })
+        // } else {
+        //     // alert('pc')
+        // }
     }
 
-    checkOrientation() {
-        let thisMode
+    // checkOrientation() {
+    //     let thisMode
 
-        switch (window.orientation) {
-            case 90:
-                thisMode = 'landscape'
-                break;
-            case -90:
-                thisMode = 'landscape'
-                break;
-            case 0:
-                thisMode = 'portrait'
-                break;
-            case 180:
-                thisMode = 'portrait'
-                break;
-            default:
-                break;
-        }
+    //     switch (window.orientation) {
+    //         case 90:
+    //             thisMode = 'landscape'
+    //             break;
+    //         case -90:
+    //             thisMode = 'landscape'
+    //             break;
+    //         case 0:
+    //             thisMode = 'portrait'
+    //             break;
+    //         case 180:
+    //             thisMode = 'portrait'
+    //             break;
+    //         default:
+    //             break;
+    //     }
 
-        return thisMode
-    }
+    //     return thisMode
+    // }
 
     isMobileDevice = () => {
         return navigator.userAgent.toLowerCase().match(/mobile/i)
@@ -175,6 +173,8 @@ class VideoSearch extends React.Component {
     }
 
     handleSubmit = async () => {
+
+        window.scrollTo(0,document.body.scrollHeight);
 
         let clearRes = await this.clearList()
         if (clearRes) {
@@ -319,6 +319,8 @@ class VideoSearch extends React.Component {
 
                         }
 
+                        //clear store of checkbox 
+                        this.props.store.resetCheck()
                         this.addList(dataSource)
 
                     }

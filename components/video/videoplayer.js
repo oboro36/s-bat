@@ -47,7 +47,11 @@ class VideoPlayer extends React.Component {
                 fullscreen: false,
             },
             brushIcon: 'pen',
-            test: 'palm'
+            controllerGrid: {
+                col1: 6,
+                col2: 8,
+                col3: 10
+            }
         }
         this._isMounted = false;
         this.id = 'video' + this.props.seq
@@ -63,6 +67,7 @@ class VideoPlayer extends React.Component {
                 lastSeekRate = 0.50
             }
             // console.log('set value from cookie: ', lastSeekRate)
+
             let res = await this.setInitialSeekRate(lastSeekRate)
             if (res) {
 
@@ -84,7 +89,24 @@ class VideoPlayer extends React.Component {
         }
 
         if (this.isMobileDevice()) {
-            this.setState({ ...this.state, isMobile: true })
+            this.setState({ ...this.state, 
+                isMobile: true, 
+                videoLoading: false , 
+                controllerGrid: {
+                    col1: 0, //hide edit mode
+                    col2: 13,
+                    col3: 11
+                } 
+            })
+
+            if (this.props.hasOwnProperty('doClose')) {
+                let video = document.querySelector('#' + this.id)
+                video.play()
+                video.pause()
+                // this.hideImage()
+                this.showImage()
+            }
+
         }
 
     }
@@ -162,7 +184,7 @@ class VideoPlayer extends React.Component {
                 }, 500);
             } else {
                 // setTimeout(() => {
-                    setSizeForCanvas()
+                setSizeForCanvas()
                 // }, 500);
             }
         }.bind(this));
@@ -406,7 +428,7 @@ class VideoPlayer extends React.Component {
     }
 
     seekRateChange = (value) => {
-        this.setState({ seekRate: value.toFixed(2) })
+        this.setState({ seekRate: Number(value).toFixed(2) })
         this.setSeekRateCookie(value)
     }
 
@@ -498,7 +520,7 @@ class VideoPlayer extends React.Component {
                     <div style={{ backgroundColor: '#EEEEEE', padding: '7px', border: '1px solid #D9D9D9', borderRadius: '6px' }}>
                         <Row style={{ textAlign: 'center' }}>
                             <Form layout="inline">
-                                <Col span={8}>
+                                <Col span={this.state.controllerGrid.col1}>
                                     {/* <Form.Item label="Mode">
                                     {getFieldDecorator('mode', {
                                         // initialValue: this.state.seekRate
@@ -536,11 +558,11 @@ class VideoPlayer extends React.Component {
                                     <Button hidden={!this.state.editMode} id={"clear" + this.id} type="danger" shape="round" size="small" ><Icon type="delete" />Clear</Button>
                                     </div>
                                     &nbsp;
-                                    <Switch disabled={!this.state.isImageHidden} checkedChildren="Capture" unCheckedChildren="Player" onChange={this.onModeChange} />
+                                    <Switch hidden={this.state.isMobile} disabled={!this.state.isImageHidden} checkedChildren="Capture" unCheckedChildren="Player" onChange={this.onModeChange} />
                                     {/* )}
                                 </Form.Item> */}
                                 </Col>
-                                <Col span={8}>
+                                <Col span={this.state.controllerGrid.col2}>
                                     <Form.Item label="Seek Rate">
                                         {getFieldDecorator('seekRate', {
                                             // initialValue: this.state.seekRate
@@ -552,7 +574,7 @@ class VideoPlayer extends React.Component {
                                         )}
                                     </Form.Item>
                                 </Col>
-                                <Col span={8}>
+                                <Col span={this.state.controllerGrid.col3}>
                                     <div>
                                         <Form.Item label="Current Time">
                                             {getFieldDecorator('time' + this.id, {
@@ -571,20 +593,20 @@ class VideoPlayer extends React.Component {
                             </Form>
                         </Row>
                         <Row style={{ textAlign: 'center' }}>
-                            <Col span={8} hidden={this.state.isMobile}>
+                            <Col span={this.state.controllerGrid.col1} hidden={this.state.isMobile}>
                                 <a disabled={!this.state.isImageHidden} id={"download" + this.id} href="#" style={{ fontSize: '17px' }}><Button type="dashed"><Icon type="camera" /> Capture to clipboard</Button></a>
                             </Col>
                             {/* <div id="output"></div> */}
-                            <Col span={8}>
+                            <Col span={this.state.controllerGrid.col2}>
                                 <ButtonGroup>
                                     <Button icon="backward" disabled={this.state.disableButton.backward || !this.state.isImageHidden} size="large" shape="round" onClick={this.backward} />
                                     <Button icon="forward" disabled={this.state.disableButton.forward || !this.state.isImageHidden} size="large" shape="round" onClick={this.forward} />
                                 </ButtonGroup>
                             </Col>
-                            <Col span={8}>
+                            <Col span={this.state.controllerGrid.col3}>
                                 <ButtonGroup style={{ marginLeft: "10px" }}>
                                     <Button hidden={!this.state.isImageHidden} disabled={this.state.editMode} size="large" onClick={this.showImage}>Show Image</Button>
-                                    <Button icon="fullscreen" disabled={this.state.disableButton.fullscreen || !this.state.isImageHidden} type="default" size="large" onClick={this.setFullscreen} >Fullscreen</Button>
+                                    <Button hidden={this.state.isMobile} icon="fullscreen" disabled={this.state.disableButton.fullscreen || !this.state.isImageHidden} type="default" size="large" onClick={this.setFullscreen} >Fullscreen</Button>
                                     {this.props.hasOwnProperty('doClose') ?
                                         <Button icon="close" type="danger" size="large" onClick={this.setModalClose} >Close</Button>
                                         : null}

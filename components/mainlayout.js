@@ -2,6 +2,7 @@ import { Layout } from 'antd';
 import Header from './header'
 import Footer from './footer'
 import Sidebar from './sidebar'
+import BurgerMenu from './burgermenu'
 
 const { Content } = Layout;
 
@@ -15,7 +16,7 @@ class MainLayout extends React.Component {
       initStyle: {
         // transition: "all 0.3s",
         backgroundImage: 'url("static/content-bg.png")',
-        marginLeft: this.props.isPlayer ? 0 : 80
+        // marginLeft: this.props.isPlayer ? 0 : 80
       },
       hideMenu: this.props.isPlayer ? true : false,
     }
@@ -51,12 +52,13 @@ class MainLayout extends React.Component {
       <React.Fragment>
         <Layout style={{ minHeight: '100vh' }}>
           {
-            this.state.hideMenu == true ? null : <Sidebar doCollapse={this.setCollapse} setSelectedHeader={this.getSelectedHeader} />
+            // this.state.hideMenu == true ? null : <Sidebar doCollapse={this.setCollapse} setSelectedHeader={this.getSelectedHeader} />
+            this.state.hideMenu == true ? null : <BurgerMenu/>
           }
           <Layout style={this.state.initStyle}>
             {/* <Header /> */}
-            <Content style={{ margin: '12px 12px' }} store={this.props.store}>
-              <div style={{ padding: 15, background: '#f0f2f5', border: 'solid 1px #D9D9D9', borderRadius: '7px', minHeight: 360 }}>
+            <Content  store={this.props.store}>
+              <div style={{ margin: '73px 12px 12px 12px', padding: 15, background: '#f0f2f5', border: 'solid 1px #D9D9D9', borderRadius: '7px', minHeight: 360 }}>
                 {this.props.children}
               </div>
             </Content>

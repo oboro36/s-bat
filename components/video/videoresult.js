@@ -2,6 +2,8 @@ import { List } from 'antd';
 
 import VideoCard from '../../components/video/videocard'
 import VisibilitySensor from "react-visibility-sensor";
+// import Swiper from 'swiper';
+// import 'swiper/css/swiper.min.css';
 
 let uniqueId = 0
 
@@ -9,7 +11,19 @@ class VideoResult extends React.PureComponent {
 
     constructor(props) {
         super(props)
+        this.state = {
+            rowPerPage: 30
+        }
+    }
 
+    componentDidMount() {
+        if (this.isMobileDevice()) {
+            this.setState({ rowPerPage: 15 })
+        }
+    }
+
+    isMobileDevice = () => {
+        return navigator.userAgent.toLowerCase().match(/mobile/i)
     }
 
     render() {
@@ -29,10 +43,9 @@ class VideoResult extends React.PureComponent {
                         return record.__uniqueId;
                     }}
                     // pagination={{
-                    //     onChange: page => {
-                    //         console.log(page);
-                    //     },
-                    //     pageSize: 5,
+                    //     position: 'top',
+                    //     hideOnSinglePage: true,
+                    //     pageSize: this.state.rowPerPage
                     // }}
                     renderItem={item => (
 

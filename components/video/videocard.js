@@ -29,6 +29,7 @@ class VideoCard extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+            isMobile: false,
             playerVisible: false,
             modalContent: 'Default Content',
             checkStatus: {},
@@ -38,6 +39,7 @@ class VideoCard extends React.Component {
     }
 
     componentWillMount() {
+
         let checkboxState = []
 
         const setContent = (id, type, content) => {
@@ -60,7 +62,13 @@ class VideoCard extends React.Component {
 
         for (let i = 0; i < this.props.item.length; i++) {
             let thisID = this.props.item[i].choice + this.props.item[i].chamber + this.props.item[i].position
-            checkboxState[thisID] = false
+            let thisTitle = this.props.item[i].title + ',' + this.props.item[i].chamber + ',' + this.props.item[i].position
+
+            const videoList = this.props.store.getVideoList()
+
+            let checkVideoList = videoList.find(member => member.title == thisTitle)
+
+            checkboxState[thisID] = checkVideoList ? true : false
             if (this.props.item[i].areaCountURL) {
                 this.getCsvData(this.props.item[i].areaCountURL).then((res) => {
 
@@ -236,6 +244,10 @@ class VideoCard extends React.Component {
 
     componentDidMount() {
 
+        if (this.isMobileDevice) {
+            this.setState({ ...this.state, isMobile: true })
+        }
+
         // let doOnOrientationChange = () => {
         //     switch (window.orientation) {
         //         case 90:
@@ -263,9 +275,9 @@ class VideoCard extends React.Component {
 
     }
 
-    // isMobileDevice = () => {
-    //     return navigator.userAgent.toLowerCase().match(/mobile/i)
-    // }
+    isMobileDevice = () => {
+        return navigator.userAgent.toLowerCase().match(/mobile/i)
+    }
 
     handleActions = async (action, URL, title, id) => {
         switch (action) {
@@ -353,9 +365,9 @@ class VideoCard extends React.Component {
 
     }
 
-    componentWillUnmount() {
-        this.props.store.resetCheck()
-    }
+    // componentWillUnmount() {
+    //     this.props.store.resetCheck()
+    // }
 
     setActiveOutput = value => {
         this.setState({ ...this.state, selectedOutput: value })
@@ -518,8 +530,8 @@ class VideoCard extends React.Component {
                     maskClosable={false}
                     keyboard={false}
                     visible={this.state.playerVisible}
-                    style={{ top: '10px' }}
-                    width="60%"
+                    style={{ top: '10px'}}
+                    width="65vw"
                     destroyOnClose={true}
                     onCancel={this.handlePlayerCancel}
                     footer={null}
