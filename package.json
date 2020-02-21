@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
+    "export": "next export",
     "start": "next start",
     "prod_start": "next build && set NODE_ENV=production && node server",
     "serve": "npm run build && npm run prod_start"

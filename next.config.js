@@ -37,4 +37,9 @@ module.exports = withCss(withSass({
         }
         return config
     },
+    exportPathMap: async function (defaultPathMap) {
+        return {
+            '/index.html': { page: '/index' },
+        };
+    }
 }))
