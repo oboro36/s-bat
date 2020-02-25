@@ -81,7 +81,7 @@ class VideoStore {
         // console.log('count----> ', this.checkCount)
         // console.log('max----> ', this.checkMax)
 
-        console.log(this.videoList)
+        // console.log(this.videoList)
     }
 
     @action
@@ -109,7 +109,7 @@ class VideoStore {
         // } else {
         // this.toggleDisabledCheck()
         // }
-        console.log(this.videoList)
+        // console.log(this.videoList)
     }
 
     @action

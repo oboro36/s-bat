@@ -190,7 +190,7 @@ class VideoSearch extends React.Component {
                     choice2: choice2
                 },
                 async (res) => {
-                    console.log(res)
+                    // console.log(res)
 
                     let chambers = await this.getChamberList()
 

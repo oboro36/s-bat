@@ -190,7 +190,7 @@ class VideoPlayer extends React.Component {
         }.bind(this));
 
         if (video.readyState >= 2) {
-            console.log('data loaded but weird')
+            // console.log('data loaded but weird')
             if (this.props.seq == 'only') {
                 setTimeout(() => {
                     setSizeForCanvas()
