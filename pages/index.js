@@ -15,7 +15,7 @@ const Index = () => {
 
         <Title>Welcome to S-BAT Analyze application</Title>
         <Divider />
-        <Title level={2} type="secondary">Please select menu onthe left side.</Title>
+        <Title level={2} type="secondary">Please select menu on the left side.</Title>
 {/* 
         <Row gutter={16}>
           <Col span={12}>
