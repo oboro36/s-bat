@@ -44,13 +44,16 @@ class VideoResult extends React.PureComponent {
                     header={
                         <div>
                             <span style={{ fontSize: '20px', fontWeight: '600' }}>Result</span><Divider type="vertical" />
-                            Pagination:&nbsp;<Switch onChange={this.switchPagination} /> &nbsp;
-                            Checkd Item: <span
+                            Checkd Item:&nbsp;<span
                                 id="checkedItem"
+                                style={{
+                                    color: 'green '
+                                }}
                                 ref={checkedCount => {
                                     this.checkedItem = checkedCount;
                                 }}
-                            >0</span>
+                            >0</span><Divider type="vertical" />
+                            Pagination:&nbsp;<Switch onChange={this.switchPagination} />
                             {/* Items/Page:&nbsp;
                             <Select defaultValue="10" style={{ width: 120 }} onChange={this.perPageChange}>
                                 <Option value="5">5</Option>
@@ -94,7 +97,7 @@ class VideoResult extends React.PureComponent {
                                 selectedOutput={this.props.selectedOutput}
                                 orientation={this.props.orientation}
                                 store={this.props.store}
-                                testMe={this.checkedItem}
+                                checkedCount={this.checkedItem}
                             />
                         </List.Item>
                         //     }

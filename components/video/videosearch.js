@@ -174,7 +174,10 @@ class VideoSearch extends React.Component {
 
     handleSubmit = async () => {
 
-        window.scrollTo(0,document.body.scrollHeight);
+        //replace # with %23
+        const doReplace = str => str.replace('#', '%23')
+
+        window.scrollTo(0, document.body.scrollHeight);
 
         let clearRes = await this.clearList()
         if (clearRes) {
@@ -228,12 +231,12 @@ class VideoSearch extends React.Component {
                                         choice: '1',
                                         chamber: chamber,
                                         position: position,
-                                        imageURL: find.IMAGE_DIRECTORY,
-                                        videoURL: find.MOVIE_DIRECTORY,
-                                        areaCountURL: find.AREA_COUNT_DIRECTORY || false,
-                                        areaInfoURL: find.AREA_INFOR_DIRECTORY || false,
-                                        bigAreaInfoURL: find.BIG_AREA_INFOR_DIRECTORY || false,
-                                        histogramURL: find.GRAPH_DIRECTORY || false,
+                                        imageURL: doReplace(find.IMAGE_DIRECTORY),
+                                        videoURL: doReplace(find.MOVIE_DIRECTORY),
+                                        areaCountURL: find.AREA_COUNT_DIRECTORY ? doReplace(find.AREA_COUNT_DIRECTORY) : false,
+                                        areaInfoURL: find.AREA_INFOR_DIRECTORY ? doReplace(find.AREA_INFOR_DIRECTORY) : false,
+                                        bigAreaInfoURL: find.BIG_AREA_INFOR_DIRECTORY ? doReplace(find.BIG_AREA_INFOR_DIRECTORY) : false,
+                                        histogramURL: find.GRAPH_DIRECTORY ? doReplace(find.GRAPH_DIRECTORY) : false,
                                         outputType: 'img',
                                         valid: true,
                                     }
@@ -279,12 +282,12 @@ class VideoSearch extends React.Component {
                                         choice: '2',
                                         chamber: chamber,
                                         position: position,
-                                        imageURL: find.IMAGE_DIRECTORY,
-                                        videoURL: find.MOVIE_DIRECTORY,
-                                        areaCountURL: find.AREA_COUNT_DIRECTORY || false,
-                                        areaInfoURL: find.AREA_INFOR_DIRECTORY || false,
-                                        bigAreaInfoURL: find.BIG_AREA_INFOR_DIRECTORY || false,
-                                        histogramURL: find.GRAPH_DIRECTORY || false,
+                                        imageURL: doReplace(find.IMAGE_DIRECTORY),
+                                        videoURL: doReplace(find.MOVIE_DIRECTORY),
+                                        areaCountURL: find.AREA_COUNT_DIRECTORY ? doReplace(find.AREA_COUNT_DIRECTORY) : false,
+                                        areaInfoURL: find.AREA_INFOR_DIRECTORY ? doReplace(find.AREA_INFOR_DIRECTORY) : false,
+                                        bigAreaInfoURL: find.BIG_AREA_INFOR_DIRECTORY ? doReplace(find.BIG_AREA_INFOR_DIRECTORY): false,
+                                        histogramURL: find.GRAPH_DIRECTORY ? doReplace(find.GRAPH_DIRECTORY) : false,
                                         outputType: 'img',
                                         valid: true,
                                     }

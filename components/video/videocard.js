@@ -363,7 +363,7 @@ class VideoCard extends React.Component {
             this.props.store.decreaseCheck(URL, title, imageURL)
         }
 
-        this.props.testMe.setAttribute('hidden', true)
+        this.props.checkedCount.innerHTML = this.props.store.checkCount
 
     }
 
