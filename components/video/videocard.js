@@ -363,6 +363,8 @@ class VideoCard extends React.Component {
             this.props.store.decreaseCheck(URL, title, imageURL)
         }
 
+        this.props.testMe.setAttribute('hidden', true)
+
     }
 
     // componentWillUnmount() {
@@ -530,7 +532,7 @@ class VideoCard extends React.Component {
                     maskClosable={false}
                     keyboard={false}
                     visible={this.state.playerVisible}
-                    style={{ top: '10px'}}
+                    style={{ top: '10px' }}
                     width="65vw"
                     destroyOnClose={true}
                     onCancel={this.handlePlayerCancel}

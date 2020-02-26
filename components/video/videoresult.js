@@ -1,4 +1,6 @@
-import { List } from 'antd';
+import { List, Switch, Select, Divider } from 'antd';
+
+const { Option } = Select;
 
 import VideoCard from '../../components/video/videocard'
 import VisibilitySensor from "react-visibility-sensor";
@@ -12,25 +14,51 @@ class VideoResult extends React.PureComponent {
     constructor(props) {
         super(props)
         this.state = {
-            rowPerPage: 30
+            paginationToggle: false,
+            itemPerPage: 10,
         }
     }
 
     componentDidMount() {
-        if (this.isMobileDevice()) {
-            this.setState({ rowPerPage: 15 })
-        }
+        // if (this.isMobileDevice()) {
+        //     this.setState({ itemPerPage: 15 })
+        // }
     }
 
     isMobileDevice = () => {
         return navigator.userAgent.toLowerCase().match(/mobile/i)
     }
 
+    switchPagination = (checked) => {
+        this.setState({ paginationToggle: !this.state.paginationToggle })
+    }
+
+    perPageChange = (current, value) => {
+        this.setState({ itemPerPage: value })
+    }
+
     render() {
         return (
             <React.Fragment>
                 <List
-                    header={<div>Result</div>}
+                    header={
+                        <div>
+                            <span style={{ fontSize: '20px', fontWeight: '600' }}>Result</span><Divider type="vertical" />
+                            Pagination:&nbsp;<Switch onChange={this.switchPagination} /> &nbsp;
+                            Checkd Item: <span
+                                id="checkedItem"
+                                ref={checkedCount => {
+                                    this.checkedItem = checkedCount;
+                                }}
+                            >0</span>
+                            {/* Items/Page:&nbsp;
+                            <Select defaultValue="10" style={{ width: 120 }} onChange={this.perPageChange}>
+                                <Option value="5">5</Option>
+                                <Option value="10">10</Option>
+                                <Option value="15">15</Option>
+                            </Select> */}
+                        </div>
+                    }
                     grid={{
                         gutter: 16,
                         column: 1
@@ -42,11 +70,16 @@ class VideoResult extends React.PureComponent {
                             record.__uniqueId = ++uniqueId;
                         return record.__uniqueId;
                     }}
-                    // pagination={{
-                    //     position: 'top',
-                    //     hideOnSinglePage: true,
-                    //     pageSize: this.state.rowPerPage
-                    // }}
+                    pagination={this.state.paginationToggle ?
+                        {
+                            position: 'top',
+                            hideOnSinglePage: true,
+                            pageSize: this.state.itemPerPage,
+                            pageSizeOptions: ['5', '10', '15'],
+                            showSizeChanger: true,
+                            onShowSizeChange: this.perPageChange
+                        } : null
+                    }
                     renderItem={item => (
 
                         // <VisibilitySensor partialVisibility={true}>
@@ -61,6 +94,7 @@ class VideoResult extends React.PureComponent {
                                 selectedOutput={this.props.selectedOutput}
                                 orientation={this.props.orientation}
                                 store={this.props.store}
+                                testMe={this.checkedItem}
                             />
                         </List.Item>
                         //     }
@@ -68,7 +102,7 @@ class VideoResult extends React.PureComponent {
                     )}
                 >
                 </List>
-            </React.Fragment>
+            </React.Fragment >
         )
     }
 }

@@ -21,8 +21,8 @@ class BurgerMenu extends React.Component {
             justifyContent: 'space-around',
             alignItems: 'center',
             margin: '10px 10px 10px 10px',
-            padding: '5px',
-            borderRadius: '5px',
+            padding: '6px',
+            borderRadius: '30px',
         }
     }
 
@@ -81,9 +81,9 @@ class BurgerMenu extends React.Component {
                         <div style={this.style}>
                             <Avatar icon="user" />&nbsp;
                             <span style={{ fontWeight: 'bold' }}> {this.state.userName} </span>&nbsp;
-                            <Button type="primary" shape="circle" icon="setting" size="default" onClick={this.showModal} />&nbsp;
+                            <Button style={{lineHeight: '100%'}} type="primary" shape="circle" icon="setting" size="default" onClick={this.showModal} />&nbsp;
                             <Link href="/">
-                                <Button type="danger" shape="circle" icon="logout" size="default" />
+                                <Button style={{lineHeight: '100%'}} type="danger" shape="circle" icon="logout" size="default" />
                             </Link>
                         </div>
                     </div>
