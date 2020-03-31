@@ -63,7 +63,7 @@ class BurgerMenu extends React.Component {
 
     render() {
         return (
-            <div style={{ position: 'fixed', zIndex: 1, width: '100%', height: '60px', backgroundColor: '#001529' }}>
+            <div style={{ position: 'fixed', zIndex: 9999, width: '100%', height: '60px', backgroundColor: '#001529' }}>
                 {/* Side Menu */}
                 <Menu className="hiddenScroll" isOpen={this.state.isMenuOpen} onStateChange={this.handleStateChange}>
                     <div className="logo">

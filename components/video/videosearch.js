@@ -202,6 +202,7 @@ class VideoSearch extends React.Component {
 
                         let results = res.data
 
+
                         let label = this.state.selectedLabel
                         let choice1_title = label.choice1.site + ',' + label.choice1.program + ',' + label.choice1.line + ',' + label.choice1.content + ',' + label.choice1.analysisdate
                         let choice2_title = label.choice2.site + ',' + label.choice2.program + ',' + label.choice2.line + ',' + label.choice2.content + ',' + label.choice2.analysisdate
@@ -219,12 +220,24 @@ class VideoSearch extends React.Component {
                             for (let j = 1; j <= 2; j++) {
                                 let position = 'Pos' + j
                                 // console.log('position----> ', position)
-                                let find = results.choice1.find((member) => {
+                                let find = results.choice1.main.find((member) => {
                                     return member.CHAMBER_CODE == chamber && member.POSITION == position
                                 })
 
                                 if (find) {
                                     // console.log('found CHOICE1 ', chamber, ' ', position)
+
+                                    let areaCount = results.choice1.area_count.filter((member) => {
+                                        return member.CHAMBER_CODE == chamber && member.POSITION == position
+                                    })
+
+                                    let areaInfo = results.choice1.area_info.filter((member) => {
+                                        return member.CHAMBER_CODE == chamber && member.POSITION == position
+                                    })
+
+                                    let bigAreaInfo = results.choice1.big_area_info.filter((member) => {
+                                        return member.CHAMBER_CODE == chamber && member.POSITION == position
+                                    })
 
                                     let choice1 = {
                                         title: choice1_title,
@@ -233,9 +246,12 @@ class VideoSearch extends React.Component {
                                         position: position,
                                         imageURL: doReplace(find.IMAGE_DIRECTORY),
                                         videoURL: doReplace(find.MOVIE_DIRECTORY),
-                                        areaCountURL: find.AREA_COUNT_DIRECTORY ? doReplace(find.AREA_COUNT_DIRECTORY) : false,
-                                        areaInfoURL: find.AREA_INFOR_DIRECTORY ? doReplace(find.AREA_INFOR_DIRECTORY) : false,
-                                        bigAreaInfoURL: find.BIG_AREA_INFOR_DIRECTORY ? doReplace(find.BIG_AREA_INFOR_DIRECTORY) : false,
+                                        areaCount: areaCount.length > 0 ? areaCount : false,
+                                        areaInfo: areaInfo.length > 0 ? areaInfo : false,
+                                        bigAreaInfo: bigAreaInfo.length > 0 ? bigAreaInfo : false,
+                                        // areaCountURL: find.AREA_COUNT_DIRECTORY ? doReplace(find.AREA_COUNT_DIRECTORY) : false,
+                                        // areaInfoURL: find.AREA_INFOR_DIRECTORY ? doReplace(find.AREA_INFOR_DIRECTORY) : false,
+                                        // bigAreaInfoURL: find.BIG_AREA_INFOR_DIRECTORY ? doReplace(find.BIG_AREA_INFOR_DIRECTORY) : false,
                                         histogramURL: find.GRAPH_DIRECTORY ? doReplace(find.GRAPH_DIRECTORY) : false,
                                         outputType: 'img',
                                         valid: true,
@@ -253,9 +269,9 @@ class VideoSearch extends React.Component {
                                         position: position,
                                         imageURL: notfoundImage,
                                         videoURL: '-',
-                                        areaCountURL: false,
-                                        areaInfoURL: false,
-                                        bigAreaInfoURL: false,
+                                        // areaCountURL: false,
+                                        // areaInfoURL: false,
+                                        // bigAreaInfoURL: false,
                                         histogramURL: false,
                                         outputType: 'img',
                                         valid: false,
@@ -270,12 +286,24 @@ class VideoSearch extends React.Component {
                             for (let j = 1; j <= 2; j++) {
                                 let position = 'Pos' + j
                                 // console.log('position----> ', position)
-                                let find = results.choice2.find((member) => {
+                                let find = results.choice2.main.find((member) => {
                                     return member.CHAMBER_CODE == chamber && member.POSITION == position
                                 })
 
                                 if (find) {
                                     // console.log('found CHOICE2 ', chamber, ' ', position)
+
+                                    let areaCount = results.choice2.area_count.filter((member) => {
+                                        return member.CHAMBER_CODE == chamber && member.POSITION == position
+                                    })
+
+                                    let areaInfo = results.choice2.area_info.filter((member) => {
+                                        return member.CHAMBER_CODE == chamber && member.POSITION == position
+                                    })
+
+                                    let bigAreaInfo = results.choice2.big_area_info.filter((member) => {
+                                        return member.CHAMBER_CODE == chamber && member.POSITION == position
+                                    })
 
                                     let choice2 = {
                                         title: choice2_title,
@@ -284,9 +312,12 @@ class VideoSearch extends React.Component {
                                         position: position,
                                         imageURL: doReplace(find.IMAGE_DIRECTORY),
                                         videoURL: doReplace(find.MOVIE_DIRECTORY),
-                                        areaCountURL: find.AREA_COUNT_DIRECTORY ? doReplace(find.AREA_COUNT_DIRECTORY) : false,
-                                        areaInfoURL: find.AREA_INFOR_DIRECTORY ? doReplace(find.AREA_INFOR_DIRECTORY) : false,
-                                        bigAreaInfoURL: find.BIG_AREA_INFOR_DIRECTORY ? doReplace(find.BIG_AREA_INFOR_DIRECTORY): false,
+                                        areaCount: areaCount.length > 0 ? areaCount : false,
+                                        areaInfo: areaInfo.length > 0 ? areaInfo : false,
+                                        bigAreaInfo: bigAreaInfo.length > 0 ? bigAreaInfo : false,
+                                        // areaCountURL: find.AREA_COUNT_DIRECTORY ? doReplace(find.AREA_COUNT_DIRECTORY) : false,
+                                        // areaInfoURL: find.AREA_INFOR_DIRECTORY ? doReplace(find.AREA_INFOR_DIRECTORY) : false,
+                                        // bigAreaInfoURL: find.BIG_AREA_INFOR_DIRECTORY ? doReplace(find.BIG_AREA_INFOR_DIRECTORY): false,
                                         histogramURL: find.GRAPH_DIRECTORY ? doReplace(find.GRAPH_DIRECTORY) : false,
                                         outputType: 'img',
                                         valid: true,
@@ -304,9 +335,9 @@ class VideoSearch extends React.Component {
                                         position: position,
                                         imageURL: notfoundImage,
                                         videoURL: '-',
-                                        areaCountURL: false,
-                                        areaInfoURL: false,
-                                        bigAreaInfoURL: false,
+                                        // areaCountURL: false,
+                                        // areaInfoURL: false,
+                                        // bigAreaInfoURL: false,
                                         histogramURL: false,
                                         outputType: 'img',
                                         valid: false,

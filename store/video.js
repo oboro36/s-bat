@@ -36,6 +36,7 @@ class VideoStore {
 
         );
         notification.info({
+            top: '70px',
             message: 'Comfirm Notification',
             description: <span>Do you want to open new tab and play below titles? <br /> <b>Title 1:</b> {list[0].title} <br /> <b>Title 2:</b> {list[1].title}</span>,
             btn,

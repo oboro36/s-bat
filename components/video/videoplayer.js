@@ -252,91 +252,6 @@ class VideoPlayer extends React.Component {
             this.started = false;
         });
 
-        // canvasDraw.width = this.vidWidth
-        // canvasDraw.height = this.vidHeight
-
-        // //Variables
-        // let canvasx = canvasDraw.offsetLeft;
-        // let canvasy = canvasDraw.offsetTop;
-        // let last_mousex = 0;
-        // let last_mousey = 0;
-        // let mousex = 0;
-        // let mousey = 0;
-        // let mousedown = false;
-
-        // //Mousedown
-
-        // canvasDraw.addEventListener('mousedown', (e) => {
-        //     last_mousex = mousex
-        //     last_mousey = mousey
-        //     mousedown = true;
-        // })
-
-        // canvasDraw.addEventListener('mouseup', (e) => {
-        //     mousedown = false;
-        // })
-
-        // canvasDraw.addEventListener('mousemove', (e) => {
-
-        //     var size = getElementCSSSize(video);
-        //     var scaleX = video.videoWidth / size.width;
-        //     var scaleY = video.videoHeight / size.height;
-
-        //     var rect = canvasDraw.getBoundingClientRect();  // absolute position of element
-        //     mousex = ((event.clientX - rect.left) * scaleX + 0.5) | 0;
-        //     mousey = ((event.clientY - rect.top) * scaleY + 0.5) | 0;
-
-        //     // mousex = parseInt(e.clientX - canvasx);
-        //     // mousey = parseInt(e.clientY - canvasy);
-        //     if (mousedown) {
-        //         canvasDraw_ctx.clearRect(0, 0, canvasDraw.width, canvasDraw.height); //clear canvas
-        //         //Save
-        //         canvasDraw_ctx.save();
-        //         canvasDraw_ctx.beginPath();
-        //         //Dynamic scaling
-        //         var scalex = 1 * ((mousex - last_mousex) / 10);
-        //         var scaley = 1 * ((mousey - last_mousey) / 10);
-        //         canvasDraw_ctx.scale(scalex, scaley);
-        //         //Create ellipse
-        //         var centerx = (last_mousex / scalex) + 1;
-        //         var centery = (last_mousey / scaley) + 1;
-        //         canvasDraw_ctx.arc(centerx, centery, 1, 0, 2 * Math.PI);
-        //         //Restore and draw
-        //         canvasDraw_ctx.restore();
-        //         canvasDraw_ctx.strokeStyle = 'red';
-        //         canvasDraw_ctx.lineWidth = 5;
-        //         canvasDraw_ctx.stroke();
-        //     }
-
-        //     let output = document.querySelector('#output')
-
-        //     output.innerHTML = ('current: ' + mousex + ', ' + mousey + '<br/>last: ' + last_mousex + ', ' + last_mousey + '<br/>mousedown: ' + mousedown);
-        // })
-
-
-        // function getElementCSSSize(el) {
-        //     var cs = getComputedStyle(el);
-        //     var w = parseInt(cs.getPropertyValue("width"), 10);
-        //     var h = parseInt(cs.getPropertyValue("height"), 10);
-        //     return { width: w, height: h }
-        // }
-
-        // function mouseHandler(event) {
-        //     var size = getElementCSSSize(this);
-        //     var scaleX = this.videoWidth / size.width;
-        //     var scaleY = this.videoHeight / size.height;
-
-        //     var rect = this.getBoundingClientRect();  // absolute position of element
-        //     var x = ((event.clientX - rect.left) * scaleX + 0.5) | 0;
-        //     var y = ((event.clientY - rect.top) * scaleY + 0.5) | 0;
-
-        //     info.innerHTML = "x: " + x + " y: " + y;
-        //     initial.innerHTML = "(video: " + this.videoWidth + " x " + this.videoHeight + ")";
-        // }
-
-
-        // video.addEventListener("mousemove", mouseHandler);
-
         //**********************************DOWNLOAD*********************************** */
 
         let title = this.props.title
@@ -358,24 +273,6 @@ class VideoPlayer extends React.Component {
             canvas_ctx.fillStyle = 'yellow'
             canvas_ctx.fillText(title, 20, 45);
 
-            // canvas_ctx.fillStyle = "#c82124"; //red
-            // canvas_ctx.beginPath();
-            // canvas_ctx.arc(1000, 200, 70, 0, 2 * Math.PI);
-            // canvas_ctx.strokeStyle = "#c82124";
-            // canvas_ctx.stroke();
-
-            // navigator.permissions.query({
-            //     name: 'clipboard-write'
-            // }).then(permissionStatus => {
-            //     // Will be 'granted', 'denied' or 'prompt':
-            //     console.log(permissionStatus.state);
-
-            //     // Listen for changes to the permission state
-            //     permissionStatus.onchange = () => {
-            //         console.log(permissionStatus.state);
-            //     };
-            // });
-
             //********* vvvvvv IN CASE OF DONWLOADING TO PNG FILE vvvvvv ********/
             // downloadLink.setAttribute('href', canvas.toDataURL("image/png"));
             // downloadLink.setAttribute('download', title);
@@ -394,10 +291,18 @@ class VideoPlayer extends React.Component {
 
     hideImage = () => {
         this.setState({ isImageHidden: true })
+
+        let video = document.querySelector('#' + this.id)
+        video.play()
+
     }
 
     showImage = () => {
         this.setState({ isImageHidden: false })
+
+        let video = document.querySelector('#' + this.id)
+        video.pause()
+
     }
 
     isMobileDevice = () => {

@@ -7,3 +7,15 @@
 .customTabHidden .ant-tabs-bar {
     display: none !important;
 }
+
+.ant-slider-handle {
+    transform: translateX(-50%) scale(1.3) !important;
+}
+
+.high-priority .ant-slider-handle-2 {
+    visibility: hidden;
+}
+
+.low-priority .ant-slider-handle-1 {
+    visibility: hidden;
+}

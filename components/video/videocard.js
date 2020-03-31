@@ -34,7 +34,6 @@ class VideoCard extends React.Component {
             modalContent: 'Default Content',
             checkStatus: {},
             selectedOutput: this.props.selectedOutput,
-            csvContent: {}
         }
     }
 
@@ -42,24 +41,7 @@ class VideoCard extends React.Component {
 
         let checkboxState = []
 
-        const setContent = (id, type, content) => {
-            this.setState({
-                csvContent: {
-                    ...this.state.csvContent,
-                    [id]: {
-                        ...this.state.csvContent[id],
-                        [type]: content
-                    }
-                }
-            })
-        }
-
-        const wrapperStyle = { height: '300px', overflowY: 'auto' }
-
-        const headerStyle = { position: 'sticky', top: '0px', color: 'white', backgroundColor: '#1890FF', textAlign: 'center', border: '1px solid #ddd' }
-
-        const columnStyle = { border: '1px solid #ddd' }
-
+        // Manage checkbox state before mounting
         for (let i = 0; i < this.props.item.length; i++) {
             let thisID = this.props.item[i].choice + this.props.item[i].chamber + this.props.item[i].position
             let thisTitle = this.props.item[i].title + ',' + this.props.item[i].chamber + ',' + this.props.item[i].position
@@ -69,178 +51,310 @@ class VideoCard extends React.Component {
             let checkVideoList = videoList.find(member => member.title == thisTitle)
 
             checkboxState[thisID] = checkVideoList ? true : false
-            if (this.props.item[i].areaCountURL) {
-                this.getCsvData(this.props.item[i].areaCountURL).then((res) => {
 
-                    if (res != false) {
-                        let csvData = Papa.parse(res)
+            // if (this.props.item[i].areaCount) {
+            //     let tableData = this.props.item[i].areaCount[0]
+            //     // console.log(tableData)
+            //     const table = (
+            //         <div style={wrapperStyle}>
+            //             <Descriptions bordered column={1} size='small'>
+            //                 <Descriptions.Item key={1} label="NUM_OF_LARGE" >{tableData['NUM_OF_LARGE']}</Descriptions.Item>
+            //                 <Descriptions.Item key={2} label="NUM_OF_MINI" >{tableData['NUM_OF_MINI']}</Descriptions.Item>
+            //                 <Descriptions.Item key={3} label="MEDIAN_OF_AREA" >{tableData['MEDIAN_OF_AREA']}</Descriptions.Item>
+            //                 <Descriptions.Item key={4} label="MAX_OF_AREA" >{tableData['MAX_OF_AREA']}</Descriptions.Item>
+            //                 <Descriptions.Item key={5} label="MIN_OF_AREA" >{tableData['MIN_OF_AREA']}</Descriptions.Item>
+            //             </Descriptions>
+            //         </div>
+            //     )
+            //     setContent(thisID, 'areaCount', table)
+            // } else {
+            //     setContent(thisID, 'areaCount', notfoundImageComponent)
+            // }
 
-                        const tableData = csvData.data.filter((member, index) => (index > 0 && member[0])).map((member) => {
-                            return [member[0], member[1]]
-                        })
+            // if (this.props.item[i].areaInfoURL) {
+            //     this.getCsvData(this.props.item[i].areaInfoURL).then((res) => {
+            //         if (res != false) {
+            //             let csvData = Papa.parse(res)
 
-                        const table = (
-                            <div style={wrapperStyle}>
-                                {/* <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                    <thead>
-                                        <tr>
-                                            {tableData.map((member, index) => {
-                                                return (
-                                                    <th style={headerStyle} key={index}>{member[0]}</th>
-                                                );
-                                            })}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            {tableData.map((member, index) => {
-                                                return (
-                                                    <td style={columnStyle} key={index}>{member[1]}</td>
-                                                );
-                                            })}
-                                        </tr>
-                                    </tbody>
-    
-                                </table> */}
-                                <Descriptions bordered column={1} size='small'>
-                                    {tableData.map((member, index) => {
-                                        return (
-                                            <Descriptions.Item key={index} label={member[0]} >{member[1]}</Descriptions.Item>
-                                        );
-                                    })}
-                                </Descriptions>
-                            </div>
-                        )
-                        setContent(thisID, 'areaCount', table)
-                    } else {
-                        setContent(thisID, 'areaCount', notfoundImageComponent)
-                    }
-                })
-            }
-            if (this.props.item[i].areaInfoURL) {
-                this.getCsvData(this.props.item[i].areaInfoURL).then((res) => {
-                    if (res != false) {
-                        let csvData = Papa.parse(res)
+            //             // console.log(csvData)
 
-                        // console.log(csvData)
+            //             const header = csvData.data[0].filter(member => member)
 
-                        const header = csvData.data[0].filter(member => member)
+            //             // console.log('header', header)
 
-                        // console.log('header', header)
+            //             const tableData = csvData.data.filter((member, index) => (index > 0 && member[0])).map((member) => {
+            //                 const prep = member.filter((value, id) => id > 0)
+            //                 return prep
+            //             })
 
-                        const tableData = csvData.data.filter((member, index) => (index > 0 && member[0])).map((member) => {
-                            const prep = member.filter((value, id) => id > 0)
-                            return prep
-                        })
+            //             // console.log('content', tableData)
 
-                        // console.log('content', tableData)
+            //             const table = (
+            //                 <div style={wrapperStyle}>
+            //                     <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            //                         <thead>
+            //                             <tr>
+            //                                 {header.map((member, index) => {
+            //                                     return (
+            //                                         <th style={headerStyle} key={index} > {member}</th>
+            //                                     );
+            //                                 })}
+            //                             </tr>
+            //                         </thead>
+            //                         <tbody >
+            //                             {tableData.map((member, index) => {
+            //                                 return (
+            //                                     <tr key={index}>
+            //                                         {member.map((value, id) => {
+            //                                             return (
+            //                                                 <td style={columnStyle} key={id}>{value}</td>
+            //                                             )
+            //                                         })}
+            //                                     </tr>
+            //                                 );
+            //                             })}
+            //                         </tbody>
 
-                        const table = (
-                            <div style={wrapperStyle}>
-                                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                    <thead>
-                                        <tr>
-                                            {header.map((member, index) => {
-                                                return (
-                                                    <th style={headerStyle} key={index} > {member}</th>
-                                                );
-                                            })}
-                                        </tr>
-                                    </thead>
-                                    <tbody >
-                                        {tableData.map((member, index) => {
-                                            return (
-                                                <tr key={index}>
-                                                    {member.map((value, id) => {
-                                                        return (
-                                                            <td style={columnStyle} key={id}>{value}</td>
-                                                        )
-                                                    })}
-                                                </tr>
-                                            );
-                                        })}
-                                    </tbody>
+            //                     </table>
+            //                 </div >
+            //             )
 
-                                </table>
-                            </div >
-                        )
+            //             setContent(thisID, 'areaInfo', table)
+            //         } else {
+            //             setContent(thisID, 'areaCount', notfoundImageComponent)
+            //         }
+            //     })
+            // }
 
-                        setContent(thisID, 'areaInfo', table)
-                    } else {
-                        setContent(thisID, 'areaCount', notfoundImageComponent)
-                    }
-                })
-            }
+            // if (this.props.item[i].bigAreaInfoURL) {
+            //     this.getCsvData(this.props.item[i].bigAreaInfoURL).then((res) => {
+            //         if (res != false) {
+            //             let csvData = Papa.parse(res)
 
-            if (this.props.item[i].bigAreaInfoURL) {
-                this.getCsvData(this.props.item[i].bigAreaInfoURL).then((res) => {
-                    if (res != false) {
-                        let csvData = Papa.parse(res)
+            //             // console.log(csvData)
 
-                        // console.log(csvData)
+            //             const header = csvData.data[0].filter(member => member)
 
-                        const header = csvData.data[0].filter(member => member)
+            //             // console.log('header', header)
 
-                        // console.log('header', header)
+            //             const tableData = csvData.data.filter((member, index) => (index > 0 && member[0])).map((member) => {
+            //                 const prep = member.filter((value, id) => id > 0)
+            //                 return prep
+            //             })
 
-                        const tableData = csvData.data.filter((member, index) => (index > 0 && member[0])).map((member) => {
-                            const prep = member.filter((value, id) => id > 0)
-                            return prep
-                        })
+            //             // console.log('content', tableData)
 
-                        // console.log('content', tableData)
+            //             const table = (
+            //                 <div style={wrapperStyle}>
+            //                     <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            //                         <thead>
+            //                             <tr>
+            //                                 {header.map((member, index) => {
+            //                                     return (
+            //                                         <th style={headerStyle} key={index} > {member}</th>
+            //                                     );
+            //                                 })}
+            //                             </tr>
+            //                         </thead>
+            //                         <tbody >
+            //                             {tableData.map((member, index) => {
+            //                                 return (
+            //                                     <tr key={index}>
+            //                                         {member.map((value, id) => {
+            //                                             return (
+            //                                                 <td style={columnStyle} key={id}>{value}</td>
+            //                                             )
+            //                                         })}
+            //                                     </tr>
+            //                                 );
+            //                             })}
+            //                         </tbody>
 
-                        const table = (
-                            <div style={wrapperStyle}>
-                                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                    <thead>
-                                        <tr>
-                                            {header.map((member, index) => {
-                                                return (
-                                                    <th style={headerStyle} key={index} > {member}</th>
-                                                );
-                                            })}
-                                        </tr>
-                                    </thead>
-                                    <tbody >
-                                        {tableData.map((member, index) => {
-                                            return (
-                                                <tr key={index}>
-                                                    {member.map((value, id) => {
-                                                        return (
-                                                            <td style={columnStyle} key={id}>{value}</td>
-                                                        )
-                                                    })}
-                                                </tr>
-                                            );
-                                        })}
-                                    </tbody>
+            //                     </table>
+            //                 </div >
+            //             )
 
-                                </table>
-                            </div >
-                        )
+            //             setContent(thisID, 'bigAreaInfo', table)
+            //         } else {
+            //             setContent(thisID, 'areaCount', notfoundImageComponent)
+            //         }
+            //     })
+            // }
 
-                        setContent(thisID, 'bigAreaInfo', table)
-                    } else {
-                        setContent(thisID, 'areaCount', notfoundImageComponent)
-                    }
-                })
-            }
+
+            // // Read CSV
+            // if (this.props.item[i].areaCountURL) {
+            //     this.getCsvData(this.props.item[i].areaCountURL).then((res) => {
+
+            //         if (res != false) {
+            //             let csvData = Papa.parse(res)
+
+            //             const tableData = csvData.data.filter((member, index) => (index > 0 && member[0])).map((member) => {
+            //                 return [member[0], member[1]]
+            //             })
+
+            //             const table = (
+            //                 <div style={wrapperStyle}>
+            //                     {/* <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            //                         <thead>
+            //                             <tr>
+            //                                 {tableData.map((member, index) => {
+            //                                     return (
+            //                                         <th style={headerStyle} key={index}>{member[0]}</th>
+            //                                     );
+            //                                 })}
+            //                             </tr>
+            //                         </thead>
+            //                         <tbody>
+            //                             <tr>
+            //                                 {tableData.map((member, index) => {
+            //                                     return (
+            //                                         <td style={columnStyle} key={index}>{member[1]}</td>
+            //                                     );
+            //                                 })}
+            //                             </tr>
+            //                         </tbody>
+
+            //                     </table> */}
+            //                     <Descriptions bordered column={1} size='small'>
+            //                         {tableData.map((member, index) => {
+            //                             return (
+            //                                 <Descriptions.Item key={index} label={member[0]} >{member[1]}</Descriptions.Item>
+            //                             );
+            //                         })}
+            //                     </Descriptions>
+            //                 </div>
+            //             )
+            //             setContent(thisID, 'areaCount', table)
+            //         } else {
+            //             setContent(thisID, 'areaCount', notfoundImageComponent)
+            //         }
+            //     })
+            // }
+            // if (this.props.item[i].areaInfoURL) {
+            //     this.getCsvData(this.props.item[i].areaInfoURL).then((res) => {
+            //         if (res != false) {
+            //             let csvData = Papa.parse(res)
+
+            //             // console.log(csvData)
+
+            //             const header = csvData.data[0].filter(member => member)
+
+            //             // console.log('header', header)
+
+            //             const tableData = csvData.data.filter((member, index) => (index > 0 && member[0])).map((member) => {
+            //                 const prep = member.filter((value, id) => id > 0)
+            //                 return prep
+            //             })
+
+            //             // console.log('content', tableData)
+
+            //             const table = (
+            //                 <div style={wrapperStyle}>
+            //                     <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            //                         <thead>
+            //                             <tr>
+            //                                 {header.map((member, index) => {
+            //                                     return (
+            //                                         <th style={headerStyle} key={index} > {member}</th>
+            //                                     );
+            //                                 })}
+            //                             </tr>
+            //                         </thead>
+            //                         <tbody >
+            //                             {tableData.map((member, index) => {
+            //                                 return (
+            //                                     <tr key={index}>
+            //                                         {member.map((value, id) => {
+            //                                             return (
+            //                                                 <td style={columnStyle} key={id}>{value}</td>
+            //                                             )
+            //                                         })}
+            //                                     </tr>
+            //                                 );
+            //                             })}
+            //                         </tbody>
+
+            //                     </table>
+            //                 </div >
+            //             )
+
+            //             setContent(thisID, 'areaInfo', table)
+            //         } else {
+            //             setContent(thisID, 'areaCount', notfoundImageComponent)
+            //         }
+            //     })
+            // }
+
+            // if (this.props.item[i].bigAreaInfoURL) {
+            //     this.getCsvData(this.props.item[i].bigAreaInfoURL).then((res) => {
+            //         if (res != false) {
+            //             let csvData = Papa.parse(res)
+
+            //             // console.log(csvData)
+
+            //             const header = csvData.data[0].filter(member => member)
+
+            //             // console.log('header', header)
+
+            //             const tableData = csvData.data.filter((member, index) => (index > 0 && member[0])).map((member) => {
+            //                 const prep = member.filter((value, id) => id > 0)
+            //                 return prep
+            //             })
+
+            //             // console.log('content', tableData)
+
+            //             const table = (
+            //                 <div style={wrapperStyle}>
+            //                     <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            //                         <thead>
+            //                             <tr>
+            //                                 {header.map((member, index) => {
+            //                                     return (
+            //                                         <th style={headerStyle} key={index} > {member}</th>
+            //                                     );
+            //                                 })}
+            //                             </tr>
+            //                         </thead>
+            //                         <tbody >
+            //                             {tableData.map((member, index) => {
+            //                                 return (
+            //                                     <tr key={index}>
+            //                                         {member.map((value, id) => {
+            //                                             return (
+            //                                                 <td style={columnStyle} key={id}>{value}</td>
+            //                                             )
+            //                                         })}
+            //                                     </tr>
+            //                                 );
+            //                             })}
+            //                         </tbody>
+
+            //                     </table>
+            //                 </div >
+            //             )
+
+            //             setContent(thisID, 'bigAreaInfo', table)
+            //         } else {
+            //             setContent(thisID, 'areaCount', notfoundImageComponent)
+            //         }
+            //     })
+            // }
 
         }
 
         this.setState({ checkStatus: checkboxState })
     }
 
-    getCsvData = (url) => {
-        return axios.get(url)
-            .then((resp) => {
-                return resp.data
-            })
-            .catch((err) => {
-                return false
-            })
-    }
+    // getCsvData = (url) => {
+    //     return axios.get(url)
+    //         .then((resp) => {
+    //             return resp.data
+    //         })
+    //         .catch((err) => {
+    //             return false
+    //         })
+    // }
 
     componentDidMount() {
 
@@ -383,6 +497,12 @@ class VideoCard extends React.Component {
         const choice1Items = []
         const choice2Items = []
 
+        const wrapperStyle = { height: '300px', overflowY: 'auto' }
+
+        const headerStyle = { position: 'sticky', top: '0px', color: 'white', backgroundColor: '#1890FF', textAlign: 'center', border: '1px solid #ddd' }
+
+        const columnStyle = { border: '1px solid #ddd' }
+
         const CsvSkeleton = props => (
             <div style={{ textAlign: 'center' }}><Skeleton paragraph={{ rows: 8 }} active /></div>
         )
@@ -392,9 +512,158 @@ class VideoCard extends React.Component {
             let thisID = this.props.item[i].choice + this.props.item[i].chamber + this.props.item[i].position
             let thisTitle = this.props.item[i].title + ',' + this.props.item[i].chamber + ',' + this.props.item[i].position
 
+            let AreaCount = () => {
+                if (this.props.item[i].areaCount) {
+                    let data = this.props.item[i].areaCount[0]
+                    return (
+                        <div style={wrapperStyle}>
+                            <Descriptions bordered column={1} size='small' style={{ backgroundColor: 'white' }} >
+                                <Descriptions.Item key={1} label="NUM_OF_LARGE" >{data['NUM_OF_LARGE']}</Descriptions.Item>
+                                <Descriptions.Item key={2} label="NUM_OF_MINI" >{data['NUM_OF_MINI']}</Descriptions.Item>
+                                <Descriptions.Item key={3} label="MEDIAN_OF_AREA" >{data['MEDIAN_OF_AREA']}</Descriptions.Item>
+                                <Descriptions.Item key={4} label="MAX_OF_AREA" >{data['MAX_OF_AREA']}</Descriptions.Item>
+                                <Descriptions.Item key={5} label="MIN_OF_AREA" >{data['MIN_OF_AREA']}</Descriptions.Item>
+                            </Descriptions>
+                        </div>
+                    )
+                } else {
+                    return notfoundImageComponent
+                }
+            }
+
+            let AreaInfo = () => {
+
+                if (this.props.item[i].areaInfo) {
+
+                    let data = this.props.item[i].areaInfo
+
+                    const header = [
+                        'X',
+                        'Y',
+                        'LENGTH',
+                        'WIDTH',
+                        'AREA',
+                    ]
+
+                    const table = (
+                        <div style={wrapperStyle}>
+                            <table style={{ width: '100%', borderCollapse: 'collapse', backgroundColor: 'white' }}>
+                                <thead>
+                                    <tr>
+                                        {header.map((member, index) => {
+                                            return (
+                                                <th style={headerStyle} key={index} > {member}</th>
+                                            );
+                                        })}
+                                    </tr>
+                                </thead>
+                                <tbody >
+                                    {data.map((member, index) => {
+                                        return (
+                                            <tr key={'tr_' + index}>
+                                                <td style={columnStyle} key={'td_1_' + index}>{member['COORDINATE_X']}</td>
+                                                <td style={columnStyle} key={'td_2_' + index}>{member['COORDINATE_Y']}</td>
+                                                <td style={columnStyle} key={'td_3_' + index}>{member['LENGTH']}</td>
+                                                <td style={columnStyle} key={'td_4_' + index}>{member['WIDTH']}</td>
+                                                <td style={columnStyle} key={'td_5_' + index}>{member['AREA']}</td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+
+                            </table>
+                        </div >
+                    )
+
+                    return table
+
+                } else {
+                    return notfoundImageComponent
+                }
+            }
+
+            let BigAreaInfo = () => {
+
+                if (this.props.item[i].bigAreaInfo) {
+
+                    let data = this.props.item[i].bigAreaInfo
+
+                    const header = [
+                        'X',
+                        'Y',
+                        'LENGTH',
+                        'WIDTH',
+                        'AREA',
+                    ]
+
+                    const table = (
+                        <div style={wrapperStyle}>
+                            <table style={{ width: '100%', borderCollapse: 'collapse', backgroundColor: 'white' }}>
+                                <thead>
+                                    <tr>
+                                        {header.map((member, index) => {
+                                            return (
+                                                <th style={headerStyle} key={index} > {member}</th>
+                                            );
+                                        })}
+                                    </tr>
+                                </thead>
+                                <tbody >
+                                    {data.map((member, index) => {
+                                        return (
+                                            <tr key={'tr_' + index}>
+                                                <td style={columnStyle} key={'td_1_' + index}>{member['COORDINATE_X']}</td>
+                                                <td style={columnStyle} key={'td_2_' + index}>{member['COORDINATE_Y']}</td>
+                                                <td style={columnStyle} key={'td_3_' + index}>{member['LENGTH']}</td>
+                                                <td style={columnStyle} key={'td_4_' + index}>{member['WIDTH']}</td>
+                                                <td style={columnStyle} key={'td_5_' + index}>{member['AREA']}</td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+
+                            </table>
+                        </div >
+                    )
+
+                    return table
+
+                } else {
+                    return notfoundImageComponent
+                }
+            }
+
+            let cardStyle
+            if (this.props.item[i].areaCount) {
+                let numLarge = this.props.item[i].areaCount[0].NUM_OF_LARGE
+                const priorityValue = this.props.priorityValue
+
+                if (numLarge >= priorityValue.high[0] && numLarge <= priorityValue.high[1]) {
+                    cardStyle = {
+                        backgroundColor: '#fff1f0',
+                        borderColor: '#f85e65'
+                    }
+                }
+
+                if (numLarge >= priorityValue.mid[0] && numLarge <= priorityValue.mid[1]) {
+                    cardStyle = {
+                        backgroundColor: '#fffbe6',
+                        borderColor: '#fab323'
+                    }
+                }
+
+                if (numLarge >= priorityValue.low[0] && numLarge <= priorityValue.low[1]) {
+                    cardStyle = {
+                        backgroundColor: '#f6ffed',
+                        borderColor: '#8ed967'
+                    }
+                }
+            }
+
             let item = (
                 <Col key={thisID} span={12}>
                     <Card
+                        style={cardStyle}
                         title={this.props.item[i].chamber + ' ' + this.props.item[i].position}
                         extra={
                             <div>
@@ -448,38 +717,21 @@ class VideoCard extends React.Component {
                             <TabPane tab="Area Count" key='areaCount'>
                                 <Row>
                                     <Col span={24}>
-                                        {this.props.item[i].areaCountURL ?
-
-                                            this.state.csvContent[thisID] ? this.state.csvContent[thisID].areaCount : <CsvSkeleton />
-
-                                            : notfoundImageComponent
-                                        }
+                                        <AreaCount />
                                     </Col>
                                 </Row>
                             </TabPane>
                             <TabPane tab="Area Info" key='areaInfo'>
                                 <Row>
                                     <Col span={24}>
-                                        {this.props.item[i].areaInfoURL ?
-
-                                            this.state.csvContent[thisID] ? this.state.csvContent[thisID].areaInfo : <CsvSkeleton />
-
-
-                                            : notfoundImageComponent
-                                        }
+                                        <AreaInfo />
                                     </Col>
                                 </Row>
                             </TabPane>
                             <TabPane tab="Big Area Info" key='bigAreaInfo'>
                                 <Row>
                                     <Col span={24}>
-                                        {this.props.item[i].bigAreaInfoURL ?
-
-                                            this.state.csvContent[thisID] ? this.state.csvContent[thisID].bigAreaInfo : <CsvSkeleton />
-
-
-                                            : notfoundImageComponent
-                                        }
+                                        <BigAreaInfo />
                                     </Col>
                                 </Row>
                             </TabPane>
@@ -518,6 +770,7 @@ class VideoCard extends React.Component {
                 <Row
                     className="customTabHidden"
                     type="flex"
+                    gutter={4}
                 >
                     <Col span={1} style={colStyle}>
                         {choice1Items}
