@@ -71,6 +71,7 @@ class BurgerMenu extends React.Component {
                     </div>
                     <a id="home" className="menu-item" href="#" onClick={this.goHome}><Icon type="home" /> Home</a>
                     <a id="videocompare" className="menu-item" onClick={this.handleMenuClick} ><Icon type="video-camera" /> Video Compare</a>
+                    <a id="masterprogram" className="menu-item" onClick={this.handleMenuClick} ><Icon type="database" /> Program Master</a>
                     <a hidden={!this.state.isMobile} style={{ color: 'orange' }} id="allow" className="menu-item" onClick={this.allowAccess} ><Icon type="issues-close" /> *Allow Data Access</a>
                 </Menu>
                 {/* Header */}

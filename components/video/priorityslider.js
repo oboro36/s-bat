@@ -1,7 +1,8 @@
-import { Slider, Popover, Button, Tag, Row, Col, Typography, Icon } from 'antd';
+import { Slider, Popover, Button, Tag, Row, Col, Typography, Icon, InputNumber } from 'antd';
 const { Text } = Typography;
 let uniqueId = 0
 import cookies from '../../utils/cookies'
+import { set } from 'mobx';
 
 class PrioritySlider extends React.PureComponent {
 
@@ -11,14 +12,16 @@ class PrioritySlider extends React.PureComponent {
             sliderVisible: false,
             sliderSetting: {
                 min: 0,
-                max: 20,
+                max: 20
             },
             sliderValue: this.props.priorityValue,
-            tempValue: {}
+            tempValue: {},
+            tempMax: 0,
         }
     }
 
     componentDidMount() {
+
         let last = this.getPriorityCookie()
         if (last) {
             let split = last.split('@') //high/medium/low
@@ -27,7 +30,20 @@ class PrioritySlider extends React.PureComponent {
                 mid: split[1].split('/'),
                 low: split[2].split('/')
             }
-            this.setState({ ...this.state, sliderValue: priority })
+            this.setState({ ...this.state, sliderValue: priority }, () => {
+
+                let maxSetting = this.getPrioritySettingCookie()
+                if (maxSetting) {
+                    this.setState({
+                        sliderSetting: { ...this.state.sliderSetting, max: Number(maxSetting) }
+                    }, () => {
+                        // console.log(this.state)
+
+                        this.props.catchSliderValue(this.state.sliderValue)
+
+                    })
+                }
+            })
         }
     }
 
@@ -41,23 +57,47 @@ class PrioritySlider extends React.PureComponent {
         cookies.setCookie('last_priority', prep.join('@'))
     }
 
+    getPrioritySettingCookie = () => {
+        const nookie = cookies.getCookie('last_setting')
+        return nookie
+    }
+
+    setPrioritySettingCookie = (max) => {
+        cookies.setCookie('last_setting', max)
+    }
+
+
     handleCancel = () => {
-        this.setState({ ...this.state, sliderVisible: false, sliderValue: this.state.tempValue })
+        this.setState({
+            ...this.state,
+            sliderVisible: false,
+            sliderValue: this.state.tempValue,
+            sliderSetting: { ...this.state.sliderSetting, max: this.state.tempMax }
+        },
+            () => console.log(this.state.sliderSetting))
     }
 
     handleConfirm = () => {
         this.setPriorityCookie(this.state.sliderValue)
+        this.setPrioritySettingCookie(this.state.sliderSetting.max)
         this.props.catchSliderValue(this.state.sliderValue)
         this.setState({ sliderVisible: false })
     }
 
     handleVisibleChange = visible => {
+        let newState = {}
+
         if (visible) {
-            this.setState({ tempValue: this.state.sliderValue })
+            newState = { tempValue: this.state.sliderValue, tempMax: this.state.sliderSetting.max }
         } else {
-            this.setState({ sliderValue: this.state.tempValue })
+            newState = { sliderValue: this.state.tempValue, sliderSetting: { ...this.state.sliderSetting, max: this.state.tempMax } }
         }
-        this.setState({ sliderVisible: visible });
+
+        this.setState({ sliderVisible: visible }, () => {
+            this.setState(newState, () => {
+                console.log(this.state.sliderSetting)
+            })
+        });
     };
 
     //***************continuous range*************** range must be connected
@@ -99,6 +139,19 @@ class PrioritySlider extends React.PureComponent {
         }
     };
 
+    onMaxChange = value => {
+        this.setState({
+            sliderSetting: {
+                ...this.state.sliderSetting,
+                max: Number(value)
+            },
+            sliderValue: {
+                ...this.state.sliderValue,
+                high: [this.state.sliderValue.high[0], Number(value)]
+            }
+        })
+    };
+
     //***************free range*************** ordered but range can be set separately
 
     // onHighChange = value => {
@@ -136,13 +189,6 @@ class PrioritySlider extends React.PureComponent {
 
 
     render() {
-        const marks = {
-            0: '0',
-            5: '5',
-            10: '10',
-            15: '15',
-            20: '20',
-        };
 
         let RangeTitle = props => {
             return (<span style={{ backgroundColor: props.bg, padding: '2px 8px 2px 8px', borderRadius: '1em' }}><Text style={{ color: props.color, fontWeight: 'bold' }}>{props.min} <Icon type="swap-right" /> {props.max}</Text></span>)
@@ -161,7 +207,7 @@ class PrioritySlider extends React.PureComponent {
                     </Row>
                     <Slider
                         className="high-priority"
-                        marks={marks}
+                        // marks={this.state.marks}
                         min={this.state.sliderSetting.min}
                         max={this.state.sliderSetting.max}
                         range={true}
@@ -181,7 +227,7 @@ class PrioritySlider extends React.PureComponent {
                         </Col>
                     </Row>
                     <Slider
-                        marks={marks}
+                        // marks={this.state.marks}
                         min={this.state.sliderSetting.min}
                         max={this.state.sliderSetting.max}
                         range={true}
@@ -202,7 +248,7 @@ class PrioritySlider extends React.PureComponent {
                     </Row>
                     <Slider
                         className="low-priority"
-                        marks={marks}
+                        // marks={this.state.marks}
                         min={this.state.sliderSetting.min}
                         max={this.state.sliderSetting.max}
                         range={true}
@@ -223,11 +269,23 @@ class PrioritySlider extends React.PureComponent {
             </Col >
         )
 
+        let title = (
+            <Row>
+                <Col span={14}>
+                    <Text>Priority Configuration</Text>
+                </Col>
+                <Col span={10} style={{ textAlign: 'right' }}>
+                    &nbsp; Max: <InputNumber size="small" style={{ width: '55px' }} min={1} max={100000} value={this.state.sliderSetting.max} onChange={this.onMaxChange} />
+                </Col>
+            </Row>
+        )
+
+
         return (
             <React.Fragment>
                 <Popover
                     content={prioritySetting}
-                    title="Priority Configuration"
+                    title={title}
                     trigger="click"
                     visible={this.state.sliderVisible}
                     onVisibleChange={this.handleVisibleChange}

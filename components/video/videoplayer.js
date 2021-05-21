@@ -6,11 +6,17 @@ import cookies from '../../utils/cookies'
 const ButtonGroup = Button.Group
 const { Title, Text } = Typography;
 
-const openMessage = (type, desc) => {
+message.config({
+    top: 65,
+});
+
+const openMessage = (type, desc) =>
+{
     message[type](desc, 3);
 };
 
-const EraserSvg = (props) => {
+const EraserSvg = (props) =>
+{
     return (
         <svg width="1em" height="1em" fill="currentColor" viewBox="0 0 64 64">
             <path
@@ -26,9 +32,11 @@ const EraserSvg = (props) => {
 
 const EraserIcon = props => <Icon component={EraserSvg} {...props} />;
 
-class VideoPlayer extends React.Component {
+class VideoPlayer extends React.Component
+{
 
-    constructor(props) {
+    constructor(props)
+    {
         super(props)
         this.state = {
             videoURL: this.props.videoURL,
@@ -57,25 +65,30 @@ class VideoPlayer extends React.Component {
         this.id = 'video' + this.props.seq
     }
 
-    async componentDidMount() {
+    async componentDidMount()
+    {
         //Set mobile state
         this._isMounted = true;
 
-        if (this._isMounted) {
+        if (this._isMounted)
+        {
             let lastSeekRate = this.getSeekRateCookie()
-            if (!lastSeekRate) {
+            if (!lastSeekRate)
+            {
                 lastSeekRate = 0.50
             }
             // console.log('set value from cookie: ', lastSeekRate)
 
             let res = await this.setInitialSeekRate(lastSeekRate)
-            if (res) {
+            if (res)
+            {
 
                 this.setCanvasManipulation()
 
                 let vidcontainer = document.getElementById('vidcontainer' + this.id)
 
-                vidcontainer.onfullscreenchange = function (elem, event) {
+                vidcontainer.onfullscreenchange = function (elem, event)
+                {
                     if (document.fullscreenElement || document.webkitFullscreenElement ||
                         document.mozFullScreenElement)
                         this.setState({ ...this.state, showTitle: true })
@@ -88,18 +101,21 @@ class VideoPlayer extends React.Component {
 
         }
 
-        if (this.isMobileDevice()) {
-            this.setState({ ...this.state, 
-                isMobile: true, 
-                videoLoading: false , 
+        if (this.isMobileDevice())
+        {
+            this.setState({
+                ...this.state,
+                isMobile: true,
+                videoLoading: false,
                 controllerGrid: {
                     col1: 0, //hide edit mode
                     col2: 13,
                     col3: 11
-                } 
+                }
             })
 
-            if (this.props.hasOwnProperty('doClose')) {
+            if (this.props.hasOwnProperty('doClose'))
+            {
                 let video = document.querySelector('#' + this.id)
                 video.play()
                 video.pause()
@@ -111,28 +127,34 @@ class VideoPlayer extends React.Component {
 
     }
 
-    setInitialSeekRate = (lastSeekRate) => {
-        return new Promise((resolve, reject) => {
+    setInitialSeekRate = (lastSeekRate) =>
+    {
+        return new Promise((resolve, reject) =>
+        {
             this.props.form.setFieldsValue({ seekRate: Number(lastSeekRate).toFixed(2) })
             this.setState({ ...this.state, seekRate: Number(lastSeekRate).toFixed(2) })
             return resolve(true)
         })
     }
 
-    componentWillUnmount() {
+    componentWillUnmount()
+    {
         this._isMounted = false;
     }
 
-    setSeekRateCookie = (value) => {
+    setSeekRateCookie = (value) =>
+    {
         cookies.setCookie('last_seek_rate', value)
     }
 
-    getSeekRateCookie = () => {
+    getSeekRateCookie = () =>
+    {
         const nookie = cookies.getCookie('last_seek_rate')
         return nookie
     }
 
-    setCanvasManipulation = () => {
+    setCanvasManipulation = () =>
+    {
         let video = document.querySelector('#' + this.id)
             , canvas = document.querySelector("#canvas" + this.id)
             , canvas_ctx = canvas.getContext('2d')
@@ -143,15 +165,18 @@ class VideoPlayer extends React.Component {
         // , info = document.querySelector('#info' + this.id)
         // , initial = document.querySelector('#initial' + this.id)
 
-        clear_button.addEventListener('click', () => {
+        clear_button.addEventListener('click', () =>
+        {
             drawcanvas_ctx.clearRect(0, 0, canvas.width, canvas.height);
         })
 
-        video.addEventListener('timeupdate', () => {
+        video.addEventListener('timeupdate', () =>
+        {
             this.props.form.setFieldsValue({ ['time' + this.id]: video.currentTime.toFixed(2) })
         })
 
-        let setSizeForCanvas = () => {
+        let setSizeForCanvas = () =>
+        {
             // Set canvas dimensions same as video dimensions
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight + 65;
@@ -176,27 +201,36 @@ class VideoPlayer extends React.Component {
         //     }
         // }.bind(this));
 
-        video.addEventListener('canplay', function () {
+        video.addEventListener('canplay', function ()
+        {
             // console.log('data loaded')
-            if (this.props.seq == 'only') {
-                setTimeout(() => {
+            if (this.props.seq == 'only')
+            {
+                setTimeout(() =>
+                {
                     setSizeForCanvas()
                 }, 500);
-            } else {
+            } else
+            {
                 // setTimeout(() => {
                 setSizeForCanvas()
                 // }, 500);
             }
         }.bind(this));
 
-        if (video.readyState >= 2) {
+        if (video.readyState >= 2)
+        {
             // console.log('data loaded but weird')
-            if (this.props.seq == 'only') {
-                setTimeout(() => {
+            if (this.props.seq == 'only')
+            {
+                setTimeout(() =>
+                {
                     setSizeForCanvas()
                 }, 500);
-            } else {
-                setTimeout(() => {
+            } else
+            {
+                setTimeout(() =>
+                {
                     setSizeForCanvas()
                 }, 500);
             }
@@ -204,21 +238,25 @@ class VideoPlayer extends React.Component {
 
         //**********************************MOUSE TRACK*********************************** */
 
-        window.addEventListener('resize', function () {
+        window.addEventListener('resize', function ()
+        {
             drawcanvas.width = video.getBoundingClientRect().width
             drawcanvas.height = video.getBoundingClientRect().height
         });
 
         this.started = false;
 
-        drawcanvas.addEventListener('mousedown', () => {
+        drawcanvas.addEventListener('mousedown', () =>
+        {
             drawcanvas_ctx.save()
             drawcanvas_ctx.beginPath();
             this.started = true;
         })
 
-        drawcanvas.addEventListener('mousemove', (f) => {
-            if (this.started == true) {
+        drawcanvas.addEventListener('mousemove', (f) =>
+        {
+            if (this.started == true)
+            {
 
                 var rect = drawcanvas.getBoundingClientRect();  // absolute position of element
                 var x = ((event.clientX - rect.left)) | 0;
@@ -228,11 +266,13 @@ class VideoPlayer extends React.Component {
                 // var endx = f.pageX - drawcanvas.offsetLeft;
                 // var endy = f.pageY - drawcanvas.offsetTop;
                 drawcanvas_ctx.restore()
-                if (!this.state.eraserMode) {
+                if (!this.state.eraserMode)
+                {
                     //draw mode
                     drawcanvas_ctx.globalCompositeOperation = 'source-over';
                     drawcanvas_ctx.lineWidth = 3; // brush size
-                } else {
+                } else
+                {
                     //erase mode
                     drawcanvas_ctx.globalCompositeOperation = 'destination-out';
                     drawcanvas_ctx.lineWidth = 25; // eraser size
@@ -244,11 +284,13 @@ class VideoPlayer extends React.Component {
             }
         })
 
-        drawcanvas.addEventListener('mouseup', () => {
+        drawcanvas.addEventListener('mouseup', () =>
+        {
             this.started = false;
         })
 
-        drawcanvas.addEventListener('mouseleave', () => {
+        drawcanvas.addEventListener('mouseleave', () =>
+        {
             this.started = false;
         });
 
@@ -258,7 +300,8 @@ class VideoPlayer extends React.Component {
 
         let downloadLink = document.querySelector("#download" + this.id)
 
-        downloadLink.addEventListener('click', function () {
+        downloadLink.addEventListener('click', function ()
+        {
             //clear canvas
             canvas_ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -278,7 +321,8 @@ class VideoPlayer extends React.Component {
             // downloadLink.setAttribute('download', title);
 
             //********* vvvvvv IN CASE OF COPYING TO CLIPBOARD vvvvvv ********/
-            canvas.toBlob(function (blob) {
+            canvas.toBlob(function (blob)
+            {
                 const item = new ClipboardItem({ "image/png": blob });
                 navigator.clipboard.write([item]);
             });
@@ -289,7 +333,8 @@ class VideoPlayer extends React.Component {
 
     }
 
-    hideImage = () => {
+    hideImage = () =>
+    {
         this.setState({ isImageHidden: true })
 
         let video = document.querySelector('#' + this.id)
@@ -297,7 +342,8 @@ class VideoPlayer extends React.Component {
 
     }
 
-    showImage = () => {
+    showImage = () =>
+    {
         this.setState({ isImageHidden: false })
 
         let video = document.querySelector('#' + this.id)
@@ -305,11 +351,13 @@ class VideoPlayer extends React.Component {
 
     }
 
-    isMobileDevice = () => {
+    isMobileDevice = () =>
+    {
         return navigator.userAgent.toLowerCase().match(/mobile/i)
     }
 
-    forward = () => {
+    forward = () =>
+    {
         const increment = Number(this.state.seekRate)
         let video = document.querySelector('#' + this.id)
         video.pause()
@@ -319,7 +367,8 @@ class VideoPlayer extends React.Component {
         video.currentTime = val
     }
 
-    backward = () => {
+    backward = () =>
+    {
         const decrement = Number(this.state.seekRate)
         let video = document.querySelector('#' + this.id)
         video.pause()
@@ -332,15 +381,19 @@ class VideoPlayer extends React.Component {
         video.currentTime = val
     }
 
-    seekRateChange = (value) => {
+    seekRateChange = (value) =>
+    {
         this.setState({ seekRate: Number(value).toFixed(2) })
         this.setSeekRateCookie(value)
     }
 
-    setModalClose = async () => {
+    setModalClose = async () =>
+    {
         let video = document.querySelector('#' + this.id)
-        let doPause = () => {
-            return new Promise((resolve, reject) => {
+        let doPause = () =>
+        {
+            return new Promise((resolve, reject) =>
+            {
 
                 video.pause()
 
@@ -351,12 +404,14 @@ class VideoPlayer extends React.Component {
         await doPause() && this.props.doClose()
     }
 
-    setFullscreen = () => {
+    setFullscreen = () =>
+    {
         let vid = document.getElementById('vidcontainer' + this.id)
         vid.requestFullscreen()
     }
 
-    onModeChange = (checked) => {
+    onModeChange = (checked) =>
+    {
         this.setState({
             ...this.state, editMode: checked, disableButton: {
                 // forward: checked,
@@ -367,19 +422,23 @@ class VideoPlayer extends React.Component {
         document.querySelector('#' + this.id).pause()
     }
 
-    changeColor = (color) => {
+    changeColor = (color) =>
+    {
         this.setState({ ...this.state, pickedColor: color.hex, colorVisible: false, eraserMode: false, brushIcon: 'pen' })
     }
 
-    handleColorVisible = visible => {
+    handleColorVisible = visible =>
+    {
         this.setState({ ...this.state, colorVisible: visible });
     };
 
-    chooseEraser = () => {
+    chooseEraser = () =>
+    {
         this.setState({ ...this.state, eraserMode: true, colorVisible: false, pickedColor: 'grey', brushIcon: 'eraser' })
     }
 
-    render() {
+    render()
+    {
         const { getFieldDecorator } = this.props.form;
         return (
             <React.Fragment>
@@ -390,7 +449,7 @@ class VideoPlayer extends React.Component {
                 <Row>
 
                     <div id={'vidcontainer' + this.id}>
-                        {this.state.showTitle ? <Title style={{ color: 'white', marginTop: '10px', textAlign: 'center' }}>{this.props.title}</Title> : null}
+                        {this.state.showTitle ? <Title style={{ color: 'white', marginTop: '10px', textAlign: 'center', fontSize: '25px', position: 'fixed' }}>&nbsp;{this.props.title}</Title> : null}
                         <img
                             hidden={this.state.isImageHidden}
                             src={this.props.imageURL}

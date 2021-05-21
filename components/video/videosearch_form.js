@@ -13,6 +13,10 @@ import moment from 'moment';
 
 const { Option } = Select;
 
+message.config({
+    top: 65,
+});
+
 const openMessage = (type, desc) => {
     message[type](desc, 4);
 };
@@ -96,42 +100,6 @@ class VideoSearchForm extends React.Component {
                 })
             }
         )
-
-        // invokeApi('post', '/api/getMasterMaintContents', { site: 'SHDI' },
-        //     (res) => {
-        //         if (res.status == 204) {
-        //             openMessage('warning', 'No master maintenance content data')
-        //         } else if (res.status == 200) {
-
-        //             let contents = res.data.contents.map((member) => {
-        //                 return {
-        //                     ...member, color: () => {
-
-        //                         let color
-
-        //                         switch (member.code) {
-        //                             case 1:
-        //                                 break
-        //                             case 2:
-        //                                 break
-        //                             default:
-        //                                 break
-        //                         }
-
-        //                         return color
-
-        //                     }
-        //                 }
-        //             })
-
-        //             console.log(contents)
-
-        //             // this.setState()
-        //         }
-        //     },
-        //     (err) => {
-        //         console.log(err)
-        //     }) //based on SHDI
 
     }
 

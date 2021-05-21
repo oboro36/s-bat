@@ -25,8 +25,10 @@ const notfoundImageComponent = (
 // };
 
 @observer
-class VideoCard extends React.Component {
-    constructor(props) {
+class VideoCard extends React.Component
+{
+    constructor(props)
+    {
         super(props)
         this.state = {
             isMobile: false,
@@ -37,12 +39,14 @@ class VideoCard extends React.Component {
         }
     }
 
-    componentWillMount() {
+    componentWillMount()
+    {
 
         let checkboxState = []
 
         // Manage checkbox state before mounting
-        for (let i = 0; i < this.props.item.length; i++) {
+        for (let i = 0; i < this.props.item.length; i++)
+        {
             let thisID = this.props.item[i].choice + this.props.item[i].chamber + this.props.item[i].position
             let thisTitle = this.props.item[i].title + ',' + this.props.item[i].chamber + ',' + this.props.item[i].position
 
@@ -52,349 +56,30 @@ class VideoCard extends React.Component {
 
             checkboxState[thisID] = checkVideoList ? true : false
 
-            // if (this.props.item[i].areaCount) {
-            //     let tableData = this.props.item[i].areaCount[0]
-            //     // console.log(tableData)
-            //     const table = (
-            //         <div style={wrapperStyle}>
-            //             <Descriptions bordered column={1} size='small'>
-            //                 <Descriptions.Item key={1} label="NUM_OF_LARGE" >{tableData['NUM_OF_LARGE']}</Descriptions.Item>
-            //                 <Descriptions.Item key={2} label="NUM_OF_MINI" >{tableData['NUM_OF_MINI']}</Descriptions.Item>
-            //                 <Descriptions.Item key={3} label="MEDIAN_OF_AREA" >{tableData['MEDIAN_OF_AREA']}</Descriptions.Item>
-            //                 <Descriptions.Item key={4} label="MAX_OF_AREA" >{tableData['MAX_OF_AREA']}</Descriptions.Item>
-            //                 <Descriptions.Item key={5} label="MIN_OF_AREA" >{tableData['MIN_OF_AREA']}</Descriptions.Item>
-            //             </Descriptions>
-            //         </div>
-            //     )
-            //     setContent(thisID, 'areaCount', table)
-            // } else {
-            //     setContent(thisID, 'areaCount', notfoundImageComponent)
-            // }
-
-            // if (this.props.item[i].areaInfoURL) {
-            //     this.getCsvData(this.props.item[i].areaInfoURL).then((res) => {
-            //         if (res != false) {
-            //             let csvData = Papa.parse(res)
-
-            //             // console.log(csvData)
-
-            //             const header = csvData.data[0].filter(member => member)
-
-            //             // console.log('header', header)
-
-            //             const tableData = csvData.data.filter((member, index) => (index > 0 && member[0])).map((member) => {
-            //                 const prep = member.filter((value, id) => id > 0)
-            //                 return prep
-            //             })
-
-            //             // console.log('content', tableData)
-
-            //             const table = (
-            //                 <div style={wrapperStyle}>
-            //                     <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            //                         <thead>
-            //                             <tr>
-            //                                 {header.map((member, index) => {
-            //                                     return (
-            //                                         <th style={headerStyle} key={index} > {member}</th>
-            //                                     );
-            //                                 })}
-            //                             </tr>
-            //                         </thead>
-            //                         <tbody >
-            //                             {tableData.map((member, index) => {
-            //                                 return (
-            //                                     <tr key={index}>
-            //                                         {member.map((value, id) => {
-            //                                             return (
-            //                                                 <td style={columnStyle} key={id}>{value}</td>
-            //                                             )
-            //                                         })}
-            //                                     </tr>
-            //                                 );
-            //                             })}
-            //                         </tbody>
-
-            //                     </table>
-            //                 </div >
-            //             )
-
-            //             setContent(thisID, 'areaInfo', table)
-            //         } else {
-            //             setContent(thisID, 'areaCount', notfoundImageComponent)
-            //         }
-            //     })
-            // }
-
-            // if (this.props.item[i].bigAreaInfoURL) {
-            //     this.getCsvData(this.props.item[i].bigAreaInfoURL).then((res) => {
-            //         if (res != false) {
-            //             let csvData = Papa.parse(res)
-
-            //             // console.log(csvData)
-
-            //             const header = csvData.data[0].filter(member => member)
-
-            //             // console.log('header', header)
-
-            //             const tableData = csvData.data.filter((member, index) => (index > 0 && member[0])).map((member) => {
-            //                 const prep = member.filter((value, id) => id > 0)
-            //                 return prep
-            //             })
-
-            //             // console.log('content', tableData)
-
-            //             const table = (
-            //                 <div style={wrapperStyle}>
-            //                     <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            //                         <thead>
-            //                             <tr>
-            //                                 {header.map((member, index) => {
-            //                                     return (
-            //                                         <th style={headerStyle} key={index} > {member}</th>
-            //                                     );
-            //                                 })}
-            //                             </tr>
-            //                         </thead>
-            //                         <tbody >
-            //                             {tableData.map((member, index) => {
-            //                                 return (
-            //                                     <tr key={index}>
-            //                                         {member.map((value, id) => {
-            //                                             return (
-            //                                                 <td style={columnStyle} key={id}>{value}</td>
-            //                                             )
-            //                                         })}
-            //                                     </tr>
-            //                                 );
-            //                             })}
-            //                         </tbody>
-
-            //                     </table>
-            //                 </div >
-            //             )
-
-            //             setContent(thisID, 'bigAreaInfo', table)
-            //         } else {
-            //             setContent(thisID, 'areaCount', notfoundImageComponent)
-            //         }
-            //     })
-            // }
-
-
-            // // Read CSV
-            // if (this.props.item[i].areaCountURL) {
-            //     this.getCsvData(this.props.item[i].areaCountURL).then((res) => {
-
-            //         if (res != false) {
-            //             let csvData = Papa.parse(res)
-
-            //             const tableData = csvData.data.filter((member, index) => (index > 0 && member[0])).map((member) => {
-            //                 return [member[0], member[1]]
-            //             })
-
-            //             const table = (
-            //                 <div style={wrapperStyle}>
-            //                     {/* <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            //                         <thead>
-            //                             <tr>
-            //                                 {tableData.map((member, index) => {
-            //                                     return (
-            //                                         <th style={headerStyle} key={index}>{member[0]}</th>
-            //                                     );
-            //                                 })}
-            //                             </tr>
-            //                         </thead>
-            //                         <tbody>
-            //                             <tr>
-            //                                 {tableData.map((member, index) => {
-            //                                     return (
-            //                                         <td style={columnStyle} key={index}>{member[1]}</td>
-            //                                     );
-            //                                 })}
-            //                             </tr>
-            //                         </tbody>
-
-            //                     </table> */}
-            //                     <Descriptions bordered column={1} size='small'>
-            //                         {tableData.map((member, index) => {
-            //                             return (
-            //                                 <Descriptions.Item key={index} label={member[0]} >{member[1]}</Descriptions.Item>
-            //                             );
-            //                         })}
-            //                     </Descriptions>
-            //                 </div>
-            //             )
-            //             setContent(thisID, 'areaCount', table)
-            //         } else {
-            //             setContent(thisID, 'areaCount', notfoundImageComponent)
-            //         }
-            //     })
-            // }
-            // if (this.props.item[i].areaInfoURL) {
-            //     this.getCsvData(this.props.item[i].areaInfoURL).then((res) => {
-            //         if (res != false) {
-            //             let csvData = Papa.parse(res)
-
-            //             // console.log(csvData)
-
-            //             const header = csvData.data[0].filter(member => member)
-
-            //             // console.log('header', header)
-
-            //             const tableData = csvData.data.filter((member, index) => (index > 0 && member[0])).map((member) => {
-            //                 const prep = member.filter((value, id) => id > 0)
-            //                 return prep
-            //             })
-
-            //             // console.log('content', tableData)
-
-            //             const table = (
-            //                 <div style={wrapperStyle}>
-            //                     <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            //                         <thead>
-            //                             <tr>
-            //                                 {header.map((member, index) => {
-            //                                     return (
-            //                                         <th style={headerStyle} key={index} > {member}</th>
-            //                                     );
-            //                                 })}
-            //                             </tr>
-            //                         </thead>
-            //                         <tbody >
-            //                             {tableData.map((member, index) => {
-            //                                 return (
-            //                                     <tr key={index}>
-            //                                         {member.map((value, id) => {
-            //                                             return (
-            //                                                 <td style={columnStyle} key={id}>{value}</td>
-            //                                             )
-            //                                         })}
-            //                                     </tr>
-            //                                 );
-            //                             })}
-            //                         </tbody>
-
-            //                     </table>
-            //                 </div >
-            //             )
-
-            //             setContent(thisID, 'areaInfo', table)
-            //         } else {
-            //             setContent(thisID, 'areaCount', notfoundImageComponent)
-            //         }
-            //     })
-            // }
-
-            // if (this.props.item[i].bigAreaInfoURL) {
-            //     this.getCsvData(this.props.item[i].bigAreaInfoURL).then((res) => {
-            //         if (res != false) {
-            //             let csvData = Papa.parse(res)
-
-            //             // console.log(csvData)
-
-            //             const header = csvData.data[0].filter(member => member)
-
-            //             // console.log('header', header)
-
-            //             const tableData = csvData.data.filter((member, index) => (index > 0 && member[0])).map((member) => {
-            //                 const prep = member.filter((value, id) => id > 0)
-            //                 return prep
-            //             })
-
-            //             // console.log('content', tableData)
-
-            //             const table = (
-            //                 <div style={wrapperStyle}>
-            //                     <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            //                         <thead>
-            //                             <tr>
-            //                                 {header.map((member, index) => {
-            //                                     return (
-            //                                         <th style={headerStyle} key={index} > {member}</th>
-            //                                     );
-            //                                 })}
-            //                             </tr>
-            //                         </thead>
-            //                         <tbody >
-            //                             {tableData.map((member, index) => {
-            //                                 return (
-            //                                     <tr key={index}>
-            //                                         {member.map((value, id) => {
-            //                                             return (
-            //                                                 <td style={columnStyle} key={id}>{value}</td>
-            //                                             )
-            //                                         })}
-            //                                     </tr>
-            //                                 );
-            //                             })}
-            //                         </tbody>
-
-            //                     </table>
-            //                 </div >
-            //             )
-
-            //             setContent(thisID, 'bigAreaInfo', table)
-            //         } else {
-            //             setContent(thisID, 'areaCount', notfoundImageComponent)
-            //         }
-            //     })
-            // }
-
         }
 
         this.setState({ checkStatus: checkboxState })
     }
 
-    // getCsvData = (url) => {
-    //     return axios.get(url)
-    //         .then((resp) => {
-    //             return resp.data
-    //         })
-    //         .catch((err) => {
-    //             return false
-    //         })
-    // }
+    componentDidMount()
+    {
 
-    componentDidMount() {
-
-        if (this.isMobileDevice) {
+        if (this.isMobileDevice)
+        {
             this.setState({ ...this.state, isMobile: true })
         }
 
-        // let doOnOrientationChange = () => {
-        //     switch (window.orientation) {
-        //         case 90:
-        //             this.setState({ ...this.state, orientation: 'lanscape' })
-        //             break;
-        //         case -90:
-        //             this.setState({ ...this.state, orientation: 'lanscape' })
-        //             break;
-        //         case 0:
-        //             this.setState({ ...this.state, orientation: 'portrait' })
-        //             break;
-        //         case 180:
-        //             this.setState({ ...this.state, orientation: 'portrait' })
-        //             break;
-        //         default:
-        //             break;
-        //     }
-        // }
-
-        // window.addEventListener('orientationchange', doOnOrientationChange)
-        // doOnOrientationChange()
-
-
-        // }
-
     }
 
-    isMobileDevice = () => {
+    isMobileDevice = () =>
+    {
         return navigator.userAgent.toLowerCase().match(/mobile/i)
     }
 
-    handleActions = async (action, URL, title, id) => {
-        switch (action) {
+    handleActions = async (action, URL, title, id) =>
+    {
+        switch (action)
+        {
             case "zoom":
 
                 break
@@ -415,7 +100,8 @@ class VideoCard extends React.Component {
 
     //***************************Modal Player***************************
 
-    showModal = (imageURL, videoURL, title, id) => {
+    showModal = (imageURL, videoURL, title, id) =>
+    {
         // console.log('Create Video Modal with ', URL)
         this.setState({
             modalContent: (
@@ -429,25 +115,15 @@ class VideoCard extends React.Component {
                     doClose={this.handlePlayerCancel}
                 />
             )
-        }, () => {
+        }, () =>
+        {
             // console.log('Show Video Modal with ', URL)
             this.setState({ ...this.state, playerVisible: true })
         });
     };
 
-    // startPlay = () => {
-    //     this.setState({ playing: true }, () => {
-    //         console.log(this.state.playing)
-    //     })
-    // }
-
-    // alreadyPaused = () => {
-    //     this.setState({ playing: false }, () => {
-    //         console.log(this.state.playing)
-    //     })
-    // }
-
-    handlePlayerCancel = () => {
+    handlePlayerCancel = () =>
+    {
         this.setState({
             playerVisible: false,
             // modalContent: 'Default Content',
@@ -456,23 +132,30 @@ class VideoCard extends React.Component {
 
     //***************************New Window Player***************************
 
-    showNewWindow = (URL) => {
+    showNewWindow = (URL) =>
+    {
         window.open("http://localhost:3000/extportalplayer?url1=static%2Ftestvideo.mp4&url2=static%2Ftestvideo.mp4", 'New Window', "height=800,width=800");
     }
 
 
     //***************************Checkbox***************************
 
-    onCheck = async (e, ID, URL, title, imageURL) => {
+    // チェックボックスをチェックする時
+    onCheck = async (e, ID, URL, title, imageURL) =>
+    {
 
-        if (e.target.checked) {
-            if (this.props.store.checkCount < (this.props.store.checkMax)) {
+        if (e.target.checked)
+        {
+            if (this.props.store.checkCount < (this.props.store.checkMax))
+            {
                 this.setState({ checkStatus: { ...this.state.checkStatus, [ID]: true } })
                 this.props.store.increaseCheck(URL, title, imageURL)
-            } else {
+            } else
+            {
                 this.setState({ checkStatus: { ...this.state.checkStatus, [ID]: !e.target.checked } })
             }
-        } else {
+        } else
+        {
             this.setState({ checkStatus: { ...this.state.checkStatus, [ID]: false } })
             this.props.store.decreaseCheck(URL, title, imageURL)
         }
@@ -481,15 +164,13 @@ class VideoCard extends React.Component {
 
     }
 
-    // componentWillUnmount() {
-    //     this.props.store.resetCheck()
-    // }
-
-    setActiveOutput = value => {
+    setActiveOutput = value =>
+    {
         this.setState({ ...this.state, selectedOutput: value })
     }
 
-    render() {
+    render()
+    {
         const { getFieldDecorator } = this.props.form;
 
         // console.log('ITEM FOR CARD -------> ', this.props.item)
@@ -502,19 +183,28 @@ class VideoCard extends React.Component {
         const headerStyle = { position: 'sticky', top: '0px', color: 'white', backgroundColor: '#1890FF', textAlign: 'center', border: '1px solid #ddd' }
 
         const columnStyle = { border: '1px solid #ddd' }
+        const centerColumnStyle = { border: '1px solid #ddd', textAlign: 'center' }
 
         const CsvSkeleton = props => (
             <div style={{ textAlign: 'center' }}><Skeleton paragraph={{ rows: 8 }} active /></div>
         )
 
-        for (let i = 0; i < this.props.item.length; i++) {
+        // console.log(this.props.item)
+
+        for (let i = 0; i < this.props.item.length; i++)
+        {
+
 
             let thisID = this.props.item[i].choice + this.props.item[i].chamber + this.props.item[i].position
             let thisTitle = this.props.item[i].title + ',' + this.props.item[i].chamber + ',' + this.props.item[i].position
 
-            let AreaCount = () => {
-                if (this.props.item[i].areaCount) {
+            {/* Area Count Component */ }
+            let AreaCount = () =>
+            {
+                if (this.props.item[i].areaCount)
+                {
                     let data = this.props.item[i].areaCount[0]
+                    {/* Area Countテーブルの準備 */ }
                     return (
                         <div style={wrapperStyle}>
                             <Descriptions bordered column={1} size='small' style={{ backgroundColor: 'white' }} >
@@ -526,14 +216,18 @@ class VideoCard extends React.Component {
                             </Descriptions>
                         </div>
                     )
-                } else {
+                } else
+                {
                     return notfoundImageComponent
                 }
             }
 
-            let AreaInfo = () => {
+            {/* Area Info Component */ }
+            let AreaInfo = () =>
+            {
 
-                if (this.props.item[i].areaInfo) {
+                if (this.props.item[i].areaInfo)
+                {
 
                     let data = this.props.item[i].areaInfo
 
@@ -545,12 +239,14 @@ class VideoCard extends React.Component {
                         'AREA',
                     ]
 
+                    {/* Area Infoテーブルの準備 */ }
                     const table = (
                         <div style={wrapperStyle}>
                             <table style={{ width: '100%', borderCollapse: 'collapse', backgroundColor: 'white' }}>
                                 <thead>
                                     <tr>
-                                        {header.map((member, index) => {
+                                        {header.map((member, index) =>
+                                        {
                                             return (
                                                 <th style={headerStyle} key={index} > {member}</th>
                                             );
@@ -558,7 +254,8 @@ class VideoCard extends React.Component {
                                     </tr>
                                 </thead>
                                 <tbody >
-                                    {data.map((member, index) => {
+                                    {data.map((member, index) =>
+                                    {
                                         return (
                                             <tr key={'tr_' + index}>
                                                 <td style={columnStyle} key={'td_1_' + index}>{member['COORDINATE_X']}</td>
@@ -577,14 +274,18 @@ class VideoCard extends React.Component {
 
                     return table
 
-                } else {
+                } else
+                {
                     return notfoundImageComponent
                 }
             }
 
-            let BigAreaInfo = () => {
+            {/* Big Area Info Component */ }
+            let BigAreaInfo = () =>
+            {
 
-                if (this.props.item[i].bigAreaInfo) {
+                if (this.props.item[i].bigAreaInfo)
+                {
 
                     let data = this.props.item[i].bigAreaInfo
 
@@ -596,12 +297,14 @@ class VideoCard extends React.Component {
                         'AREA',
                     ]
 
+                    {/* Big Areaテーブルの準備 */ }
                     const table = (
                         <div style={wrapperStyle}>
                             <table style={{ width: '100%', borderCollapse: 'collapse', backgroundColor: 'white' }}>
                                 <thead>
                                     <tr>
-                                        {header.map((member, index) => {
+                                        {header.map((member, index) =>
+                                        {
                                             return (
                                                 <th style={headerStyle} key={index} > {member}</th>
                                             );
@@ -609,7 +312,8 @@ class VideoCard extends React.Component {
                                     </tr>
                                 </thead>
                                 <tbody >
-                                    {data.map((member, index) => {
+                                    {data.map((member, index) =>
+                                    {
                                         return (
                                             <tr key={'tr_' + index}>
                                                 <td style={columnStyle} key={'td_1_' + index}>{member['COORDINATE_X']}</td>
@@ -628,35 +332,127 @@ class VideoCard extends React.Component {
 
                     return table
 
-                } else {
+                } else
+                {
                     return notfoundImageComponent
                 }
             }
 
             let cardStyle
-            if (this.props.item[i].areaCount) {
-                let numLarge = this.props.item[i].areaCount[0].NUM_OF_LARGE
+            let videoSymbolStyle
+            let videoSymbol = ''
+            let fontStyle = { fontFamily: "'Trebuchet MS', sans-serif", fontSize: '16px' }
+            if (this.props.item[i].areaCount)
+            {
+                let numLarge = Number(this.props.item[i].areaCount[0].NUM_OF_LARGE)
                 const priorityValue = this.props.priorityValue
-
-                if (numLarge >= priorityValue.high[0] && numLarge <= priorityValue.high[1]) {
+                if (numLarge >= priorityValue.high[0] && numLarge <= priorityValue.high[1])
+                {
                     cardStyle = {
                         backgroundColor: '#fff1f0',
                         borderColor: '#f85e65'
                     }
+                    videoSymbolStyle = {
+                        backgroundColor: '#FF2A2A',
+                    }
+                    videoSymbol = '☓';
                 }
-
-                if (numLarge >= priorityValue.mid[0] && numLarge <= priorityValue.mid[1]) {
+                else if (numLarge >= priorityValue.mid[0] && numLarge <= priorityValue.mid[1])
+                {
                     cardStyle = {
                         backgroundColor: '#fffbe6',
                         borderColor: '#fab323'
                     }
+                    videoSymbolStyle = {
+                        backgroundColor: 'orange',
+                    }
+                    videoSymbol = '△';
                 }
-
-                if (numLarge >= priorityValue.low[0] && numLarge <= priorityValue.low[1]) {
+                else if (numLarge >= priorityValue.low[0] && numLarge <= priorityValue.low[1])
+                {
                     cardStyle = {
                         backgroundColor: '#f6ffed',
                         borderColor: '#8ed967'
                     }
+                    videoSymbolStyle = {
+                        backgroundColor: '#52c41a',
+                    }
+                    videoSymbol = '〇';
+                }
+                videoSymbolStyle = { ...videoSymbolStyle, ...fontStyle }
+            }
+
+            let InfoTable = () =>
+            {
+                // テーブル行ないのマークを選択する
+                let getSymbol = (data) =>
+                {
+                    if (!data)
+                    {
+                        return ''
+                    }
+                    return Number(data) > 1 ? '☓' : '〇'
+                }
+
+                // マークのCSS
+                let getSymbolSyle = (data) =>
+                {
+                    if (!data)
+                    {
+                        return {}
+                    }
+                    return Number(data) > 1 ? { backgroundColor: '#FF2A2A' } : { backgroundColor: '#52c41a' }
+                }
+
+                // マークの行を準備
+                let getRow = (data, row, index) =>
+                {
+                    let symbolSyle = getSymbolSyle(data)
+                    symbolSyle = { ...symbolSyle, ...fontStyle }
+                    return (<td key={'td_' + row + '_' + index} style={{ ...centerColumnStyle, ...symbolSyle }}>{getSymbol(data)}</td>)
+                }
+
+                if (this.props.item[i].staticImageData)
+                {
+                    let data = this.props.item[i].staticImageData
+                    const table = (
+                        <table style={{ width: '100%', borderCollapse: 'collapse', backgroundColor: 'white' }}>
+                            {/* 静止画の情報テーブルヘッダー */}
+                            <thead>
+                                <tr>
+                                    <td style={centerColumnStyle} rowSpan="2">Video</td>
+                                    <td style={centerColumnStyle} colSpan="7">Static Image</td>
+                                </tr>
+                                <tr>
+                                    <td style={centerColumnStyle}>Disk</td>
+                                    <td style={centerColumnStyle}>Pocket<br />Object</td>
+                                    <td style={centerColumnStyle}>Small<br />Ab</td>
+                                    <td style={centerColumnStyle}>Target<br />Crack</td>
+                                    <td style={centerColumnStyle}>Target<br />Peeling</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {data.map((member, index) =>
+                                {
+                                    return (
+                                        <tr key={'tr_' + index}>
+                                            <td key={'td_1_' + index} style={{ ...centerColumnStyle, ...videoSymbolStyle }}>{videoSymbol}</td>
+                                            {getRow(member.RESULT_CLASS1, '2', index)}
+                                            {getRow(member.RESULT_CLASS2, '3', index)}
+                                            {getRow(member.RESULT_CLASS3, '4', index)}
+                                            {getRow(member.RESULT_CLASS4, '5', index)}
+                                            {getRow(member.RESULT_CLASS5, '6', index)}
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    )
+                    return table
+                } else
+                {
+                    {/* 静止画の情報がない場合 */ }
+                    return (<p></p>)
                 }
             }
 
@@ -667,6 +463,7 @@ class VideoCard extends React.Component {
                         title={this.props.item[i].chamber + ' ' + this.props.item[i].position}
                         extra={
                             <div>
+                                {/* ビデオカード内選択肢 */}
                                 <Select
                                     id={thisID}
                                     size="small"
@@ -677,6 +474,7 @@ class VideoCard extends React.Component {
                                     dropdownMatchSelectWidth={false}
                                 >
                                     <Option value="img">Image</Option>
+                                    <Option value="staticimg">Static Image</Option>
                                     <Option value="areaCount">Area Count</Option>
                                     <Option value="areaInfo">Area Info</Option>
                                     <Option value="bigAreaInfo">Big Area Info</Option>
@@ -692,18 +490,10 @@ class VideoCard extends React.Component {
                                 icon="caret-right"
                                 onClick={() => { this.handleActions('play', { imageURL: this.props.item[i].imageURL, videoURL: this.props.item[i].videoURL }, thisTitle, thisID) }}>{(this.props.orientation == 'landscape' || this.props.orientation == 'pc') ? 'Play' : ''}
                             </Button>,
-                            // <div><Icon type="play-square" key="play-square" /> Play</div>,
                             <Checkbox checked={this.state.checkStatus[thisID]} onChange={e => this.onCheck(e, thisID, this.props.item[i].videoURL, thisTitle, this.props.item[i].imageURL)} disabled={!this.props.item[i].valid}>{(this.props.orientation == 'landscape' || this.props.orientation == 'pc') ? 'Compare' : ''}</Checkbox>
-                            // <Icon type="fullscreen" key="fullscreen" onClick={() => { this.handleActions('full-play', this.props.item[i].videoURL) }} />,
-                            // <Link href={{ pathname: '/extportalplayer', query: { url1: 'static/testvideo.mp4', title1: 'title1', url2: 'static/testvideo.mp4', title2: 'title2' } }} >
-                            //     <a target="_blank" onClick="window.open('/extportalplayer','name','width=600,height=400')">
-                            //         <Icon type="fullscreen" />
-                            //     </a>
-                            // </Link>
-                            // ,
-                            // <Icon type="zoom-in" key="zoom-in" onClick={() => { this.handleActions('zoom', this.props.item.imageURL[0]) }} />,
                         ]}
                     >
+                        {/* タブの内容、画面からタブの形が非表示されている */}
                         <Tabs activeKey={this.state.selectedOutput} tabPosition='top' type="card">
                             <TabPane tab="Image" key='img'>
                                 <Row>
@@ -747,14 +537,29 @@ class VideoCard extends React.Component {
                                     </Col>
                                 </Row>
                             </TabPane>
+                            <TabPane tab="Static Image" key='staticimg'>
+                                <Row>
+                                    <Col span={24}>
+                                        {this.props.item[i].staticImageURL ?
+                                            <div style={{ height: '300px', display: 'table-cell', verticalAlign: 'middle' }}>
+                                                <img loading="auto" src={this.props.item[i].staticImageURL} width="100%" height="auto" />
+                                            </div>
+                                            : notfoundImageComponent
+                                        }
+                                    </Col>
+                                </Row>
+                            </TabPane>
                         </Tabs>
+                        <InfoTable />
                     </Card>
                 </Col>
             )
 
-            if (this.props.item[i].choice == '1') {
+            if (this.props.item[i].choice == '1')
+            {
                 choice1Items.push(item)
-            } else if (this.props.item[i].choice == '2') {
+            } else if (this.props.item[i].choice == '2')
+            {
                 choice2Items.push(item)
             }
 
@@ -785,7 +590,7 @@ class VideoCard extends React.Component {
                     maskClosable={false}
                     keyboard={false}
                     visible={this.state.playerVisible}
-                    style={{ top: '10px' }}
+                    style={{ top: '60px' }}
                     width="65vw"
                     destroyOnClose={true}
                     onCancel={this.handlePlayerCancel}

@@ -32,3 +32,8 @@
     width: 600px;
     height: 300px;
 }
+
+/* video::-webkit-media-controls-panel {
+    display: flex !important;
+    opacity: 1 !important;
+} */
